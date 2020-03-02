@@ -38,7 +38,7 @@ func HttpPost(url string, body string) (string, error) {
 	defer resp.Body.Close()
 	result, err := ioutil.ReadAll(resp.Body)
 
-	logger.StopAndLog("GET", url)
+	logger.StopAndLog("POST", url)
 
 	return string(result), err
 }
