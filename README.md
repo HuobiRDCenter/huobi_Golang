@@ -7,36 +7,26 @@ The SDK supports RESTful API invoking, and subscribe the market, account and ord
 ## Table of Contents
 
 - [Quick Start](#Quick-Start)
-
 - [Install](#Install)
-
 - [Usage](#Usage)
-
   - [Configuration](#Configuration)
   - [Folder structure](#Folder-Structure)
   - [Client](#Client)
   - [Response](#Response)
   - [Init function](#Init-function)
-
 - [Request examples](#Request-examples)
-
   - [Common data](#Common-data)
   - [Market data](#Market-data)
   - [Account](#account)
   - [Wallet](#wallet)
   - [Trading](#trading)
   - [Margin Loan](#margin-loan)
-
 - [Subscription examples](#Subscription-examples)
-
   - [Subscribe trade update](#Subscribe-trade-update)
   - [Subscribe candlestick update](#Subscribe-candlestick-update)
   - [Subscribe order update](#subscribe-order-update)
   - [Subscribe account change](#subscribe-account-change)
-  
 - [Unsubscribe](#unsubscribe)
-
-  
 
 ## Quick Start
 
@@ -55,9 +45,9 @@ client := new(client.CommonClient).Init(config.Host)
 resp, err := client.GetTimestamp()
 
 if err != nil {
-    fmt.Println(err)
+  fmt.Println(err)
 } else {
-    fmt.Println("timestamp:", resp)
+  fmt.Println("timestamp:", resp)
 }
 
 
@@ -65,10 +55,10 @@ if err != nil {
 client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
 resp, err := client.GetAccountInfo()
 if err != nil {
-		fmt.Println(err)
+  fmt.Println(err)
 } else {
-		for _, result := range resp {
-			fmt.Printf("account: %+v\n", result)
+  for _, result := range resp {
+    fmt.Printf("account: %+v\n", result)
     }
 }
 ```
@@ -222,9 +212,9 @@ resp, err := client.GetTimestamp()
 
 // Check error first
 if err != nil {
-		fmt.Println(err)
+  fmt.Println(err)
 } else {
-		fmt.Println("timestamp:", resp)
+  fmt.Println("timestamp:", resp)
 }
 ```
 
@@ -233,7 +223,7 @@ For array struct, you can use for/range to iterate each element
 ```go
 // Check the status of response and print some properties
 for _, kline := range resp {
-		fmt.Println("High: ", kline.High, "Low:", kline.Low)
+  fmt.Println("High: ", kline.High, "Low:", kline.Low)
 }
 ```
 
@@ -325,10 +315,10 @@ resp, err := client.GetAccountInfo()
 ```go
 client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
 createWithdrawRequest := postrequest.CreateWithdrawRequest{
-		Address:  "xxxx",
-		Amount:   "1.0",
-		Currency: "usdt",
-		Fee:      "1.0"}
+  Address:  "xxxx",
+  Amount:   "1.0",
+  Currency: "usdt",
+  Fee:      "1.0"}
 resp, err := client.CreateWithdraw(createWithdrawRequest)
 ```
 
@@ -358,12 +348,12 @@ resp, err := client.QueryDepositWithdraw(depositType, queryDepositWithdrawOption
 ```go
 client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 request := postrequest.PlaceOrderRequest{
-		AccountId: config.AccountId,
-		Type:      "buy-limit",
-		Source:    "spot-api",
-		Symbol:    "btcusdt",
-		Price:     "1.1",
-		Amount:    "1",
+  AccountId: config.AccountId,
+  Type:      "buy-limit",
+  Source:    "spot-api",
+  Symbol:    "btcusdt",
+  Price:     "1.1",
+  Amount:    "1",
 }
 resp, err := client.PlaceOrder(&request)
 ```
@@ -379,8 +369,8 @@ resp, err := client.CancelOrderById("1")
 
 ```go
 request := postrequest.CancelOrdersByCriteriaRequest{
-		AccountId: config.AccountId,
-		Symbol:    "btcusdt",
+  AccountId: config.AccountId,
+  Symbol:    "btcusdt",
 }
 
 client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
@@ -411,11 +401,11 @@ resp, err := client.GetHistoryOrders(request)
 
 ```go
 client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := postrequest.IsolatedMarginOrdersRequest{
-		Currency: "eos",
-		Amount: "0.001",
-		Symbol: "btcusdt",
-	}
+request := postrequest.IsolatedMarginOrdersRequest{
+  Currency: "eos",
+  Amount: "0.001",
+  Symbol: "btcusdt",
+}
 resp, err := client.MarginOrders(request)
 ```
 
@@ -434,7 +424,7 @@ resp, err := client.MarginOrdersRepay(orderId, request)
 ```go
 client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 optionalRequest := getrequest.IsolatedMarginLoanOrdersOptionalRequest{
-		StartDate: "2020-1-1",
+  StartDate: "2020-1-1",
 }	
 
 resp, err := client.MarginLoanOrders("btcusdt", optionalRequest)
@@ -483,8 +473,8 @@ client.SetHandler(
 // Connect to the server and wait for the handler to handle the response
 err := client.Connect(true)
 if err != nil {
-		fmt.Printf("Client Connect error: %s\n", err)
-		return
+  fmt.Printf("Client Connect error: %s\n", err)
+  return
 }
 ```
 
@@ -532,14 +522,13 @@ client.SetHandler(
       } else {
         fmt.Printf("Unknown response: %v\n", resp)
       }
-
   })
 
 // Connect to the server and wait for the handler to handle the response
 err := client.Connect(true)
 if err != nil {
-      fmt.Printf("Client connect error: %s\n", err)
-      return
+  fmt.Printf("Client connect error: %s\n", err)
+  return
 }
 ```
 
@@ -565,7 +554,6 @@ client.SetHandler(
     } else {
       fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
     }
-
   },
   // Response handler
   func(resp interface{}) {
@@ -583,8 +571,8 @@ client.SetHandler(
 // Connect to the server and wait for the handler to handle the response
 err := client.Connect(true)
 if err != nil {
-      fmt.Printf("Client Connect error: %s\n", err)
-        return
+  fmt.Printf("Client Connect error: %s\n", err)
+  return
 }
 ```
 
@@ -632,12 +620,11 @@ client.SetHandler(
 // Connect to the server and wait for the handler to handle the response
 err := client.Connect(true)
 if err != nil {
-      fmt.Printf("Client Connect error: %s\n", err)
-        return
+  fmt.Printf("Client Connect error: %s\n", err)
+  return
 }
 ```
 
 ## Unsubscribe
 
 Since each websocket client manage the subscription separately, therefore you can cancel each individual subscription.
-
