@@ -1,0 +1,206 @@
+package client
+
+import (
+	"../../internal"
+	"../../internal/requestbuilder"
+	"../getrequest"
+	"../postrequest"
+	"../response/account"
+	"encoding/json"
+	"errors"
+	"strconv"
+	"strings"
+)
+
+type AccountClient struct {
+	privateUrlBuilder *requestbuilder.PrivateUrlBuilder
+}
+
+func (p *AccountClient) Init(accessKey string, secretKey string, host string) *AccountClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+	return p
+}
+func (p *AccountClient) GetAccountInfo() ([]account.AccountInfo, error) {
+	url := p.privateUrlBuilder.Build("GET", "/v1/account/accounts", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetAccountInfoResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" && result.Data != nil {
+
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+func (p *AccountClient) GetAccountBalance(accountId string) (*account.AccountBalance, error) {
+	url := p.privateUrlBuilder.Build("GET", "/v1/account/accounts/"+accountId+"/balance", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetAccountBalanceResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" && result.Data != nil {
+
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest getrequest.GetAccountHistoryOptionalRequest) ([]account.AccountHistory, error) {
+	request := new(getrequest.GetRequest).Init()
+	request.AddParam("account-id", accountId)
+	if optionalRequest.Currency != "" {
+		request.AddParam("currency", optionalRequest.Currency)
+	}
+	if optionalRequest.Size != 0 {
+		request.AddParam("size", strconv.Itoa(optionalRequest.Size))
+	}
+	if optionalRequest.EndTime != 0 {
+		request.AddParam("end-time", strconv.FormatInt(optionalRequest.EndTime, 10))
+	}
+	if optionalRequest.Sort != "" {
+		request.AddParam("sort", optionalRequest.Sort)
+	}
+	if optionalRequest.StartTime != 0 {
+		request.AddParam("start-time", strconv.FormatInt(optionalRequest.StartTime, 10))
+	}
+	if optionalRequest.TransactTypes != "" {
+		request.AddParam("transact-types", optionalRequest.TransactTypes)
+	}
+
+	url := p.privateUrlBuilder.Build("GET", "/v1/account/history", request)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetAccountHistoryResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" && result.Data != nil {
+
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+func (p *AccountClient) FuturesTransfer(request postrequest.FuturesTransferRequest) (int64, error) {
+	postBody, jsonErr := postrequest.ToJson(request)
+	if jsonErr != nil {
+		return 0, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v1/futures/transfer", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return 0, postErr
+	}
+
+	result := account.FuturesTransferResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return 0, jsonErr
+	}
+	if result.Status != "ok" {
+		return 0, errors.New(postResp)
+
+	}
+	return result.Data, nil
+}
+
+func (p *AccountClient) SubUserTransfer(request postrequest.SubUserTransferRequest) (string, error) {
+	postBody, jsonErr := postrequest.ToJson(request)
+	if jsonErr != nil {
+		return "", jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v1/subuser/transfer", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return "", postErr
+	}
+	if strings.Contains(postResp, "data") {
+		return postResp, nil
+	} else {
+		return "", errors.New(postResp)
+	}
+
+}
+func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
+
+	url := p.privateUrlBuilder.Build("GET", "/v1/subuser/aggregate-balance", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetSubUserAggregateBalanceResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" && result.Data != nil {
+
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+
+}
+
+func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccount, error) {
+
+	url := p.privateUrlBuilder.Build("GET", "/v1/account/accounts/"+strconv.FormatInt(subUid, 10), nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetSubUserAccountResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" && result.Data != nil {
+
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+
+}
+func (p *AccountClient) SubUserManagement(request postrequest.SubUserManagementRequest) (*account.SubUserManagement, error) {
+
+	postBody, jsonErr := postrequest.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/management", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := account.SubUserManagementResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code != 200 {
+		return nil, errors.New(postResp)
+
+	}
+	return result.Data, nil
+
+}
