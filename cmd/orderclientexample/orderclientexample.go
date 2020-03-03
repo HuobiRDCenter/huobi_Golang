@@ -22,7 +22,7 @@ func RunAllExamples() {
 	getHistoryOrders()
 	getLast48hOrders()
 	getMatchResultByCriteria()
-	getFeeRate()
+	getTransactFeeRate()
 }
 
 func placeOrder() {
@@ -321,11 +321,11 @@ func getMatchResultByCriteria() {
 	}
 }
 
-func getFeeRate() {
+func getTransactFeeRate() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("symbols", "btcusdt,eosht")
-	resp, err := client.GetFeeRate(request)
+	resp, err := client.GetTransactFeeRate(request)
 	if err != nil {
 		fmt.Println(err)
 	} else {

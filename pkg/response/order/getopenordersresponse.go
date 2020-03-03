@@ -11,6 +11,7 @@ type GetOpenOrdersResponse struct {
 
 type OpenOrder struct {
 	Id               int64           `json:"id"`
+	ClientOrderId    string          `json:"client-order-id"`
 	AccountId        int             `json:"account-id"`
 	Amount           decimal.Decimal `json:"amount"`
 	Symbol           string          `json:"symbol"`

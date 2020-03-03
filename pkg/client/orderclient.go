@@ -240,33 +240,18 @@ func (p *OrderClient) GetMatchResultsByCriteria(request *getrequest.GetRequest) 
 	return &result, nil
 }
 
-func (p *OrderClient) GetFeeRate(request *getrequest.GetRequest) (*order.GetFeeResponse, error) {
+func (p *OrderClient) GetTransactFeeRate(request *getrequest.GetRequest) (*order.GetTransactFeeRateResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v2/reference/transact-fee-rate", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
 		return nil, getErr
 	}
 
-	result := order.GetFeeResponse{}
+	result := order.GetTransactFeeRateResponse{}
 	jsonErr := json.Unmarshal([]byte(getResp), &result)
 	if jsonErr != nil {
 		return nil, jsonErr
 	}
 
 	return &result, nil
-}
-
-func (p *OrderClient) Test() {
-
-	request := new(getrequest.GetRequest).Init()
-	request.AddParam("currency", "pax")
-	request.AddParam("amount", "1000")
-
-	request.AddParam("type", "buy")
-
-	url := p.privateUrlBuilder.Build("GET", "/v1/stable-coin/quote", request)
-	getResp, getErr := internal.HttpGet(url)
-	fmt.Println(getResp)
-	fmt.Println(getErr)
-
 }
