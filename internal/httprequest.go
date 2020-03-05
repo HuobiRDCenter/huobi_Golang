@@ -7,13 +7,8 @@ import (
 	"strings"
 )
 
-var logger *logging.PerformanceLogging
-
-func init() {
-	logger = new(logging.PerformanceLogging).Init()
-}
-
 func HttpGet(url string) (string, error) {
+	logger := logging.GetPerformanceLoggerInstance()
 	logger.Start()
 
 	resp, err := http.Get(url)
@@ -29,6 +24,7 @@ func HttpGet(url string) (string, error) {
 }
 
 func HttpPost(url string, body string) (string, error) {
+	logger := logging.GetPerformanceLoggerInstance()
 	logger.Start()
 
 	resp, err := http.Post(url, "application/json", strings.NewReader(body))

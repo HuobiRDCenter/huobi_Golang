@@ -1,6 +1,7 @@
 package main
 
 import (
+	"../logging"
 	"./accountclientexample"
 	"./accountwebsocketclientexample"
 	"./commonclientexample"
@@ -33,6 +34,8 @@ func runAll() {
 }
 
 func perfTest() {
+	logging.EnablePerformanceLog(true)
+
 	commonclientexample.RunAllExamples()
 	accountclientexample.RunAllExamples()
 	orderclientexample.RunAllExamples()

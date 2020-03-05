@@ -81,5 +81,6 @@ func queryDepositWithdraw() {
 		for _, result := range resp {
 			fmt.Printf("resp: %+v\n", result)
 		}
+		fmt.Printf("There are total %d deposit-withdraw history", len(resp))
 	}
 }
