@@ -12,14 +12,18 @@ import (
 	"strings"
 )
 
+// Responsible to operate account
 type AccountClient struct {
 	privateUrlBuilder *requestbuilder.PrivateUrlBuilder
 }
 
+// Initializer
 func (p *AccountClient) Init(accessKey string, secretKey string, host string) *AccountClient {
 	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
 	return p
 }
+
+// Returns a list of accounts owned by this API user
 func (p *AccountClient) GetAccountInfo() ([]account.AccountInfo, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/account/accounts", nil)
 	getResp, getErr := internal.HttpGet(url)
@@ -38,6 +42,8 @@ func (p *AccountClient) GetAccountInfo() ([]account.AccountInfo, error) {
 
 	return nil, errors.New(getResp)
 }
+
+// Returns the balance of an account specified by account id
 func (p *AccountClient) GetAccountBalance(accountId string) (*account.AccountBalance, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/account/accounts/"+accountId+"/balance", nil)
 	getResp, getErr := internal.HttpGet(url)
@@ -56,6 +62,8 @@ func (p *AccountClient) GetAccountBalance(accountId string) (*account.AccountBal
 
 	return nil, errors.New(getResp)
 }
+
+// Returns the amount changes of specified user's account
 func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest getrequest.GetAccountHistoryOptionalRequest) ([]account.AccountHistory, error) {
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("account-id", accountId)
@@ -96,6 +104,7 @@ func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest getr
 	return nil, errors.New(getResp)
 }
 
+// Transfer fund between spot account and future contract account
 func (p *AccountClient) FuturesTransfer(request postrequest.FuturesTransferRequest) (int64, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 	if jsonErr != nil {
@@ -120,6 +129,7 @@ func (p *AccountClient) FuturesTransfer(request postrequest.FuturesTransferReque
 	return result.Data, nil
 }
 
+// Transfer asset between parent and sub account
 func (p *AccountClient) SubUserTransfer(request postrequest.SubUserTransferRequest) (string, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 	if jsonErr != nil {
@@ -136,8 +146,9 @@ func (p *AccountClient) SubUserTransfer(request postrequest.SubUserTransferReque
 	} else {
 		return "", errors.New(postResp)
 	}
-
 }
+
+// Returns the aggregated balance from all the sub-users
 func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
 
 	url := p.privateUrlBuilder.Build("GET", "/v1/subuser/aggregate-balance", nil)
@@ -156,9 +167,9 @@ func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) 
 	}
 
 	return nil, errors.New(getResp)
-
 }
 
+// Returns the balance of a sub-account specified by sub-uid
 func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccount, error) {
 
 	url := p.privateUrlBuilder.Build("GET", "/v1/account/accounts/"+strconv.FormatInt(subUid, 10), nil)
@@ -177,8 +188,9 @@ func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccoun
 	}
 
 	return nil, errors.New(getResp)
-
 }
+
+// Lock or unlock a specific user
 func (p *AccountClient) SubUserManagement(request postrequest.SubUserManagementRequest) (*account.SubUserManagement, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)

@@ -64,7 +64,7 @@ func marginOrders() {
 	request := postrequest.CrossMarginOrdersRequest{Currency: "usdt",
 		Amount: "1.0"}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	resp, err := client.MarginOrders(request)
+	resp, err := client.ApplyLoan(request)
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -77,7 +77,7 @@ func marginOrdersRepay() {
 	orderId := "12345"
 	request := postrequest.MarginOrdersRepayRequest{Amount: "1.0"}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	err := client.MarginOrdersRepay(orderId, request)
+	err := client.Repay(orderId, request)
 	if err != nil {
 		fmt.Println(err)
 	}

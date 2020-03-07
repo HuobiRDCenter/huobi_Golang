@@ -11,15 +11,18 @@ import (
 	"strconv"
 )
 
+// Responsible to operate ETF
 type ETFClient struct {
 	privateUrlBuilder *requestbuilder.PrivateUrlBuilder
 }
 
+// Initializer
 func (p *ETFClient) Init(accessKey string, secretKey string, host string) *ETFClient {
 	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
 	return p
 }
 
+// Return the basic information of ETF creation and redemption, as well as ETF constituents
 func (p *ETFClient) GetSwapConfig(etfName string) (*etf.SwapConfig, error) {
 	request := new(getrequest.GetRequest).Init()
 
@@ -41,6 +44,8 @@ func (p *ETFClient) GetSwapConfig(etfName string) (*etf.SwapConfig, error) {
 	}
 	return nil, errors.New(getResp)
 }
+
+// Swap in ETF
 func (p *ETFClient) SwapIn(request postrequest.SwapRequest) (bool, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)
@@ -63,9 +68,9 @@ func (p *ETFClient) SwapIn(request postrequest.SwapRequest) (bool, error) {
 		return result.Success, nil
 	}
 	return false, errors.New(postResp)
-
 }
 
+// Swap out ETF
 func (p *ETFClient) SwapOut(request postrequest.SwapRequest) (bool, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)
@@ -90,6 +95,8 @@ func (p *ETFClient) SwapOut(request postrequest.SwapRequest) (bool, error) {
 	return false, errors.New(postResp)
 
 }
+
+// Get past creation and redemption.(up to 100 records)
 func (p *ETFClient) GetSwapList(etfName string, offset int, limit int) ([]*etf.SwapList, error) {
 	request := new(getrequest.GetRequest).Init()
 

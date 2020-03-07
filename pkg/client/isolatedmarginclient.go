@@ -11,15 +11,18 @@ import (
 	"strconv"
 )
 
+// Responsible to operate isolated margin
 type IsolatedMarginClient struct {
 	privateUrlBuilder *requestbuilder.PrivateUrlBuilder
 }
 
+// Initializer
 func (p *IsolatedMarginClient) Init(accessKey string, secretKey string, host string) *IsolatedMarginClient {
 	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
 	return p
 }
 
+// Transfer specific asset from spot trading account to isolated margin account
 func (p *IsolatedMarginClient) TransferIn(request postrequest.IsolatedMarginTransferRequest) (int, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)
@@ -45,6 +48,7 @@ func (p *IsolatedMarginClient) TransferIn(request postrequest.IsolatedMarginTran
 	return result.Data, nil
 }
 
+// Transfer specific asset from isolated margin account to spot trading account
 func (p *IsolatedMarginClient) TransferOut(request postrequest.IsolatedMarginTransferRequest) (int, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)
@@ -69,6 +73,7 @@ func (p *IsolatedMarginClient) TransferOut(request postrequest.IsolatedMarginTra
 	return result.Data, nil
 }
 
+// Returns loan interest rates and quota applied on the user
 func (p *IsolatedMarginClient) GetMarginLoanInfo(optionalRequest getrequest.GetMarginLoanInfoOptionalRequest) ([]margin.IsolatedMarginLoanInfo, error) {
 	request := new(getrequest.GetRequest).Init()
 	if optionalRequest.Symbols != "" {
@@ -91,9 +96,10 @@ func (p *IsolatedMarginClient) GetMarginLoanInfo(optionalRequest getrequest.GetM
 	}
 
 	return nil, errors.New(getResp)
-
 }
-func (p *IsolatedMarginClient) MarginOrders(request postrequest.IsolatedMarginOrdersRequest) (int, error) {
+
+// Place an order to apply a margin loan.
+func (p *IsolatedMarginClient) Apply(request postrequest.IsolatedMarginOrdersRequest) (int, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
@@ -117,7 +123,9 @@ func (p *IsolatedMarginClient) MarginOrders(request postrequest.IsolatedMarginOr
 	return result.Data, nil
 
 }
-func (p *IsolatedMarginClient) MarginOrdersRepay(orderId string, request postrequest.MarginOrdersRepayRequest) (int, error) {
+
+// Repays margin loan with you asset in your margin account.
+func (p *IsolatedMarginClient) Repay(orderId string, request postrequest.MarginOrdersRepayRequest) (int, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
@@ -141,6 +149,7 @@ func (p *IsolatedMarginClient) MarginOrdersRepay(orderId string, request postreq
 	return result.Data, nil
 }
 
+// Returns margin orders based on a specific searching criteria.
 func (p *IsolatedMarginClient) MarginLoanOrders(symbol string, optionalRequest getrequest.IsolatedMarginLoanOrdersOptionalRequest) ([]margin.IsolatedMarginLoanOrder, error) {
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("symbol", symbol)
@@ -183,6 +192,8 @@ func (p *IsolatedMarginClient) MarginLoanOrders(symbol string, optionalRequest g
 
 	return nil, errors.New(getResp)
 }
+
+// Returns the balance of the margin loan account.
 func (p *IsolatedMarginClient) MarginAccountsBalance(optionalRequest getrequest.MarginAccountsBalanceOptionalRequest) ([]margin.IsolatedMarginAccountsBalance, error) {
 
 	request := new(getrequest.GetRequest).Init()

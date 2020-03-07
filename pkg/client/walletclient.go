@@ -11,15 +11,18 @@ import (
 	"strconv"
 )
 
+// Responsible to operate wallet
 type WalletClient struct {
 	privateUrlBuilder *requestbuilder.PrivateUrlBuilder
 }
 
+// Initializer
 func (p *WalletClient) Init(accessKey string, secretKey string, host string) *WalletClient {
 	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
 	return p
 }
 
+// Get deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 func (p *WalletClient) GetDepositAddress(currency string) ([]wallet.DepositAddress, error) {
 	request := new(getrequest.GetRequest).Init()
 
@@ -42,6 +45,7 @@ func (p *WalletClient) GetDepositAddress(currency string) ([]wallet.DepositAddre
 	return nil, errors.New(getResp)
 }
 
+// Query withdraw quota for currencies
 func (p *WalletClient) GetWithdrawQuota(currency string) (*wallet.WithdrawQuota, error) {
 	request := new(getrequest.GetRequest).Init()
 
@@ -63,6 +67,8 @@ func (p *WalletClient) GetWithdrawQuota(currency string) (*wallet.WithdrawQuota,
 	}
 	return nil, errors.New(getResp)
 }
+
+// Withdraw from spot trading account to an external address.
 func (p *WalletClient) CreateWithdraw(request postrequest.CreateWithdrawRequest) (int64, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 
@@ -82,8 +88,9 @@ func (p *WalletClient) CreateWithdraw(request postrequest.CreateWithdrawRequest)
 		return result.Data, nil
 	}
 	return 0, errors.New(postResp)
-
 }
+
+// Cancels a previously created withdraw request by its transfer id.
 func (p *WalletClient) CancelWithdraw(withdrawId int64) (int64, error) {
 
 	url := p.privateUrlBuilder.Build("POST", "/v1/dw/withdraw-virtual/"+strconv.FormatInt(withdrawId, 10)+"}/cancel", nil)
@@ -104,6 +111,7 @@ func (p *WalletClient) CancelWithdraw(withdrawId int64) (int64, error) {
 
 }
 
+// Returns all existed withdraws and deposits and return their latest status.
 func (p *WalletClient) QueryDepositWithdraw(depositOrWithdraw string, optionalRequest getrequest.QueryDepositWithdrawOptionalRequest) ([]wallet.DepositWithdraw, error) {
 	request := new(getrequest.GetRequest).Init()
 

@@ -10,15 +10,18 @@ import (
 	"errors"
 )
 
+// Responsible to operate cross margin
 type CrossMarginClient struct {
 	privateUrlBuilder *requestbuilder.PrivateUrlBuilder
 }
 
+// Initializer
 func (p *CrossMarginClient) Init(accessKey string, secretKey string, host string) *CrossMarginClient {
 	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
 	return p
 }
 
+// Transfer specific asset from spot trading account to cross margin account
 func (p *CrossMarginClient) TransferIn(request postrequest.CrossMarginTransferRequest) (int, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)
@@ -44,6 +47,7 @@ func (p *CrossMarginClient) TransferIn(request postrequest.CrossMarginTransferRe
 	return result.Data, nil
 }
 
+// Transfer specific asset from cross margin account to spot trading account
 func (p *CrossMarginClient) TransferOut(request postrequest.CrossMarginTransferRequest) (int, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)
@@ -69,6 +73,7 @@ func (p *CrossMarginClient) TransferOut(request postrequest.CrossMarginTransferR
 	return result.Data, nil
 }
 
+// Returns loan interest rates and quota applied on the user
 func (p *CrossMarginClient) GetMarginLoanInfo() ([]margin.CrossMarginLoanInfo, error) {
 	request := new(getrequest.GetRequest).Init()
 
@@ -89,9 +94,10 @@ func (p *CrossMarginClient) GetMarginLoanInfo() ([]margin.CrossMarginLoanInfo, e
 	}
 
 	return nil, errors.New(getResp)
-
 }
-func (p *CrossMarginClient) MarginOrders(request postrequest.CrossMarginOrdersRequest) (int, error) {
+
+// Place an order to apply a margin loan.
+func (p *CrossMarginClient) ApplyLoan(request postrequest.CrossMarginOrdersRequest) (int, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
@@ -113,9 +119,10 @@ func (p *CrossMarginClient) MarginOrders(request postrequest.CrossMarginOrdersRe
 
 	}
 	return result.Data, nil
-
 }
-func (p *CrossMarginClient) MarginOrdersRepay(orderId string, request postrequest.MarginOrdersRepayRequest) error {
+
+// Repays margin loan with you asset in your margin account.
+func (p *CrossMarginClient) Repay(orderId string, request postrequest.MarginOrdersRepayRequest) error {
 	postBody, jsonErr := postrequest.ToJson(request)
 	if jsonErr != nil {
 		return jsonErr
@@ -139,6 +146,7 @@ func (p *CrossMarginClient) MarginOrdersRepay(orderId string, request postreques
 	return nil
 }
 
+// Returns margin orders based on a specific searching criteria.
 func (p *CrossMarginClient) MarginLoanOrders(optionalRequest getrequest.CrossMarginLoanOrdersOptionalRequest) ([]margin.CrossMarginLoanOrder, error) {
 	request := new(getrequest.GetRequest).Init()
 	if optionalRequest.Size != "" {
@@ -182,6 +190,8 @@ func (p *CrossMarginClient) MarginLoanOrders(optionalRequest getrequest.CrossMar
 
 	return nil, errors.New(getResp)
 }
+
+// Returns the balance of the margin loan account.
 func (p *CrossMarginClient) MarginAccountsBalance() (*margin.CrossMarginAccountsBalance, error) {
 
 	request := new(getrequest.GetRequest).Init()

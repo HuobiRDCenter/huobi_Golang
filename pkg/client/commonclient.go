@@ -9,25 +9,19 @@ import (
 	"errors"
 )
 
-/**
-Reference Data
-*/
+// Responsible to get common information
 type CommonClient struct {
 	publicUrlBuilder *requestbuilder.PublicUrlBuilder
 }
 
-/**
-init client
-*/
+// Initializer
 func (p *CommonClient) Init(host string) *CommonClient {
 	p.publicUrlBuilder = new(requestbuilder.PublicUrlBuilder).Init(host)
 	return p
 }
 
-/**
-Get all Supported Trading Symbol
-This endpoint returns all Huobi's supported trading symbol.
-*/
+// Get all Supported Trading Symbol
+// This endpoint returns all Huobi's supported trading symbol.
 func (p *CommonClient) GetSymbols() ([]common.Symbol, error) {
 	url := p.publicUrlBuilder.Build("/v1/common/symbols", nil)
 	getResp, getErr := internal.HttpGet(url)
@@ -46,10 +40,8 @@ func (p *CommonClient) GetSymbols() ([]common.Symbol, error) {
 	return nil, errors.New(getResp)
 }
 
-/**
-Get all Supported Currencies
-This endpoint returns all Huobi's supported trading currencies.
-*/
+// Get all Supported Currencies
+// This endpoint returns all Huobi's supported trading currencies.
 func (p *CommonClient) GetCurrencys() ([]string, error) {
 	url := p.publicUrlBuilder.Build("/v1/common/currencys", nil)
 	getResp, getErr := internal.HttpGet(url)
@@ -69,10 +61,8 @@ func (p *CommonClient) GetCurrencys() ([]string, error) {
 	return nil, errors.New(getResp)
 }
 
-/**
-APIv2 - Currency & Chains
-API user could query static reference information for each currency, as well as its corresponding chain(s). (Public Endpoint)
-*/
+// APIv2 - Currency & Chains
+// API user could query static reference information for each currency, as well as its corresponding chain(s). (Public Endpoint)
 func (p *CommonClient) GetV2ReferenceCurrencies(optionalRequest getrequest.GetV2ReferenceCurrencies) ([]common.CurrencyChain, error) {
 	request := new(getrequest.GetRequest).Init()
 	if optionalRequest.Currency != "" {
@@ -103,10 +93,8 @@ func (p *CommonClient) GetV2ReferenceCurrencies(optionalRequest getrequest.GetV2
 	return nil, errors.New(result.Message)
 }
 
-/**
-Get Current Timestamp
-This endpoint returns the current timestamp, i.e. the number of milliseconds that have elapsed since 00:00:00 UTC on 1 January 1970.
-*/
+// Get Current Timestamp
+// This endpoint returns the current timestamp, i.e. the number of milliseconds that have elapsed since 00:00:00 UTC on 1 January 1970.
 func (p *CommonClient) GetTimestamp() (int, error) {
 	url := p.publicUrlBuilder.Build("/v1/common/timestamp", nil)
 	getResp, getErr := internal.HttpGet(url)

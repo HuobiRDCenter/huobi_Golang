@@ -19,6 +19,7 @@ func main() {
 	runAll()
 }
 
+// Run all examples
 func runAll() {
 	commonclientexample.RunAllExamples()
 	accountclientexample.RunAllExamples()
@@ -33,6 +34,7 @@ func runAll() {
 	orderwebsocketclientexample.RunAllExamples()
 }
 
+// Run performance test
 func perfTest() {
 	logging.EnablePerformanceLog(true)
 

@@ -10,15 +10,18 @@ import (
 	"fmt"
 )
 
+// Responsible to operate on order
 type OrderClient struct {
 	privateUrlBuilder *requestbuilder.PrivateUrlBuilder
 }
 
+// Initializer
 func (p *OrderClient) Init(accessKey string, secretKey string, host string) *OrderClient {
 	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
 	return p
 }
 
+// Place a new order and send to the exchange to be matched.
 func (p *OrderClient) PlaceOrder(request *postrequest.PlaceOrderRequest) (*order.PlaceOrderResponse, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 
@@ -37,6 +40,7 @@ func (p *OrderClient) PlaceOrder(request *postrequest.PlaceOrderRequest) (*order
 	return &result, nil
 }
 
+// Place multipler orders (at most 10 orders)
 func (p *OrderClient) PlaceOrders(request []postrequest.PlaceOrderRequest) (*order.PlaceOrdersResponse, error) {
 
 	postBody, jsonErr := postrequest.ToJson(request)
@@ -56,6 +60,7 @@ func (p *OrderClient) PlaceOrders(request []postrequest.PlaceOrderRequest) (*ord
 	return &result, nil
 }
 
+// Cancel an order by order id
 func (p *OrderClient) CancelOrderById(orderId string) (*order.CancelOrderByIdResponse, error) {
 	path := fmt.Sprintf("/v1/order/orders/%s/submitcancel", orderId)
 	url := p.privateUrlBuilder.Build("POST", path, nil)
@@ -73,6 +78,7 @@ func (p *OrderClient) CancelOrderById(orderId string) (*order.CancelOrderByIdRes
 	return &result, nil
 }
 
+// Cancel an order by client order id
 func (p *OrderClient) CancelOrderByClientOrderId(clientOrderId string) (*order.CancelOrderByClientResponse, error) {
 	url := p.privateUrlBuilder.Build("POST", "/v1/order/orders/submitCancelClientOrder", nil)
 	body := fmt.Sprintf("{\"client-order-id\":\"%s\"}", clientOrderId)
@@ -90,6 +96,7 @@ func (p *OrderClient) CancelOrderByClientOrderId(clientOrderId string) (*order.C
 	return &result, nil
 }
 
+// Returns all open orders which have not been filled completely.
 func (p *OrderClient) GetOpenOrders(request *getrequest.GetRequest) (*order.GetOpenOrdersResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/openOrders", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -106,6 +113,7 @@ func (p *OrderClient) GetOpenOrders(request *getrequest.GetRequest) (*order.GetO
 	return &result, nil
 }
 
+// Submit cancellation for multiple orders at once with given criteria.
 func (p *OrderClient) CancelOrdersByCriteria(request *postrequest.CancelOrdersByCriteriaRequest) (*order.CancelOrdersByCriteriaResponse, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 
@@ -124,6 +132,7 @@ func (p *OrderClient) CancelOrdersByCriteria(request *postrequest.CancelOrdersBy
 	return &result, nil
 }
 
+// Submit cancellation for multiple orders at once with given ids
 func (p *OrderClient) CancelOrdersByIds(request *postrequest.CancelOrdersByIdsRequest) (*order.CancelOrdersByIdsResponse, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 
@@ -142,6 +151,7 @@ func (p *OrderClient) CancelOrdersByIds(request *postrequest.CancelOrdersByIdsRe
 	return &result, nil
 }
 
+// Returns the detail of one order by order id
 func (p *OrderClient) GetOrderById(orderId string) (*order.GetOrderResponse, error) {
 	path := fmt.Sprintf("/v1/order/orders/%s", orderId)
 	url := p.privateUrlBuilder.Build("GET", path, nil)
@@ -159,6 +169,7 @@ func (p *OrderClient) GetOrderById(orderId string) (*order.GetOrderResponse, err
 	return &result, nil
 }
 
+// Returns the detail of one order by client order id
 func (p *OrderClient) GetOrderByCriteria(request *getrequest.GetRequest) (*order.GetOrderResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/orders/getClientOrder", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -175,6 +186,7 @@ func (p *OrderClient) GetOrderByCriteria(request *getrequest.GetRequest) (*order
 	return &result, nil
 }
 
+// Returns the match result of an order.
 func (p *OrderClient) GetMatchResultsById(orderId string) (*order.GetMatchResultsResponse, error) {
 	path := fmt.Sprintf("/v1/order/orders/%s/matchresults", orderId)
 	url := p.privateUrlBuilder.Build("GET", path, nil)
@@ -192,6 +204,7 @@ func (p *OrderClient) GetMatchResultsById(orderId string) (*order.GetMatchResult
 	return &result, nil
 }
 
+// Returns orders based on a specific searching criteria.
 func (p *OrderClient) GetHistoryOrders(request *getrequest.GetRequest) (*order.GetHistoryOrdersResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/orders", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -208,6 +221,7 @@ func (p *OrderClient) GetHistoryOrders(request *getrequest.GetRequest) (*order.G
 	return &result, nil
 }
 
+// Returns orders based on a specific searching criteria.
 func (p *OrderClient) GetLast48hOrders(request *getrequest.GetRequest) (*order.GetHistoryOrdersResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/history", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -224,6 +238,7 @@ func (p *OrderClient) GetLast48hOrders(request *getrequest.GetRequest) (*order.G
 	return &result, nil
 }
 
+// Returns the match results of past and open orders based on specific search criteria.
 func (p *OrderClient) GetMatchResultsByCriteria(request *getrequest.GetRequest) (*order.GetMatchResultsResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/matchresults", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -240,6 +255,7 @@ func (p *OrderClient) GetMatchResultsByCriteria(request *getrequest.GetRequest) 
 	return &result, nil
 }
 
+// Returns the current transaction fee rate applied to the user.
 func (p *OrderClient) GetTransactFeeRate(request *getrequest.GetRequest) (*order.GetTransactFeeRateResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v2/reference/transact-fee-rate", request)
 	getResp, getErr := internal.HttpGet(url)

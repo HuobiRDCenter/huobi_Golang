@@ -15,8 +15,10 @@ const (
 	websocketV2Path = "/ws/v2"
 )
 
+// It will be invoked after websocket v2 authentication response received
 type AuthenticationV2ResponseHandler func(resp *model.WebSocketV2AuthenticationResponse)
 
+// The base class that responsible to get data from websocket authentication v2
 type WebSocketV2ClientBase struct {
 	host                     string
 	conn                     *websocket.Conn
@@ -33,6 +35,7 @@ type WebSocketV2ClientBase struct {
 	requestBuilder *requestbuilder.WebSocketV2RequestBuilder
 }
 
+// Initializer
 func (p *WebSocketV2ClientBase) Init(accessKey string, secretKey string, host string) *WebSocketV2ClientBase {
 	p.host = host
 	p.stopReadChannel = make(chan int, 1)
@@ -41,12 +44,15 @@ func (p *WebSocketV2ClientBase) Init(accessKey string, secretKey string, host st
 	return p
 }
 
+// Set callback handler
 func (p *WebSocketV2ClientBase) SetHandler(authHandler AuthenticationV2ResponseHandler, msgHandler MessageHandler, repHandler ResponseHandler) {
 	p.authenticationResponseHandler = authHandler
 	p.messageHandler = msgHandler
 	p.responseHandler = repHandler
 }
 
+// Connect to websocket server
+// if autoConnect is true, then the connection can be re-connect if no data received after the pre-defined timeout
 func (p *WebSocketV2ClientBase) Connect(autoConnect bool) error {
 	err := p.connectWebSocket()
 	if err != nil {
@@ -60,6 +66,7 @@ func (p *WebSocketV2ClientBase) Connect(autoConnect bool) error {
 	return nil
 }
 
+// Send data to websocket server
 func (p *WebSocketV2ClientBase) Send(data string) error {
 	if p.conn == nil {
 		return errors.New("no connection available")
@@ -73,11 +80,13 @@ func (p *WebSocketV2ClientBase) Send(data string) error {
 	return nil
 }
 
+// Close the connection to server
 func (p *WebSocketV2ClientBase) Close() {
 	p.stopTicker()
 	p.disconnectWebSocket()
 }
 
+// connect to server
 func (p *WebSocketV2ClientBase) connectWebSocket() error {
 	var err error
 	url := fmt.Sprintf("wss://%s%s", p.host, websocketV2Path)
@@ -102,6 +111,7 @@ func (p *WebSocketV2ClientBase) connectWebSocket() error {
 	return nil
 }
 
+// disconnect with server
 func (p *WebSocketV2ClientBase) disconnectWebSocket() {
 	if p.conn == nil {
 		return
@@ -119,6 +129,7 @@ func (p *WebSocketV2ClientBase) disconnectWebSocket() {
 	fmt.Println("WebSocket disconnected")
 }
 
+// initialize a ticker and start a goroutine tickerLoop()
 func (p *WebSocketV2ClientBase) startTicker() {
 	p.ticker = time.NewTicker(TimerIntervalSecond * time.Second)
 	p.lastReceivedTime = time.Now()
@@ -126,19 +137,25 @@ func (p *WebSocketV2ClientBase) startTicker() {
 	go p.tickerLoop()
 }
 
+// stop ticker and stop the goroutine
 func (p *WebSocketV2ClientBase) stopTicker() {
 	p.ticker.Stop()
 	p.stopTickerChannel <- 1
 }
 
+// defines a for loop that will run based on ticker's frequency
+// It checks the last data that received from server, if it is longer than the threshold,
+// it will force disconnect server and connect again.
 func (p *WebSocketV2ClientBase) tickerLoop() {
 	fmt.Println("tickerLoop started")
 	for {
 		select {
+		// start a goroutine readLoop()
 		case <-p.stopTickerChannel:
 			fmt.Println("tickerLoop stopped")
 			return
 
+		// Receive tick from tickChannel
 		case <-p.ticker.C:
 			elapsedSecond := time.Now().Sub(p.lastReceivedTime).Seconds()
 			fmt.Printf("WebSocket received data %f sec ago\n", elapsedSecond)
@@ -155,18 +172,23 @@ func (p *WebSocketV2ClientBase) tickerLoop() {
 	}
 }
 
+// start a goroutine readLoop()
 func (p *WebSocketV2ClientBase) startReadLoop() {
 	go p.readLoop()
 }
 
+// stop the goroutine readLoop()
 func (p *WebSocketV2ClientBase) stopReadLoop() {
 	p.stopReadChannel <- 1 //TODO: consider put this into goroutine to unblock
 }
 
+// defines a for loop to read data from server
+// it will stop once it receives the signal from stopReadChannel
 func (p *WebSocketV2ClientBase) readLoop() {
 	fmt.Println("readLoop started")
 	for {
 		select {
+		// Receive data from stopChannel
 		case <-p.stopReadChannel:
 			fmt.Println("readLoop stopped")
 			return
@@ -187,6 +209,7 @@ func (p *WebSocketV2ClientBase) readLoop() {
 
 			p.lastReceivedTime = time.Now()
 
+			// decompress gzip data if it is binary message
 			var message string
 			if msgType == websocket.BinaryMessage {
 				message, err = gzip.GZipDecompress(buf)
@@ -197,6 +220,8 @@ func (p *WebSocketV2ClientBase) readLoop() {
 				message = string(buf)
 			}
 
+			// Try to pass as PingV2Message
+			// If it is Ping then respond Pong
 			pingV2Msg := model.ParsePingV2Message(message)
 			if pingV2Msg.IsPing() {
 				fmt.Printf("Received Ping: %d\n", pingV2Msg.Data.Timestamp)
@@ -204,12 +229,15 @@ func (p *WebSocketV2ClientBase) readLoop() {
 				p.Send(pongMsg)
 				fmt.Printf("Respond  Pong: %d\n", pingV2Msg.Data.Timestamp)
 			} else {
+				// Try to pass as websocket v2 authentication response
+				// If it is then invoke authentication handler
 				authResp := model.ParseWSV2AuthResp(message)
 				if authResp != nil && authResp.IsAuth() {
 					if p.authenticationResponseHandler != nil {
 						p.authenticationResponseHandler(authResp)
 					}
-				} else if strings.Contains(message, "symbol") || strings.Contains(message, "currency") {//TODO: should use better way to determine
+				} else if strings.Contains(message, "symbol") || strings.Contains(message, "currency") {
+					// If it contains expected string, then invoke message handler and response handler
 					result, err := p.messageHandler(message)
 					if err != nil {
 						fmt.Printf("Handle message error: %s\n", err)

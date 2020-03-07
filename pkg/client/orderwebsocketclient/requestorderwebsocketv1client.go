@@ -7,15 +7,19 @@ import (
 	"fmt"
 )
 
+// Responsible to handle order request from WebSocket
+// This need authentication version 1
 type RequestOrderWebSocketV1Client struct {
 	websocketclientbase.WebSocketV1ClientBase
 }
 
+// Initializer
 func (p *RequestOrderWebSocketV1Client) Init(accessKey string, secretKey string, host string) *RequestOrderWebSocketV1Client {
 	p.WebSocketV1ClientBase.Init(accessKey, secretKey, host)
 	return p
 }
 
+// Set callback handler
 func (p *RequestOrderWebSocketV1Client) SetHandler(
 	authHandler websocketclientbase.AuthenticationV1ResponseHandler,
 	responseHandler websocketclientbase.ResponseHandler) {

@@ -71,7 +71,7 @@ func marginOrders() {
 		Amount: "0.001",
 		Symbol: "eosht",
 	}
-	resp, err := client.MarginOrders(request)
+	resp, err := client.Apply(request)
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -84,7 +84,7 @@ func marginOrdersRepay() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	orderId := "12345"
 	request := postrequest.MarginOrdersRepayRequest{Amount: "1.0"}
-	resp, err := client.MarginOrdersRepay(orderId, request)
+	resp, err := client.Repay(orderId, request)
 	if err != nil {
 		fmt.Println(err)
 	} else {

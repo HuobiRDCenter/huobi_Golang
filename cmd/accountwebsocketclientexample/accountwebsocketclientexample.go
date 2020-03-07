@@ -15,8 +15,12 @@ func RunAllExamples() {
 }
 
 func reqAccountUpdateV1() {
+	// Initialize a new instance
 	client := new(accountwebsocketclient.RequestAccountWebSocketV1Client).Init(config.AccessKey, config.SecretKey, config.Host)
+
+	// Set the callback handlers
 	client.SetHandler(
+		// Authentication response handler
 		func(resp *model.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				err := client.Request("")
@@ -30,6 +34,7 @@ func reqAccountUpdateV1() {
 			}
 
 		},
+		// Response handler
 		func(resp interface{}) {
 			reqResponse, ok := resp.(account.RequestAccountV1Response)
 			if ok {
@@ -48,15 +53,18 @@ func reqAccountUpdateV1() {
 			}
 		})
 
+	// Connect to the server and wait for the handler to handle the response
 	err := client.Connect(false)
 	if err != nil {
 		fmt.Printf("Client Connect error: %s\n", err)
 		return
 	}
 
+	// Unsubscribe the topic
 	fmt.Println("Press ENTER to stop...")
 	fmt.Scanln()
 
+	// Close the connection
 	client.Close()
 	fmt.Println("Client closed")
 }
@@ -67,7 +75,7 @@ func subAccountUpdateV1() {
 
 	// Set the callback handlers
 	client.SetHandler(
-		// Connected handler
+		// Authentication response handler
 		func(resp *model.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				err := client.Subscribe("1", "1250")
@@ -108,18 +116,24 @@ func subAccountUpdateV1() {
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
+	// Unsubscribe the topic
 	err = client.UnSubscribe("1", "1250")
 	if err != nil {
 		fmt.Printf("UnSubscribe error: %s\n", err)
 	}
 
+	// Close the connection
 	client.Close()
 	fmt.Println("Client closed")
 }
 
 func subAccountUpdateV2() {
+	// Initialize a new instance
 	client := new(accountwebsocketclient.SubscribeAccountWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host)
+
+	// Set the callback handlers
 	client.SetHandler(
+		// Authentication response handler
 		func(resp *model.WebSocketV2AuthenticationResponse) {
 			if resp.IsAuth() {
 				err := client.Subscribe("1", "1149")
@@ -132,6 +146,7 @@ func subAccountUpdateV2() {
 				fmt.Printf("Authentication error: %d\n", resp.Code)
 			}
 		},
+		// Response handler
 		func(resp interface{}) {
 			subResponse, ok := resp.(account.SubscribeAccountV2Response)
 			if ok {
@@ -144,6 +159,7 @@ func subAccountUpdateV2() {
 			}
 		})
 
+	// Connect to the server and wait for the handler to handle the response
 	err := client.Connect(true)
 	if err != nil {
 		fmt.Printf("Client Connect error: %s\n", err)
@@ -153,11 +169,13 @@ func subAccountUpdateV2() {
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
+	// Unsubscribe the topic
 	err = client.UnSubscribe("1", "1250")
 	if err != nil {
 		fmt.Printf("UnSubscribe error: %s\n", err)
 	}
 
+	// Close the connection
 	client.Close()
 	fmt.Println("Client closed")
 }

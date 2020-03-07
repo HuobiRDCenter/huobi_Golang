@@ -8,21 +8,26 @@ import (
 	"encoding/json"
 )
 
+// Responsible to handle orders request from WebSocket
+// This need authentication version 1
 type RequestOrdersWebSocketV1Client struct {
 	websocketclientbase.WebSocketV1ClientBase
 }
 
+// Initializer
 func (p *RequestOrdersWebSocketV1Client) Init(accessKey string, secretKey string, host string) *RequestOrdersWebSocketV1Client {
 	p.WebSocketV1ClientBase.Init(accessKey, secretKey, host)
 	return p
 }
 
+// Set callback handler
 func (p *RequestOrdersWebSocketV1Client) SetHandler(
 	authHandler websocketclientbase.AuthenticationV1ResponseHandler,
 	responseHandler websocketclientbase.ResponseHandler) {
 	p.WebSocketV1ClientBase.SetHandler(authHandler, p.handleMessage, responseHandler)
 }
 
+// Search past and open orders based on searching criteria.
 func (p *RequestOrdersWebSocketV1Client) Request(req getrequest.RequestOrdersRequest) error {
 
 	reqString, _ := postrequest.ToJson(req)
