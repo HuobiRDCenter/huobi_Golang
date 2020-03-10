@@ -1,11 +1,11 @@
 package isolatedmarginclientexample
 
 import (
-	"../../config"
-	"../../pkg/client"
-	"../../pkg/getrequest"
-	"../../pkg/postrequest"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/pkg/client"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
 
 func RunAllExamples() {

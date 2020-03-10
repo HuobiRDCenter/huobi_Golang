@@ -1,9 +1,9 @@
 package requestbuilder
 
 import (
-	"../../pkg/getrequest"
-	"../../pkg/postrequest"
-	"../model"
+	"github.com/huobirdcenter/huobi_golang/internal/model"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 	"time"
 )
 

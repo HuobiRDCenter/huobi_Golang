@@ -1,11 +1,11 @@
 package websocketclientbase
 
 import (
-	"../../../internal/gzip"
-	"../../../internal/model"
 	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/huobirdcenter/huobi_golang/internal/gzip"
+	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"strings"
 	"time"
 )

@@ -1,10 +1,10 @@
 package marketwebsocketclient
 
 import (
-	"../../response/market"
-	"../websocketclientbase"
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
 )
 
 // Responsible to handle BBO data from WebSocket

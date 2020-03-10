@@ -1,8 +1,8 @@
 package requestbuilder
 
 import (
-	"../../pkg/getrequest"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 )
 
 type PublicUrlBuilder struct {

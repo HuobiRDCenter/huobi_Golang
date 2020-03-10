@@ -1,10 +1,10 @@
 package etfclientexample
 
 import (
-	"../../config"
-	"../../pkg/client"
-	"../../pkg/postrequest"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/pkg/client"
+	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
 
 func RunAllExamples() {

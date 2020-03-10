@@ -1,13 +1,13 @@
 package client
 
 import (
-	"../../internal"
-	"../../internal/requestbuilder"
-	"../getrequest"
-	"../postrequest"
-	"../response/account"
 	"encoding/json"
 	"errors"
+	"github.com/huobirdcenter/huobi_golang/internal"
+	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
 	"strconv"
 	"strings"
 )

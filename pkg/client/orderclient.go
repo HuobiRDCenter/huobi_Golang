@@ -1,13 +1,13 @@
 package client
 
 import (
-	"../../internal"
-	"../../internal/requestbuilder"
-	"../../pkg/getrequest"
-	"../../pkg/postrequest"
-	"../../pkg/response/order"
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/internal"
+	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/order"
 )
 
 // Responsible to operate on order

@@ -1,12 +1,12 @@
 package client
 
 import (
-	"../../internal"
-	"../../internal/requestbuilder"
-	"../../pkg/getrequest"
-	"../../pkg/response/common"
 	"encoding/json"
 	"errors"
+	"github.com/huobirdcenter/huobi_golang/internal"
+	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/common"
 )
 
 // Responsible to get common information

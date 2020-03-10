@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"../logging"
+	"github.com/huobirdcenter/huobi_golang/logging"
 	"io/ioutil"
 	"net/http"
 	"strings"

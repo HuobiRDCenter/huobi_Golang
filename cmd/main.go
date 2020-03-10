@@ -1,18 +1,18 @@
 package main
 
 import (
-	"../logging"
-	"./accountclientexample"
-	"./accountwebsocketclientexample"
-	"./commonclientexample"
-	"./crossmarginclientexample"
-	"./etfclientexample"
-	"./isolatedmarginclientexample"
-	"./marketclientexample"
-	"./marketwebsocketclientexample"
-	"./orderclientexample"
-	"./orderwebsocketclientexample"
-	"./walletclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/accountclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/accountwebsocketclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/commonclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/crossmarginclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/etfclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/isolatedmarginclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/marketclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/marketwebsocketclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/orderclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/orderwebsocketclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/walletclientexample"
+	"github.com/huobirdcenter/huobi_golang/logging"
 )
 
 func main() {
@@ -33,6 +33,7 @@ func runAll() {
 	accountwebsocketclientexample.RunAllExamples()
 	orderwebsocketclientexample.RunAllExamples()
 }
+
 
 // Run performance test
 func perfTest() {

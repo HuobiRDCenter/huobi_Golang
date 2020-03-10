@@ -1,7 +1,7 @@
 package market
 
 import (
-	"../base"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/base"
 	"github.com/shopspring/decimal"
 )
 

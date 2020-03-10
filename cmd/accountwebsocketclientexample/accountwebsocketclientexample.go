@@ -1,11 +1,11 @@
 package accountwebsocketclientexample
 
 import (
-	"../../config"
-	"../../internal/model"
-	"../../pkg/client/accountwebsocketclient"
-	"../../pkg/response/account"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/internal/model"
+	"github.com/huobirdcenter/huobi_golang/pkg/client/accountwebsocketclient"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
 )
 
 func RunAllExamples() {

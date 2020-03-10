@@ -1,10 +1,10 @@
 package accountwebsocketclient
 
 import (
-	"../../response/account"
-	"../websocketclientbase"
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
 )
 
 // Responsible to handle account asset request from WebSocket

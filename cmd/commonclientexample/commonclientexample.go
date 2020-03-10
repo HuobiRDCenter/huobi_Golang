@@ -1,10 +1,10 @@
 package commonclientexample
 
 import (
-	"../../config"
-	"../../pkg/client"
-	"../../pkg/getrequest"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/pkg/client"
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 )
 
 func RunAllExamples() {
