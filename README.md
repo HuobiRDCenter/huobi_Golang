@@ -30,7 +30,7 @@ The SDK supports RESTful API invoking, and subscribe the market, account and ord
 
 ## Quick Start
 
-The SDK is compiled by Go 1.13.7, you can install the source code in your Golang project.
+The SDK is compiled by Go 1.13.7, you can install the source code in your Golang project. 
 
 The package **main** is the example entry point that you can run directly.
 
@@ -63,7 +63,7 @@ if err != nil {
 }
 ```
 
-
+Note that in Golang v1.11, *Go Modules* is introduced to manage the dependent packages, which is not dependent on GOPATH folder anymore. However this SDK still use traditional way to manage dependent packages. If you prefer to use Go Moduels, you can follow the [wiki](https://github.com/golang/go/wiki/Modules) how to use it.
 
 ## Install
 
