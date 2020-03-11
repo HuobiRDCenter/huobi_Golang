@@ -107,14 +107,16 @@ Now you should already download all required Golang packages, this section intro
 
 ### Configuration
 
-If you need to access private data, you need to add **key.json** into your solution. The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
+If you need to access private data, you need to add **key.go** into your **config** folder (package). The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
 
-Just create a **key.json** file and include it into your solution with below definition
+Just create a **key.go** file under **config** folder (package), and assign a secret key string to *SecretKey*:
 
-```json
-{
-    "SecretKey": "xxxx-xxxx-xxxx-xxxx"
-}
+```go
+// key.go file
+package config
+
+// replace with your API SecretKey
+var SecretKey = "xxxx-xxxx-xxxx-xxxx"
 ```
 
 If you don't need to access private data, you can ignore this.
