@@ -17,7 +17,6 @@ func (p *Signer) Init(key string) *Signer {
 	return p
 }
 
-
 func (p *Signer) Sign(method string, host string, path string, parameters string) string {
 	if method == "" || host == "" || path == "" || parameters == "" {
 		return ""
@@ -36,7 +35,7 @@ func (p *Signer) Sign(method string, host string, path string, parameters string
 }
 
 func (p *Signer) sign(payload string) string {
-	p.hash.Write([]byte (payload))
+	p.hash.Write([]byte(payload))
 	result := base64.StdEncoding.EncodeToString(p.hash.Sum(nil))
 	return result
 }

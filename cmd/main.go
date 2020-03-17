@@ -34,7 +34,6 @@ func runAll() {
 	orderwebsocketclientexample.RunAllExamples()
 }
 
-
 // Run performance test
 func perfTest() {
 	logging.EnablePerformanceLog(true)

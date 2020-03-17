@@ -28,7 +28,6 @@ func TestAddParam_ValueEmpty_ReturnEmpty(t *testing.T) {
 	}
 }
 
-
 func TestBuildParam_NullParam_ReturnEmpty(t *testing.T) {
 	request := new(GetRequest).Init()
 

@@ -3,10 +3,10 @@ package model
 import "encoding/json"
 
 type WebSocketV1AuthenticationResponse struct {
-	Op string `json:"op"`
-	Timestamp int64 `json:"ts"`
-	ErrorCode int `json:"err-code"`
-	Data *struct {
+	Op        string `json:"op"`
+	Timestamp int64  `json:"ts"`
+	ErrorCode int    `json:"err-code"`
+	Data      *struct {
 		UserId int `json:"user-id"`
 	}
 }

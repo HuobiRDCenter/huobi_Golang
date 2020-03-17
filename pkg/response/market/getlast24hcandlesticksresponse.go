@@ -3,8 +3,8 @@ package market
 import "github.com/shopspring/decimal"
 
 type GetLast24hCandlesticksResponse struct {
-	Status string       `json:"status"`
-	Ts     int64        `json:"ts"`
+	Status string              `json:"status"`
+	Ts     int64               `json:"ts"`
 	Data   []SymbolCandlestick `json:"data"`
 }
 type SymbolCandlestick struct {
