@@ -7,10 +7,9 @@ The SDK supports RESTful API invoking, and subscribe the market, account and ord
 ## Table of Contents
 
 - [Quick Start](#Quick-Start)
-- [Install](#Install)
 - [Usage](#Usage)
-  - [Configuration](#Configuration)
   - [Folder structure](#Folder-Structure)
+  - [Run examples](#Run-examples)
   - [Client](#Client)
   - [Response](#Response)
   - [Init function](#Init-function)
@@ -30,16 +29,18 @@ The SDK supports RESTful API invoking, and subscribe the market, account and ord
 
 ## Quick Start
 
-The SDK is compiled by Go 1.13.7, you can install the source code in your Golang project. 
+The SDK is compiled by Go 1.13.7, you can import this SDK in your Golang project:
 
-The package **main** is the example entry point that you can run directly.
-
-If you want to create your own application, you can follow below steps:
-
+* Import **/pkg/client** package
 * Create one of the clients (under package **/pkg/client**) instance by **Init** method
 * Call the method provided by client.
 
 ```go
+import (
+	"fmt"
+	"github.com/huobirdcenter/huobi_golang/pkg/client"
+)
+
 // Get the timestamp from Huobi server and print on console
 client := new(client.CommonClient).Init(config.Host)
 resp, err := client.GetTimestamp()
@@ -63,63 +64,9 @@ if err != nil {
 }
 ```
 
-Note that in Golang v1.11, *Go Modules* is introduced to manage the dependent packages, which is not dependent on GOPATH folder anymore. However this SDK still use traditional way to manage dependent packages. If you prefer to use Go Moduels, you can follow the [wiki](https://github.com/golang/go/wiki/Modules) how to use it.
-
-## Install
-
-This section is useful for new Golang users, it describe the general guideline how to download and install this SDK.
-
-### Install Golang development environment
-
-If this is your first time to develop Golang program, you should set up Golang development environment properly. The steps might be different for different operation system, here list the general steps:
-
-1. Download go SDK and unzip/install to one specific folder
-2. Set environment variable:
-   - **GOROOT**: set as above installation folder
-   - **PATH**: add $GOROOT\bin
-   - **GOPATH**: set as another new folder
-3. (Optional) Choose a proper IDE (Integrated Development Environment) to help you writing Golang program easily
-
-### Download this SDK package
-
-There are two ways to download this SDK
-
-- Simply run below go command to download to your GOPATH folder
-
-```shell
-go get github.com/huobirdcenter/huobi_golang
-```
-
-- Manually use git to pull this SDK from this GitHub repository or your forked repository, then copy/move to your *GOPATH/src/huobirdcenter/huobi_golang*  folder or your own project folder that you can import.
-
-After that you can open the SDK folder in your IDE to run examples, or you can import this SDK package in your own project
-
-### Download third party package
-
-This SDK depends on two third-party packages, you need to use similar step to install them:
-
-- github.com/gorilla/websocket: This package provides better websocket connection management
-- github.com/shopspring/decimal: This package provides the higher precision number than float64
-
 ## Usage
 
-Now you should already download all required Golang packages, this section introduce this SDK and use it correctly.
-
-### Configuration
-
-If you need to access private data, you need to add **key.go** into your **config** folder (package). The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
-
-Just create a **key.go** file under **config** folder (package), and assign a secret key string to *SecretKey*:
-
-```go
-// key.go file
-package config
-
-// replace with your API SecretKey
-var SecretKey = "xxxx-xxxx-xxxx-xxxx"
-```
-
-If you don't need to access private data, you can ignore this.
+After above section, this SDK should be already download to your local machine, this section introduce this SDK and how to use it correctly.
 
 ### Folder Structure
 
@@ -139,9 +86,30 @@ This is the folder and package structure of SDK source code and the description
 
 As the example indicates, there are two important namespaces: **client** and **response**,  this section will introduce both of them below.
 
+### Run examples
+
+This SDK provides examples that under **/cmd** folder, if you want to run the examples to access private data, you need below additional steps:
+
+1. Create an **API Key** first from Huobi official website
+2. Create **key.go** into your **config** folder (package). The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
+
+3. Assign your secret key to string *SecretKey*:
+
+```go
+// key.go file
+package config
+
+// replace with your API SecretKey
+var SecretKey = "xxxx-xxxx-xxxx-xxxx"
+```
+
+If you don't need to access private data, you can ignore the secret key.
+
+Regarding the difference between public data and private data you can find details in [Client](#Client) section below.
+
 ### Client
 
-In this SDK, the client is the struct	 to access the Huobi API. In order to isolate the private data with public data, and isolated different kind of data, the client category is designated to match the API category. 
+In this SDK, the client is the struct to access the Huobi API. In order to isolate the private data with public data, and isolated different kind of data, the client category is designated to match the API category. 
 
 All the client is listed in below table. Each client is very small and simple, it is only responsible to operate its related data, you can pick up multiple clients to create your own application based on your business.
 
