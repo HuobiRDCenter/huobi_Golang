@@ -1,8 +1,9 @@
 package requestbuilder
 
 import (
-	"../../pkg/getrequest"
 	"testing"
+
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 )
 
 func TestPublicUrlBuilder_Build_NoRequestParameter_Success(t *testing.T) {

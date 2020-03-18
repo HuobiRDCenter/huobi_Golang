@@ -65,9 +65,9 @@ func reqOrdersV1() {
 		func(resp *model.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				req := getrequest.RequestOrdersRequest{
-					AccountId:11136102,
-					Symbol:"btcusdt",
-					States:"submitted, created, canceled",
+					AccountId: 11136102,
+					Symbol:    "btcusdt",
+					States:    "submitted, created, canceled",
 				}
 				err := client.Request(req)
 				if err != nil {

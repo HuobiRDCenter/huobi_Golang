@@ -4,9 +4,9 @@ import "encoding/json"
 
 type WebSocketV2AuthenticationResponse struct {
 	Action string `json:"action"`
-	Ch string `json:"ch"`
-	Code int `json:"code"`
-	Data interface{}
+	Ch     string `json:"ch"`
+	Code   int    `json:"code"`
+	Data   interface{}
 }
 
 func (p *WebSocketV2AuthenticationResponse) IsAuth() bool {

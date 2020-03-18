@@ -20,17 +20,17 @@ type AuthenticationV2ResponseHandler func(resp *model.WebSocketV2AuthenticationR
 
 // The base class that responsible to get data from websocket authentication v2
 type WebSocketV2ClientBase struct {
-	host                     string
-	conn                     *websocket.Conn
+	host string
+	conn *websocket.Conn
 
 	authenticationResponseHandler AuthenticationV2ResponseHandler
 	messageHandler                MessageHandler
 	responseHandler               ResponseHandler
 
-	stopReadChannel          chan int
-	stopTickerChannel        chan int
-	ticker                   *time.Ticker
-	lastReceivedTime         time.Time
+	stopReadChannel   chan int
+	stopTickerChannel chan int
+	ticker            *time.Ticker
+	lastReceivedTime  time.Time
 
 	requestBuilder *requestbuilder.WebSocketV2RequestBuilder
 }

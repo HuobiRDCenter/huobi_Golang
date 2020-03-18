@@ -298,7 +298,6 @@ func getLast48hOrders() {
 	}
 }
 
-
 func getMatchResultByCriteria() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := new(getrequest.GetRequest).Init()

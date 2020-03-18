@@ -68,8 +68,8 @@ func marginOrders() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := postrequest.IsolatedMarginOrdersRequest{
 		Currency: "eos",
-		Amount: "0.001",
-		Symbol: "eosht",
+		Amount:   "0.001",
+		Symbol:   "eosht",
 	}
 	resp, err := client.Apply(request)
 	if err != nil {

@@ -106,14 +106,14 @@ func reqAndSubscribeDepth() {
 					if depthResponse.Tick != nil {
 						if depthResponse.Tick.Asks != nil {
 							a := depthResponse.Tick.Asks
-							for i := len(a)-1; i >= 0; i-- {
+							for i := len(a) - 1; i >= 0; i-- {
 								fmt.Printf("%v - %v\n", a[i][0], a[i][1])
 							}
 						}
 						fmt.Println("---ask-bid-update--")
 						if depthResponse.Tick.Bids != nil {
 							b := depthResponse.Tick.Bids
-							for i:= 0; i < len(b); i++ {
+							for i := 0; i < len(b); i++ {
 								fmt.Printf("%v - %v\n", b[i][0], b[i][1])
 							}
 						}
@@ -123,14 +123,14 @@ func reqAndSubscribeDepth() {
 					if depthResponse.Data != nil {
 						if depthResponse.Data.Asks != nil {
 							a := depthResponse.Data.Asks
-							for i := len(a)-1; i >= 0; i-- {
+							for i := len(a) - 1; i >= 0; i-- {
 								fmt.Printf("%v - %v\n", a[i][0], a[i][1])
 							}
 						}
 						fmt.Println("---ask-bid-data--")
 						if depthResponse.Data.Bids != nil {
 							b := depthResponse.Data.Bids
-							for i:= 0; i < len(b); i++ {
+							for i := 0; i < len(b); i++ {
 								fmt.Printf("%v - %v\n", b[i][0], b[i][1])
 							}
 						}
@@ -189,13 +189,13 @@ func reqAndSubscribeMarketByPrice() {
 						t := depthResponse.Tick
 						fmt.Printf("MBP prevSeqNum: %d, seqNum: %d\n", t.PrevSeqNum, t.SeqNum)
 						if t.Asks != nil {
-							for i := len(t.Asks)-1; i >= 0; i-- {
+							for i := len(t.Asks) - 1; i >= 0; i-- {
 								fmt.Printf("%v - %v\n", t.Asks[i][0], t.Asks[i][1])
 							}
 						}
 						fmt.Println("---MBP-update--")
 						if t.Bids != nil {
-							for i:= 0; i < len(t.Bids); i++ {
+							for i := 0; i < len(t.Bids); i++ {
 								fmt.Printf("%v - %v\n", t.Bids[i][0], t.Bids[i][1])
 							}
 						}
@@ -207,14 +207,14 @@ func reqAndSubscribeMarketByPrice() {
 						fmt.Printf("MBP prevSeqNum: %d, seqNum: %d\n", d.PrevSeqNum, d.SeqNum)
 						if d.Asks != nil {
 							a := d.Asks
-							for i := len(a)-1; i >= 0; i-- {
+							for i := len(a) - 1; i >= 0; i-- {
 								fmt.Printf("%v - %v\n", a[i][0], a[i][1])
 							}
 						}
 						fmt.Println("---MBP-data--")
 						if depthResponse.Data.Bids != nil {
 							b := depthResponse.Data.Bids
-							for i:= 0; i < len(b); i++ {
+							for i := 0; i < len(b); i++ {
 								fmt.Printf("%v - %v\n", b[i][0], b[i][1])
 							}
 						}
@@ -381,13 +381,13 @@ func reqAndSubscribeLast24hCandlestick() {
 
 					if candlestickResponse.Data != nil {
 						t := candlestickResponse.Data
-							fmt.Printf("Candlestick data, id: %d, count: %v, volume: %v [%v-%v-%v-%v]\n",
-								t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
-						}
+						fmt.Printf("Candlestick data, id: %d, count: %v, volume: %v [%v-%v-%v-%v]\n",
+							t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
 					}
-				} else {
-					fmt.Printf("Unknown response: %v\n", resp)
 				}
+			} else {
+				fmt.Printf("Unknown response: %v\n", resp)
+			}
 
 		})
 

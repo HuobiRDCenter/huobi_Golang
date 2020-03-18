@@ -1,14 +1,15 @@
 package requestbuilder
 
 import (
-	"../../pkg/getrequest"
 	"testing"
 	"time"
+
+	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 )
 
 func TestPrivateUrlBuilder_Build_NoRequestParameter_Success(t *testing.T) {
-	builder := new(PrivateUrlBuilder).Init("access","secret", "api.huobi.pro")
-	utcDate := time.Date(2019,11,21,10,0,0, 0, time.UTC)
+	builder := new(PrivateUrlBuilder).Init("access", "secret", "api.huobi.pro")
+	utcDate := time.Date(2019, 11, 21, 10, 0, 0, 0, time.UTC)
 
 	result := builder.BuildWithTime("GET", "/v1/account/accounts", utcDate, nil)
 
@@ -19,8 +20,8 @@ func TestPrivateUrlBuilder_Build_NoRequestParameter_Success(t *testing.T) {
 }
 
 func TestPrivateUrlBuilder_Build_HasRequestParameter_Success(t *testing.T) {
-	builder := new(PrivateUrlBuilder).Init("access","secret", "api.huobi.pro")
-	utcDate := time.Date(2019,11,21,10,0,0, 0, time.UTC)
+	builder := new(PrivateUrlBuilder).Init("access", "secret", "api.huobi.pro")
+	utcDate := time.Date(2019, 11, 21, 10, 0, 0, 0, time.UTC)
 	reqParams := new(getrequest.GetRequest).Init()
 	reqParams.AddParam("account-id", "123")
 	reqParams.AddParam("currency", "btc")
