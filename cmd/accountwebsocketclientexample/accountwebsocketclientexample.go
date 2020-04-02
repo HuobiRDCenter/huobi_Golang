@@ -97,7 +97,7 @@ func subAccountUpdateV1() {
 					fmt.Printf("Account update event: %s\n", subResponse.Data.Event)
 					if &subResponse.Data.List != nil {
 						for _, b := range subResponse.Data.List {
-							fmt.Printf("Account id: %d, currency: %s, type: %s, balance: %s", b.AccountId, b.Currency, b.Type, b.Balance)
+							fmt.Printf("Account id: %d, currency: %s, type: %s, balance: %s\n", b.AccountId, b.Currency, b.Type, b.Balance)
 						}
 					}
 				}
@@ -152,7 +152,11 @@ func subAccountUpdateV2() {
 			if ok {
 				if &subResponse.Data != nil {
 					b := subResponse.Data
-					fmt.Printf("Account id: %d, currency: %s, balance: %s", b.AccountId, b.Currency, b.Balance)
+					if b.ChangeTime == 0 {
+						fmt.Printf("Account overview, id: %d, currency: %s, balance: %s\n", b.AccountId, b.Currency, b.Balance)
+					} else {
+						fmt.Printf("Account update, id: %d, currency: %s, balance: %s, time: %d\n", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
+					}
 				}
 			} else {
 				fmt.Printf("Received unknown response: %v\n", resp)

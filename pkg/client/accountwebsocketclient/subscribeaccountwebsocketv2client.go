@@ -41,7 +41,7 @@ func (p *SubscribeAccountWebSocketV2Client) UnSubscribe(mode string, clientId st
 }
 
 func (p *SubscribeAccountWebSocketV2Client) handleMessage(msg string) (interface{}, error) {
-	result := &account.SubscribeAccountV2Response{}
-	err := json.Unmarshal([]byte(msg), result)
+	result := account.SubscribeAccountV2Response{}
+	err := json.Unmarshal([]byte(msg), &result)
 	return result, err
 }
