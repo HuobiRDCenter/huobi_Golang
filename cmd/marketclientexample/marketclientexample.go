@@ -48,12 +48,13 @@ func getLast24hCandlestickAskBid() {
 func getLast24hCandlesticks() {
 	client := new(client.MarketClient).Init(config.Host)
 
-	resp, err := client.GetLast24hCandlesticks()
+	resp, err := client.GetAllSymbolsLast24hCandlesticksAskBid()
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		for _, tick := range resp {
-			fmt.Println("Symbol:", tick.Symbol, " High: ", tick.High, "Low: ", tick.Low)
+			fmt.Printf("Symbol: %s, High: %v, Low: %v, Ask[%v, %v], Bid[%v, %v]\n",
+				tick.Symbol, tick.High, tick.Low, tick.Ask, tick.AskSize, tick.Bid, tick.BidSize)
 		}
 	}
 }

@@ -8,10 +8,21 @@ import (
 )
 
 func RunAllExamples() {
+	getSystemStatus()
 	getSymbols()
 	getCurrencys()
 	getV2ReferenceCurrencies()
 	getTimestamp()
+}
+
+func getSystemStatus() {
+	client := new(client.CommonClient).Init(config.Host)
+	resp, err := client.GetSystemStatus()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("Get system status %s\n", resp)
+	}
 }
 
 func getSymbols() {

@@ -154,7 +154,6 @@ func (p *CrossMarginClient) MarginLoanOrders(optionalRequest getrequest.CrossMar
 	}
 	if optionalRequest.Currency != "" {
 		request.AddParam("currency", optionalRequest.Currency)
-
 	}
 	if optionalRequest.Direct != "" {
 		request.AddParam("direct", optionalRequest.Direct)
@@ -170,6 +169,9 @@ func (p *CrossMarginClient) MarginLoanOrders(optionalRequest getrequest.CrossMar
 	}
 	if optionalRequest.State != "" {
 		request.AddParam("state", optionalRequest.State)
+	}
+	if optionalRequest.SubUid != "" {
+		request.AddParam("sub-uid", optionalRequest.SubUid)
 	}
 
 	url := p.privateUrlBuilder.Build("GET", "/v1/cross-margin/loan-orders", request)
@@ -192,9 +194,11 @@ func (p *CrossMarginClient) MarginLoanOrders(optionalRequest getrequest.CrossMar
 }
 
 // Returns the balance of the margin loan account.
-func (p *CrossMarginClient) MarginAccountsBalance() (*margin.CrossMarginAccountsBalance, error) {
+func (p *CrossMarginClient) MarginAccountsBalance(SubUid string) (*margin.CrossMarginAccountsBalance, error) {
 
 	request := new(getrequest.GetRequest).Init()
+	request.AddParam("sub-uid", SubUid)
+
 	url := p.privateUrlBuilder.Build("GET", "/v1/cross-margin/accounts/balance", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {

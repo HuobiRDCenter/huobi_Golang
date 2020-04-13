@@ -77,7 +77,7 @@ func (client *MarketClient) GetLast24hCandlestickAskBid(symbol string) (*market.
 }
 
 // Retrieve the latest tickers for all supported pairs.
-func (client *MarketClient) GetLast24hCandlesticks() ([]market.SymbolCandlestick, error) {
+func (client *MarketClient) GetAllSymbolsLast24hCandlesticksAskBid() ([]market.SymbolCandlestick, error) {
 
 	request := new(getrequest.GetRequest).Init()
 
@@ -87,7 +87,7 @@ func (client *MarketClient) GetLast24hCandlesticks() ([]market.SymbolCandlestick
 		return nil, getErr
 	}
 
-	result := market.GetLast24hCandlesticksResponse{}
+	result := market.GetAllSymbolsLast24hCandlesticksAskBidResponse{}
 	jsonErr := json.Unmarshal([]byte(getResp), &result)
 	if jsonErr != nil {
 		return nil, jsonErr

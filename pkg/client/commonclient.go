@@ -20,6 +20,16 @@ func (p *CommonClient) Init(host string) *CommonClient {
 	return p
 }
 
+func (p *CommonClient) GetSystemStatus() (string, error) {
+	url := "https://status.huobigroup.com/api/v2/summary.json"
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return "", getErr
+	}
+
+	return getResp, nil
+}
+
 // Get all Supported Trading Symbol
 // This endpoint returns all Huobi's supported trading symbol.
 func (p *CommonClient) GetSymbols() ([]common.Symbol, error) {

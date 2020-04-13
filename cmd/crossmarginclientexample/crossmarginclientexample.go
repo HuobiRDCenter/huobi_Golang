@@ -100,7 +100,7 @@ func marginLoanOrders() {
 //  Get the balance of the margin loan account.
 func marginAccountsBalance() {
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	resp, err := client.MarginAccountsBalance()
+	resp, err := client.MarginAccountsBalance("")
 	if err != nil {
 		fmt.Println(err)
 	} else {

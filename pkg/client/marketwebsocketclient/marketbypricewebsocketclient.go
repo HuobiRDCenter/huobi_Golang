@@ -37,9 +37,21 @@ func (p *MarketByPriceWebSocketClient) Subscribe(symbol string, clientId string)
 	return p.WebSocketClientBase.Send(sub)
 }
 
-// Unsubscribe Market By Price order book
+// Subscribe full Market By Price order book
+func (p *MarketByPriceWebSocketClient) SubscribeFull(symbol string, level int, clientId string) error {
+	sub := fmt.Sprintf("{\"sub\": \"market.%s.mbp.refresh.%d\",\"id\": \"%s\" }", symbol, level, clientId)
+	return p.WebSocketClientBase.Send(sub)
+}
+
+// Unsubscribe update of Market By Price order book
 func (p *MarketByPriceWebSocketClient) UnSubscribe(symbol string, clientId string) error {
 	unsub := fmt.Sprintf("{\"unsub\": \"market.%s.mbp.150\",\"id\": \"%s\" }", symbol, clientId)
+	return p.WebSocketClientBase.Send(unsub)
+}
+
+// Unsubscribe full Market By Price order book
+func (p *MarketByPriceWebSocketClient) UnSubscribeFull(symbol string, level int, clientId string) error {
+	unsub := fmt.Sprintf("{\"unsub\": \"market.%s.mbp.refresh.%d\",\"id\": \"%s\" }", symbol, level, clientId)
 	return p.WebSocketClientBase.Send(unsub)
 }
 

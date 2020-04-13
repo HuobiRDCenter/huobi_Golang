@@ -8,4 +8,5 @@ type CrossMarginLoanOrdersOptionalRequest struct {
 	From      string
 	Direct    string
 	Size      string
+	SubUid    string
 }

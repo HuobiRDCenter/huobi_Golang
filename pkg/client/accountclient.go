@@ -104,6 +104,50 @@ func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest getr
 	return nil, errors.New(getResp)
 }
 
+
+// Returns the account ledger of specified user's account
+func (p *AccountClient) GetAccountLedger(accountId string, optionalRequest getrequest.GetAccountLedgerOptionalRequest) ([]account.Ledger, error) {
+	request := new(getrequest.GetRequest).Init()
+	request.AddParam("accountId", accountId)
+	if optionalRequest.Currency != "" {
+		request.AddParam("currency", optionalRequest.Currency)
+	}
+	if optionalRequest.TransactTypes != "" {
+		request.AddParam("transactTypes", optionalRequest.TransactTypes)
+	}
+	if optionalRequest.StartTime != 0 {
+		request.AddParam("startTime", strconv.FormatInt(optionalRequest.StartTime, 10))
+	}
+	if optionalRequest.EndTime != 0 {
+		request.AddParam("endTime", strconv.FormatInt(optionalRequest.EndTime, 10))
+	}
+	if optionalRequest.Sort != "" {
+		request.AddParam("sort", optionalRequest.Sort)
+	}
+	if optionalRequest.Limit != 0 {
+		request.AddParam("limit", strconv.Itoa(optionalRequest.Limit))
+	}
+	if optionalRequest.FromId != 0 {
+		request.AddParam("limit", strconv.FormatInt(optionalRequest.EndTime, 10))
+	}
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/account/ledger", request)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetAccountLedgerResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
 // Transfer fund between spot account and future contract account
 func (p *AccountClient) FuturesTransfer(request postrequest.FuturesTransferRequest) (int64, error) {
 	postBody, jsonErr := postrequest.ToJson(request)

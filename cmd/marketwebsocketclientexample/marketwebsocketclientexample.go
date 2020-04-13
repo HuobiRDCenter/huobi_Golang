@@ -12,6 +12,7 @@ func RunAllExamples() {
 	reqAndSubscribeCandlestick()
 	reqAndSubscribeDepth()
 	reqAndSubscribeMarketByPrice()
+	SubscribeFullMarketByPrice()
 	subscribeBBO()
 	reqAndSubscribeTrade()
 	reqAndSubscribeLast24hCandlestick()
@@ -187,13 +188,13 @@ func reqAndSubscribeMarketByPrice() {
 				if &depthResponse != nil {
 					if depthResponse.Tick != nil {
 						t := depthResponse.Tick
-						fmt.Printf("MBP prevSeqNum: %d, seqNum: %d\n", t.PrevSeqNum, t.SeqNum)
+						fmt.Printf("MBP Update: prevSeqNum: %d, seqNum: %d\n", t.PrevSeqNum, t.SeqNum)
 						if t.Asks != nil {
 							for i := len(t.Asks) - 1; i >= 0; i-- {
 								fmt.Printf("%v - %v\n", t.Asks[i][0], t.Asks[i][1])
 							}
 						}
-						fmt.Println("---MBP-update--")
+						fmt.Println("--------")
 						if t.Bids != nil {
 							for i := 0; i < len(t.Bids); i++ {
 								fmt.Printf("%v - %v\n", t.Bids[i][0], t.Bids[i][1])
@@ -204,14 +205,14 @@ func reqAndSubscribeMarketByPrice() {
 
 					if depthResponse.Data != nil {
 						d := depthResponse.Data
-						fmt.Printf("MBP prevSeqNum: %d, seqNum: %d\n", d.PrevSeqNum, d.SeqNum)
+						fmt.Printf("MBP Req Full: prevSeqNum: %d, seqNum: %d\n", d.PrevSeqNum, d.SeqNum)
 						if d.Asks != nil {
 							a := d.Asks
 							for i := len(a) - 1; i >= 0; i-- {
 								fmt.Printf("%v - %v\n", a[i][0], a[i][1])
 							}
 						}
-						fmt.Println("---MBP-data--")
+						fmt.Println("--------")
 						if depthResponse.Data.Bids != nil {
 							b := depthResponse.Data.Bids
 							for i := 0; i < len(b); i++ {
@@ -244,6 +245,66 @@ func reqAndSubscribeMarketByPrice() {
 	client.Close()
 	fmt.Println("Client closed")
 }
+
+
+func SubscribeFullMarketByPrice() {
+
+	client := new(marketwebsocketclient.MarketByPriceWebSocketClient).Init(config.Host)
+
+	client.SetHandler(
+		func() {
+			err := client.SubscribeFull("btcusdt", 20, "1437")
+			if err != nil {
+				fmt.Printf("Subscribe error: %s\n", err)
+			} else {
+				fmt.Println("Sent subscription")
+			}
+		},
+		func(resp interface{}) {
+			depthResponse, ok := resp.(market.SubscribeMarketByPriceResponse)
+			if ok {
+				if &depthResponse != nil {
+					if depthResponse.Tick != nil {
+						t := depthResponse.Tick
+						fmt.Printf("MBP Update: seqNum: %d\n", t.SeqNum)
+						if t.Asks != nil {
+							for i := len(t.Asks) - 1; i >= 0; i-- {
+								fmt.Printf("%v - %v\n", t.Asks[i][0], t.Asks[i][1])
+							}
+						}
+						fmt.Println("--------")
+						if t.Bids != nil {
+							for i := 0; i < len(t.Bids); i++ {
+								fmt.Printf("%v - %v\n", t.Bids[i][0], t.Bids[i][1])
+							}
+						}
+						fmt.Println()
+					}
+				}
+			} else {
+				fmt.Printf("Unknown response: %v\n", resp)
+			}
+
+		})
+
+	err := client.Connect(true)
+	if err != nil {
+		fmt.Printf("Client connect error: %s\n", err)
+		return
+	}
+
+	fmt.Println("Press ENTER to unsubscribe and stop...")
+	fmt.Scanln()
+
+	err = client.UnSubscribeFull("btcusdt", 20, "1437")
+	if err != nil {
+		fmt.Printf("UnSubscribe error: %s\n", err)
+	}
+
+	client.Close()
+	fmt.Println("Client closed")
+}
+
 
 func subscribeBBO() {
 

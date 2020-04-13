@@ -13,6 +13,7 @@ func RunAllExamples() {
 	getAccountInfo()
 	getAccountBalance()
 	getAccountHistory()
+	getAccountLedger()
 	getSubUserAccount()
 	subUserManagement()
 	futuresTransfer()
@@ -56,7 +57,19 @@ func getAccountHistory() {
 		for _, result := range resp {
 			fmt.Println(result)
 		}
+	}
+}
 
+func getAccountLedger() {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	getAccountLedgerOptionalRequest := getrequest.GetAccountLedgerOptionalRequest{}
+	resp, err := client.GetAccountLedger(config.AccountId, getAccountLedgerOptionalRequest)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		for _, l := range resp {
+			fmt.Printf("Account legder: AccountId: %d, Currency: %s, Amount: %v, Transferer: %d, Transferee: %d\n", l.AccountId, l.Currency, l.TransactAmt, l.Transferer, l.Transferee)
+		}
 	}
 }
 
