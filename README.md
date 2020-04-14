@@ -1,4 +1,4 @@
-# Huobi Golang SDK (beta version)
+# Huobi Golang SDK
 
 This is Huobi Go SDK,  you can install to your Golang project and use this SDK to query all market data, trading and manage your account.
 
