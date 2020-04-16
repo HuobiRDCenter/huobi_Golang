@@ -7,6 +7,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/gzip"
 	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
 	"strings"
 	"time"
 )
@@ -16,7 +17,7 @@ const (
 )
 
 // It will be invoked after websocket v2 authentication response received
-type AuthenticationV2ResponseHandler func(resp *model.WebSocketV2AuthenticationResponse)
+type AuthenticationV2ResponseHandler func(resp *auth.WebSocketV2AuthenticationResponse)
 
 // The base class that responsible to get data from websocket authentication v2
 type WebSocketV2ClientBase struct {
@@ -231,7 +232,7 @@ func (p *WebSocketV2ClientBase) readLoop() {
 			} else {
 				// Try to pass as websocket v2 authentication response
 				// If it is then invoke authentication handler
-				authResp := model.ParseWSV2AuthResp(message)
+				authResp := auth.ParseWSV2AuthResp(message)
 				if authResp != nil && authResp.IsAuth() {
 					if p.authenticationResponseHandler != nil {
 						p.authenticationResponseHandler(authResp)

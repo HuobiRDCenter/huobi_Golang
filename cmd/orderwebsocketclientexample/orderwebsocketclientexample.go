@@ -3,9 +3,9 @@ package orderwebsocketclientexample
 import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
-	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/orderwebsocketclient"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/order"
 )
 
@@ -19,7 +19,7 @@ func RunAllExamples() {
 func reqOrderV1() {
 	client := new(orderwebsocketclient.RequestOrderWebSocketV1Client).Init(config.AccessKey, config.SecretKey, config.Host)
 	client.SetHandler(
-		func(resp *model.WebSocketV1AuthenticationResponse) {
+		func(resp *auth.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				err := client.Request("1", "1601")
 				if err != nil {
@@ -62,7 +62,7 @@ func reqOrderV1() {
 func reqOrdersV1() {
 	client := new(orderwebsocketclient.RequestOrdersWebSocketV1Client).Init(config.AccessKey, config.SecretKey, config.Host)
 	client.SetHandler(
-		func(resp *model.WebSocketV1AuthenticationResponse) {
+		func(resp *auth.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				req := getrequest.RequestOrdersRequest{
 					AccountId: 11136102,
@@ -115,7 +115,7 @@ func subOrderUpdateV1() {
 	// Set the callback handlers
 	client.SetHandler(
 		// Connected handler
-		func(resp *model.WebSocketV1AuthenticationResponse) {
+		func(resp *auth.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				err := client.Subscribe("btcusdt", "1601")
 				if err != nil {
@@ -167,7 +167,7 @@ func subOrderUpdateV2() {
 	// Set the callback handlers
 	client.SetHandler(
 		// Connected handler
-		func(resp *model.WebSocketV2AuthenticationResponse) {
+		func(resp *auth.WebSocketV2AuthenticationResponse) {
 			if resp.IsAuth() {
 				// Subscribe if authentication passed
 				err := client.Subscribe("1", "1149")

@@ -3,9 +3,9 @@ package accountwebsocketclientexample
 import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
-	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/accountwebsocketclient"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
 )
 
 func RunAllExamples() {
@@ -21,7 +21,7 @@ func reqAccountUpdateV1() {
 	// Set the callback handlers
 	client.SetHandler(
 		// Authentication response handler
-		func(resp *model.WebSocketV1AuthenticationResponse) {
+		func(resp *auth.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				err := client.Request("")
 				if err != nil {
@@ -76,7 +76,7 @@ func subAccountUpdateV1() {
 	// Set the callback handlers
 	client.SetHandler(
 		// Authentication response handler
-		func(resp *model.WebSocketV1AuthenticationResponse) {
+		func(resp *auth.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
 				err := client.Subscribe("1", "1250")
 				if err != nil {
@@ -134,7 +134,7 @@ func subAccountUpdateV2() {
 	// Set the callback handlers
 	client.SetHandler(
 		// Authentication response handler
-		func(resp *model.WebSocketV2AuthenticationResponse) {
+		func(resp *auth.WebSocketV2AuthenticationResponse) {
 			if resp.IsAuth() {
 				err := client.Subscribe("1", "1149")
 				if err != nil {
