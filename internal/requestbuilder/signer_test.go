@@ -15,7 +15,18 @@ func TestSigner_Sign_FourString_Success(t *testing.T) {
 	}
 }
 
-func TestSigner_Sign_OneEmptyString_Success(t *testing.T) {
+func TestSigner_Sign_RunTwice_GetSameResult(t *testing.T) {
+	signer := new(Signer).Init("secret")
+
+	result1 := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
+	result2 := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
+
+	if result1 != result2 {
+		t.Errorf("expected: %s, actual: %s", result1, result2)
+	}
+}
+
+func TestSigner_Sign_OneEmptyString_ReturnEmpty(t *testing.T) {
 	signer := new(Signer).Init("secret")
 
 	result := signer.Sign("GET", "api.huobi.pro", "", "account-id=1&currency=btcusdt")

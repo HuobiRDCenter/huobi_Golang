@@ -35,6 +35,7 @@ func (p *Signer) Sign(method string, host string, path string, parameters string
 }
 
 func (p *Signer) sign(payload string) string {
+	p.hash.Reset()
 	p.hash.Write([]byte(payload))
 	result := base64.StdEncoding.EncodeToString(p.hash.Sum(nil))
 	return result
