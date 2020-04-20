@@ -1,19 +1,25 @@
 package order
 
+import "github.com/huobirdcenter/huobi_golang/pkg/response/base"
+
 type SubscribeOrderV2Response struct {
-	Ch   string `json:"ch"`
-	Data struct {
+	base.WebSocketV2ResponseBase
+	Data *struct {
+		EventType     string `json:"eventType"`
 		Symbol        string `json:"symbol"`
-		OrderId       int64  `json:"orderId"`
-		TradePrice    string `json:"tradePrice"`
-		TradeVolume   string `json:"tradeVolume"`
-		OrderSide     string `json:"orderSide"`
-		OrderType     string `json:"orderType"`
-		Aggressor     bool   `json:"aggressor"`
-		TradeId       int64  `json:"tradeId"`
-		TradeTime     int64  `json:"tradeTime"`
-		TransactFee   string `json:"transactFee"`
-		FeeDeduct     string `json:"feeDeduct"`
-		FeeDeductType string `json:"feeDeductType"`
+		OrderId       int64 `json:"orderId"`
+		ClientOrderId string `json:"clientOrderId"`
+		OrderPrice    string `json:"orderPrice"`
+		OrderSize string `json:"orderSize"`
+		Type string `json:"type"`
+		OrderStatus string `json:"orderStatus"`
+		OrderCreateTime string `json:"orderCreateTime"`
+		TradePrice string `json:"tradePrice"`
+		TradeVolume string `json:"tradeVolume"`
+		TradeId int64 `json:"tradeId"`
+		TradeTime int64 `json:"tradeTime"`
+		Aggressor bool `json:"aggressor"`
+		RemainAmt string `json:"remainAmt"`
+		LastActTime int64 `json:"lastActTime"`
 	}
 }

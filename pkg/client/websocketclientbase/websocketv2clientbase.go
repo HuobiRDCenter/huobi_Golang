@@ -8,7 +8,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
-	"strings"
+	"github.com/huobirdcenter/huobi_golang/pkg/response/base"
 	"time"
 )
 
@@ -102,6 +102,7 @@ func (p *WebSocketV2ClientBase) connectWebSocket() error {
 	if err != nil {
 		return err
 	}
+
 	err = p.Send(auth)
 	if err != nil {
 		return err
@@ -232,20 +233,26 @@ func (p *WebSocketV2ClientBase) readLoop() {
 			} else {
 				// Try to pass as websocket v2 authentication response
 				// If it is then invoke authentication handler
-				authResp := auth.ParseWSV2AuthResp(message)
-				if authResp != nil && authResp.IsAuth() {
-					if p.authenticationResponseHandler != nil {
-						p.authenticationResponseHandler(authResp)
-					}
-				} else if strings.Contains(message, "symbol") || strings.Contains(message, "currency") {
-					// If it contains expected string, then invoke message handler and response handler
-					result, err := p.messageHandler(message)
-					if err != nil {
-						fmt.Printf("Handle message error: %s\n", err)
-						continue
-					}
-					if p.responseHandler != nil {
-						p.responseHandler(result)
+				wsV2Resp := base.ParseWSV2Resp(message)
+				if wsV2Resp != nil {
+					switch wsV2Resp.Action {
+					case "req":
+						authResp := auth.ParseWSV2AuthResp(message)
+						if authResp != nil && p.authenticationResponseHandler != nil {
+							p.authenticationResponseHandler(authResp)
+						}
+
+					case "sub", "push":
+						{
+							result, err := p.messageHandler(message)
+							if err != nil {
+								fmt.Printf("Handle message error: %s\n", err)
+								continue
+							}
+							if p.responseHandler != nil {
+								p.responseHandler(result)
+							}
+						}
 					}
 				}
 			}

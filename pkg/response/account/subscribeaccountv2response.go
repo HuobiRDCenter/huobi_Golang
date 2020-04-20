@@ -1,9 +1,10 @@
 package account
 
+import "github.com/huobirdcenter/huobi_golang/pkg/response/base"
+
 type SubscribeAccountV2Response struct {
-	Action string `json:"action"`
-	Ch     string `json:"ch"`
-	Data   struct {
+	base.WebSocketV2ResponseBase
+	Data *struct {
 		Currency    string `json:"currency"`
 		AccountId   int    `json:"accountId"`
 		Balance     string `json:"balance"`

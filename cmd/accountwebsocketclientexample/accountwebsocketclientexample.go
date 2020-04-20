@@ -135,7 +135,7 @@ func subAccountUpdateV2() {
 	client.SetHandler(
 		// Authentication response handler
 		func(resp *auth.WebSocketV2AuthenticationResponse) {
-			if resp.IsAuth() {
+			if resp.IsSuccess() {
 				err := client.Subscribe("1", "1149")
 				if err != nil {
 					fmt.Printf("Subscribe error: %s\n", err)
@@ -143,19 +143,27 @@ func subAccountUpdateV2() {
 					fmt.Println("Sent subscription")
 				}
 			} else {
-				fmt.Printf("Authentication error: %d\n", resp.Code)
+				fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
 			}
 		},
 		// Response handler
 		func(resp interface{}) {
 			subResponse, ok := resp.(account.SubscribeAccountV2Response)
 			if ok {
-				if &subResponse.Data != nil {
-					b := subResponse.Data
-					if b.ChangeTime == 0 {
-						fmt.Printf("Account overview, id: %d, currency: %s, balance: %s\n", b.AccountId, b.Currency, b.Balance)
+				if subResponse.Action == "sub" {
+					if subResponse.IsSuccess() {
+						fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
 					} else {
-						fmt.Printf("Account update, id: %d, currency: %s, balance: %s, time: %d\n", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
+						fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+					}
+				} else if subResponse.Action == "push" {
+					if subResponse.Data != nil {
+						b := subResponse.Data
+						if b.ChangeTime == 0 {
+							fmt.Printf("Account overview, id: %d, currency: %s, balance: %s\n", b.AccountId, b.Currency, b.Balance)
+						} else {
+							fmt.Printf("Account update, id: %d, currency: %s, balance: %s, time: %d\n", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
+						}
 					}
 				}
 			} else {

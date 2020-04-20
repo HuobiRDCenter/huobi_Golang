@@ -7,7 +7,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/pkg/response/order"
 )
 
-// Responsible to handle trade clear from WebSocket
+// Responsible to handle order subscription from WebSocket
 // This need authentication version 2
 type SubscribeOrderWebSocketV2Client struct {
 	websocketclientbase.WebSocketV2ClientBase
@@ -26,20 +26,20 @@ func (p *SubscribeOrderWebSocketV2Client) SetHandler(
 	p.WebSocketV2ClientBase.SetHandler(authHandler, p.handleMessage, responseHandler)
 }
 
-// Subscribe trade details including transaction fee and transaction fee deduction etc.
-// It only updates when transaction occurs.
-func (p *SubscribeOrderWebSocketV2Client) Subscribe(mode string, clientId string) error {
-	sub := fmt.Sprintf("{\"action\":\"sub\", \"ch\":\"accounts.update#%s\", \"cid\": \"%s\"}", mode, clientId)
+// Subscribe all order updates of the current account
+func (p *SubscribeOrderWebSocketV2Client) Subscribe(symbol string, clientId string) error {
+	sub := fmt.Sprintf("{\"action\":\"sub\", \"ch\":\"orders#%s\", \"cid\": \"%s\"}", symbol, clientId)
 	return p.Send(sub)
 }
 
-// Unsubscribe trade update
-func (p *SubscribeOrderWebSocketV2Client) UnSubscribe(mode string, clientId string) error {
-	unsub := fmt.Sprintf("{\"action\":\"unsub\", \"ch\":\"accounts.update#%s\", \"cid\": \"%s\"}", mode, clientId)
+// Unsubscribe order updates
+func (p *SubscribeOrderWebSocketV2Client) UnSubscribe(symbol string, clientId string) error {
+	unsub := fmt.Sprintf("{\"action\":\"unsub\", \"ch\":\"orders#%s\", \"cid\": \"%s\"}", symbol, clientId)
 	return p.Send(unsub)
 }
+
 func (p *SubscribeOrderWebSocketV2Client) handleMessage(msg string) (interface{}, error) {
-	result := &order.SubscribeOrderV2Response{}
-	err := json.Unmarshal([]byte(msg), result)
+	result := order.SubscribeOrderV2Response{}
+	err := json.Unmarshal([]byte(msg), &result)
 	return result, err
 }
