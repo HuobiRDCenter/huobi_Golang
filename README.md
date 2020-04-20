@@ -322,8 +322,8 @@ request := postrequest.PlaceOrderRequest{
   Type:      "buy-limit",
   Source:    "spot-api",
   Symbol:    "btcusdt",
-  Price:     "1.1",
-  Amount:    "1",
+  Price:     "1",
+  Amount:    "10",
 }
 resp, err := client.PlaceOrder(&request)
 ```
@@ -402,52 +402,6 @@ resp, err := client.MarginLoanOrders("btcusdt", optionalRequest)
 
 ## Subscription Examples
 
-### Subscribe trade update
-
-*Authentication is required.*
-
-```go
-// Initialize a new instance
-client := new(orderwebsocketclient.SubscribeOrderWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host)
-
-// Set the callback handlers
-client.SetHandler(
-  // Connected handler
-  func(resp *model.WebSocketV2AuthenticationResponse) {
-    if resp.IsAuth() {
-      // Subscribe if authentication passed
-      err := client.Subscribe("1", "1149")
-      if err != nil {
-        fmt.Printf("Subscribe error: %s\n", err)
-      } else {
-        fmt.Println("Sent subscription")
-      }
-    } else {
-      fmt.Printf("Authentication error: %d\n", resp.Code)
-    }
-  },
-  // Response handler
-  func(resp interface{}) {
-    subResponse, ok := resp.(order.SubscribeOrderV2Response)
-    if ok {
-      if &subResponse.Data != nil {
-        o := subResponse.Data
-        fmt.Printf("Order update, symbol: %s, order id: %d, price: %s, volume: %s",
-                   o.Symbol, o.OrderId, o.TradePrice, o.TradeVolume)
-      }
-    } else {
-      fmt.Printf("Received unknown response: %v\n", resp)
-    }
-})
-
-// Connect to the server and wait for the handler to handle the response
-err := client.Connect(true)
-if err != nil {
-  fmt.Printf("Client Connect error: %s\n", err)
-  return
-}
-```
-
 ### Subscribe candlestick update
 
 ```go
@@ -502,97 +456,168 @@ if err != nil {
 }
 ```
 
+### Subscribe account update
+
+*Authentication is required.*
+
+```go
+// Initialize a new instance for account update websocket v2 client
+	client := new(accountwebsocketclient.SubscribeAccountWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host)
+
+	// Set the callback handlers
+	client.SetHandler(
+		// Authentication response handler
+		func(resp *auth.WebSocketV2AuthenticationResponse) {
+			if resp.IsSuccess() {
+				err := client.Subscribe("1", "1149")
+				if err != nil {
+					fmt.Printf("Subscribe error: %s\n", err)
+				} else {
+					fmt.Println("Sent subscription")
+				}
+			} else {
+				fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
+			}
+		},
+		// Response handler
+		func(resp interface{}) {
+			subResponse, ok := resp.(account.SubscribeAccountV2Response)
+			if ok {
+				if subResponse.Action == "sub" {
+					if subResponse.IsSuccess() {
+						fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
+					} else {
+						fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+					}
+				} else if subResponse.Action == "push" {
+					if subResponse.Data != nil {
+						b := subResponse.Data
+						if b.ChangeTime == 0 {
+							fmt.Printf("Account overview, id: %d, currency: %s, balance: %s\n", b.AccountId, b.Currency, b.Balance)
+						} else {
+							fmt.Printf("Account update, id: %d, currency: %s, balance: %s, time: %d\n", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
+						}
+					}
+				}
+			} else {
+				fmt.Printf("Received unknown response: %v\n", resp)
+			}
+		})
+
+	// Connect to the server and wait for the handler to handle the response
+	err := client.Connect(true)
+	if err != nil {
+		fmt.Printf("Client Connect error: %s\n", err)
+		return
+	}
+```
+
 ### Subscribe order update
 
 *Authentication is required.*
 
 ```go
 // Initialize a new instance
-client := new(orderwebsocketclient.SubscribeOrderWebSocketV1Client).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(orderwebsocketclient.SubscribeOrderWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host)
 
-// Set the callback handlers
-client.SetHandler(
-  // Connected handler
-  func(resp *model.WebSocketV1AuthenticationResponse) {
-    if resp.ErrorCode == 0 {
-      err := client.Subscribe("btcusdt", "1601")
-        if err != nil {
-          fmt.Printf("Subscribe error: %s\n", err)
-        } else {
-          fmt.Println("Sent subscription")
-        }
-    } else {
-      fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
-    }
-  },
-  // Response handler
-  func(resp interface{}) {
-    subResponse, ok := resp.(order.SubscribeOrderV1Response)
-      if ok {
-        if &subResponse.Data != nil {
-          o := subResponse.Data
-            fmt.Printf("Order update, id: %d, state: %s, symbol: %s, price: %s, filled amount: %s", o.OrderId, o.OrderState, o.Symbol, o.Price, o.FilledAmount)
-        }
-      } else {
-        fmt.Printf("Received unknown response: %v\n", resp)
-      }
-  })
+	// Set the callback handlers
+	client.SetHandler(
+		// Connected handler
+		func(resp *auth.WebSocketV2AuthenticationResponse) {
+			if resp.IsSuccess() {
+				// Subscribe if authentication passed
+				err := client.Subscribe("btcusdt", "1149")
+				if err != nil {
+					fmt.Printf("Subscribe error: %s\n", err)
+				} else {
+					fmt.Println("Sent subscription")
+				}
+			} else {
+				fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
+			}
+		},
+		// Response handler
+		func(resp interface{}) {
+			subResponse, ok := resp.(order.SubscribeOrderV2Response)
+			if ok {
+				if subResponse.Action == "sub" {
+					if subResponse.IsSuccess() {
+						fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
+					} else {
+						fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+					}
+				} else if subResponse.Action == "push" {
+					if subResponse.Data != nil {
+						o := subResponse.Data
+						fmt.Printf("Order update, event: %s, symbol: %s, type: %s, status: %s\n",
+							o.EventType, o.Symbol, o.Type, o.OrderStatus)
+					}
+				}
+			} else {
+				fmt.Printf("Received unknown response: %v\n", resp)
+			}
+		})
 
-// Connect to the server and wait for the handler to handle the response
-err := client.Connect(true)
-if err != nil {
-  fmt.Printf("Client Connect error: %s\n", err)
-  return
-}
+	// Connect to the server and wait for the handler to handle the response
+	err := client.Connect(true)
+	if err != nil {
+		fmt.Printf("Client Connect error: %s\n", err)
+		return
+	}
 ```
 
-### Subscribe account change
+### Subscribe trade update
 
 *Authentication is required.*
 
 ```go
 // Initialize a new instance
-client := new(accountwebsocketclient.SubscribeAccountWebSocketV1Client).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(orderwebsocketclient.SubscribeTradeClearWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host)
 
-// Set the callback handlers
-client.SetHandler(
-  // Connected handler
-  func(resp *model.WebSocketV1AuthenticationResponse) {
-    if resp.ErrorCode == 0 {
-      err := client.Subscribe("1", "1250")
-        if err != nil {
-          fmt.Printf("Subscribe error: %s\n", err)
-        } else {
-          fmt.Println("Sent subscription")
-        }
-    } else {
-      fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
-    }
+	// Set the callback handlers
+	client.SetHandler(
+		// Connected handler
+		func(resp *auth.WebSocketV2AuthenticationResponse) {
+			if resp.IsSuccess() {
+				// Subscribe if authentication passed
+				err := client.Subscribe("btcusdt", "1149")
+				if err != nil {
+					fmt.Printf("Subscribe error: %s\n", err)
+				} else {
+					fmt.Println("Sent subscription")
+				}
+			} else {
+				fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
+			}
+		},
+		// Response handler
+		func(resp interface{}) {
+			subResponse, ok := resp.(order.SubscribeTradeClearResponse)
+			if ok {
+				if subResponse.Action == "sub" {
+					if subResponse.IsSuccess() {
+						fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
+					} else {
+						fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+					}
+				} else if subResponse.Action == "push" {
+					if subResponse.Data != nil {
+						o := subResponse.Data
+						fmt.Printf("Order update, symbol: %s, order id: %d, price: %s, volume: %s\n",
+							o.Symbol, o.OrderId, o.TradePrice, o.TradeVolume)
+					}
+				}
+			} else {
+				fmt.Printf("Received unknown response: %v\n", resp)
+			}
+		})
 
-  },
-  // Response handler
-  func(resp interface{}) {
-    subResponse, ok := resp.(account.SubscribeAccountV1Response)
-      if ok {
-        if &subResponse.Data != nil {
-          fmt.Printf("Account update event: %s\n", subResponse.Data.Event)
-            if &subResponse.Data.List != nil {
-              for _, b := range subResponse.Data.List {
-                fmt.Printf("Account id: %d, currency: %s, type: %s, balance: %s", b.AccountId, b.Currency, b.Type, b.Balance)
-              }
-            }
-        }
-      } else {
-        fmt.Printf("Received unknown response: %v\n", resp)
-      }
-  })
-
-// Connect to the server and wait for the handler to handle the response
-err := client.Connect(true)
-if err != nil {
-  fmt.Printf("Client Connect error: %s\n", err)
-  return
-}
+	// Connect to the server and wait for the handler to handle the response
+	err := client.Connect(true)
+	if err != nil {
+		fmt.Printf("Client Connect error: %s\n", err)
+		return
+	}
 ```
 
 ## Unsubscribe
