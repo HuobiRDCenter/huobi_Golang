@@ -7,6 +7,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/gzip"
 	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -37,6 +38,7 @@ type WebSocketClientBase struct {
 	stopTickerChannel chan int
 	ticker            *time.Ticker
 	lastReceivedTime  time.Time
+	sendMutex         *sync.Mutex
 }
 
 // Initializer
@@ -44,6 +46,7 @@ func (p *WebSocketClientBase) Init(host string) *WebSocketClientBase {
 	p.host = host
 	p.stopReadChannel = make(chan int, 1)
 	p.stopTickerChannel = make(chan int, 1)
+	p.sendMutex = &sync.Mutex{}
 	return p
 }
 
@@ -75,7 +78,9 @@ func (p *WebSocketClientBase) Send(data string) error {
 		return errors.New("no connection available")
 	}
 
+	p.sendMutex.Lock()
 	err := p.conn.WriteMessage(websocket.TextMessage, []byte(data))
+	p.sendMutex.Unlock()
 	if err != nil {
 		return err
 	}
