@@ -2,7 +2,7 @@
 
 This is Huobi Go SDK,  you can install to your Golang project and use this SDK to query all market data, trading and manage your account.
 
-The SDK supports RESTful API invoking, and subscribe the market, account and order update from the Websocket connection.
+The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
 
 ## Table of Contents
 
