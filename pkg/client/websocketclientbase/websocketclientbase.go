@@ -81,11 +81,7 @@ func (p *WebSocketClientBase) Send(data string) error {
 	p.sendMutex.Lock()
 	err := p.conn.WriteMessage(websocket.TextMessage, []byte(data))
 	p.sendMutex.Unlock()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 // Close the connection to server

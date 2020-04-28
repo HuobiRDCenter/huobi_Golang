@@ -9,6 +9,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -32,6 +33,7 @@ type WebSocketV1ClientBase struct {
 	stopTickerChannel chan int
 	ticker            *time.Ticker
 	lastReceivedTime  time.Time
+	sendMutex         *sync.Mutex
 
 	requestBuilder *requestbuilder.WebSocketV1RequestBuilder
 }
@@ -42,6 +44,7 @@ func (p *WebSocketV1ClientBase) Init(accessKey string, secretKey string, host st
 	p.stopReadChannel = make(chan int, 1)
 	p.stopTickerChannel = make(chan int, 1)
 	p.requestBuilder = new(requestbuilder.WebSocketV1RequestBuilder).Init(accessKey, secretKey, host, websocketV1Path)
+	p.sendMutex = &sync.Mutex{}
 	return p
 }
 
@@ -73,11 +76,10 @@ func (p *WebSocketV1ClientBase) Send(data string) error {
 		return errors.New("no connection available")
 	}
 
+	p.sendMutex.Lock()
 	err := p.conn.WriteMessage(websocket.TextMessage, []byte(data))
-	if err != nil {
-		return err
-	}
-	return nil
+	p.sendMutex.Unlock()
+	return err
 }
 
 // Close the connection to server
