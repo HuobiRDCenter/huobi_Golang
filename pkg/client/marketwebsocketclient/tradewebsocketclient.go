@@ -3,6 +3,7 @@ package marketwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
 )
@@ -26,21 +27,33 @@ func (p *TradeWebSocketClient) SetHandler(
 }
 
 // Request latest 300 trade data
-func (p *TradeWebSocketClient) Request(symbol string, clientId string) error {
-	req := fmt.Sprintf("{\"req\": \"market.%s.trade.detail\",\"id\": \"%s\" }", symbol, clientId)
-	return p.WebSocketClientBase.Send(req)
+func (p *TradeWebSocketClient) Request(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.trade.detail", symbol)
+	req := fmt.Sprintf("{\"req\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.Send(req)
+
+	applogger.Info("WebSocket requested, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Subscribe latest completed trade in tick by tick mode
-func (p *TradeWebSocketClient) Subscribe(symbol string, clientId string) error {
-	sub := fmt.Sprintf("{\"sub\": \"market.%s.trade.detail\",\"id\": \"%s\" }", symbol, clientId)
-	return p.WebSocketClientBase.Send(sub)
+func (p *TradeWebSocketClient) Subscribe(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.trade.detail", symbol)
+	sub := fmt.Sprintf("{\"sub\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.Send(sub)
+
+	applogger.Info("WebSocket subscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Unsubscribe trade
-func (p *TradeWebSocketClient) UnSubscribe(symbol string, clientId string) error {
-	unsub := fmt.Sprintf("{\"unsub\": \"market.%s.trade.detail\",\"id\": \"%s\" }", symbol, clientId)
-	return p.WebSocketClientBase.Send(unsub)
+func (p *TradeWebSocketClient) UnSubscribe(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.trade.detail", symbol)
+	unsub := fmt.Sprintf("{\"unsub\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.Send(unsub)
+
+	applogger.Info("WebSocket unsubscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 func (p *TradeWebSocketClient) handleMessage(msg string) (interface{}, error) {

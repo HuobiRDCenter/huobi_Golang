@@ -3,6 +3,7 @@ package marketwebsocketclientexample
 import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/marketwebsocketclient"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
@@ -12,7 +13,7 @@ func RunAllExamples() {
 	reqAndSubscribeCandlestick()
 	reqAndSubscribeDepth()
 	reqAndSubscribeMarketByPrice()
-	SubscribeFullMarketByPrice()
+	subscribeFullMarketByPrice()
 	subscribeBBO()
 	reqAndSubscribeTrade()
 	reqAndSubscribeLast24hCandlestick()
@@ -24,60 +25,43 @@ func reqAndSubscribeCandlestick() {
 
 	client.SetHandler(
 		func() {
-			err := client.Request("btcusdt", "1min", 1569361140, 1569366420, "2305")
-			if err != nil {
-				fmt.Printf("Sent error: %s\n", err)
-			} else {
-				fmt.Println("Sent request")
-			}
+			client.Request("btcusdt", "1min", 1569361140, 1569366420, "2305")
 
-			err = client.Subscribe("btcusdt", "1min", "2118")
-			if err != nil {
-				fmt.Printf("Subscribe error: %s\n", err)
-			} else {
-				fmt.Println("Sent subscription")
-			}
+			client.Subscribe("btcusdt", "1min", "2118")
 		},
-		func(resp interface{}) {
-			candlestickResponse, ok := resp.(market.SubscribeCandlestickResponse)
+		func(response interface{}) {
+			resp, ok := response.(market.SubscribeCandlestickResponse)
 			if ok {
-				if &candlestickResponse != nil {
-					if candlestickResponse.Tick != nil {
-						t := candlestickResponse.Tick
-						fmt.Printf("Candlestick update, id: %d, count: %d, vol: %v [%v-%v-%v-%v]\n",
+				if &resp != nil {
+					if resp.Tick != nil {
+						t := resp.Tick
+						applogger.Info("Candlestick update, id: %d, count: %d, vol: %v [%v-%v-%v-%v]",
 							t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
 					}
 
-					if candlestickResponse.Data != nil {
-						for _, t := range candlestickResponse.Data {
-							fmt.Printf("Candlestick data, id: %d, count: %d, vol: %v [%v-%v-%v-%v]\n",
+					if resp.Data != nil {
+						applogger.Info("WebSocket returned data, count=%d", len(resp.Data))
+						for _, t := range resp.Data {
+							applogger.Info("Candlestick data, id: %d, count: %d, vol: %v [%v-%v-%v-%v]",
 								t.Id, t.Count, t.Vol, t.Open, t.Count, t.Low, t.High)
 						}
-						fmt.Printf("There are total %d ticks\n", len(candlestickResponse.Data))
 					}
 				}
 			} else {
-				fmt.Printf("Unknown response: %v\n", resp)
+				applogger.Info("Unknown response: %v", resp)
 			}
 
 		})
 
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Client connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	err = client.UnSubscribe("btcusdt", "1min", "2118")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribe("btcusdt", "1min", "2118")
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func reqAndSubscribeDepth() {
@@ -86,80 +70,65 @@ func reqAndSubscribeDepth() {
 
 	client.SetHandler(
 		func() {
-			err := client.Request("btcusdt", getrequest.STEP4, "1153")
-			if err != nil {
-				fmt.Printf("Sent error: %s\n", err)
-			} else {
-				fmt.Println("Sent request")
-			}
+			client.Request("btcusdt", getrequest.STEP4, "1153")
 
-			err = client.Subscribe("btcusdt", getrequest.STEP4, "1153")
-			if err != nil {
-				fmt.Printf("Subscribe error: %s\n", err)
-			} else {
-				fmt.Println("Sent subscription")
-			}
+			client.Subscribe("btcusdt", getrequest.STEP4, "1153")
 		},
 		func(resp interface{}) {
 			depthResponse, ok := resp.(market.SubscribeDepthResponse)
 			if ok {
 				if &depthResponse != nil {
 					if depthResponse.Tick != nil {
+						applogger.Info("WebSocket received depth update")
 						if depthResponse.Tick.Asks != nil {
 							a := depthResponse.Tick.Asks
+							applogger.Info("Ask, count=%d", len(a))
 							for i := len(a) - 1; i >= 0; i-- {
-								fmt.Printf("%v - %v\n", a[i][0], a[i][1])
+								applogger.Info("%v - %v", a[i][0], a[i][1])
 							}
 						}
-						fmt.Println("---ask-bid-update--")
 						if depthResponse.Tick.Bids != nil {
 							b := depthResponse.Tick.Bids
+							applogger.Info("Bid, count=%d", len(b))
 							for i := 0; i < len(b); i++ {
-								fmt.Printf("%v - %v\n", b[i][0], b[i][1])
+								applogger.Info("%v - %v", b[i][0], b[i][1])
 							}
 						}
-						fmt.Println()
 					}
 
 					if depthResponse.Data != nil {
+						applogger.Info("WebSocket received depth data")
 						if depthResponse.Data.Asks != nil {
 							a := depthResponse.Data.Asks
+							applogger.Info("Ask, count=%d", len(a))
 							for i := len(a) - 1; i >= 0; i-- {
-								fmt.Printf("%v - %v\n", a[i][0], a[i][1])
+								applogger.Info("%v - %v", a[i][0], a[i][1])
 							}
 						}
-						fmt.Println("---ask-bid-data--")
 						if depthResponse.Data.Bids != nil {
 							b := depthResponse.Data.Bids
+							applogger.Info("Bid, count=%d", len(b))
 							for i := 0; i < len(b); i++ {
-								fmt.Printf("%v - %v\n", b[i][0], b[i][1])
+								applogger.Info("%v - %v", b[i][0], b[i][1])
 							}
 						}
-						fmt.Println()
 					}
 				}
 			} else {
-				fmt.Printf("Unknown response: %v\n", resp)
+				applogger.Error("Unknown response: %v", resp)
 			}
 
 		})
 
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Client connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	err = client.UnSubscribe("btcusdt", "1min", "2118")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribe("btcusdt", "1min", "2118")
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func reqAndSubscribeMarketByPrice() {
@@ -168,19 +137,9 @@ func reqAndSubscribeMarketByPrice() {
 
 	client.SetHandler(
 		func() {
-			err := client.Request("btcusdt", "1437")
-			if err != nil {
-				fmt.Printf("Sent error: %s\n", err)
-			} else {
-				fmt.Println("Sent request")
-			}
+			client.Request("btcusdt", "1437")
 
-			err = client.Subscribe("btcusdt", "1437")
-			if err != nil {
-				fmt.Printf("Subscribe error: %s\n", err)
-			} else {
-				fmt.Println("Sent subscription")
-			}
+			client.Subscribe("btcusdt", "1437")
 		},
 		func(resp interface{}) {
 			depthResponse, ok := resp.(market.SubscribeMarketByPriceResponse)
@@ -188,77 +147,66 @@ func reqAndSubscribeMarketByPrice() {
 				if &depthResponse != nil {
 					if depthResponse.Tick != nil {
 						t := depthResponse.Tick
-						fmt.Printf("MBP Update: prevSeqNum: %d, seqNum: %d\n", t.PrevSeqNum, t.SeqNum)
+						applogger.Info("WebSocket received MBP update: prevSeqNum=%d, seqNum=%d", t.PrevSeqNum, t.SeqNum)
 						if t.Asks != nil {
+							applogger.Info("Ask, count=%d", len(t.Asks))
 							for i := len(t.Asks) - 1; i >= 0; i-- {
-								fmt.Printf("%v - %v\n", t.Asks[i][0], t.Asks[i][1])
+								applogger.Info("%v - %v" +
+									"", t.Asks[i][0], t.Asks[i][1])
 							}
 						}
-						fmt.Println("--------")
 						if t.Bids != nil {
+							applogger.Info("Bid, count=%d", len(t.Bids))
 							for i := 0; i < len(t.Bids); i++ {
-								fmt.Printf("%v - %v\n", t.Bids[i][0], t.Bids[i][1])
+								applogger.Info("%v - %v", t.Bids[i][0], t.Bids[i][1])
 							}
 						}
-						fmt.Println()
 					}
 
 					if depthResponse.Data != nil {
 						d := depthResponse.Data
-						fmt.Printf("MBP Req Full: prevSeqNum: %d, seqNum: %d\n", d.PrevSeqNum, d.SeqNum)
+						applogger.Info("WebSocket received MBP data, seqNum=%d", d.SeqNum)
 						if d.Asks != nil {
 							a := d.Asks
+							applogger.Info("Ask, count=%d", len(a))
 							for i := len(a) - 1; i >= 0; i-- {
-								fmt.Printf("%v - %v\n", a[i][0], a[i][1])
+								applogger.Info("%v - %v", a[i][0], a[i][1])
 							}
 						}
-						fmt.Println("--------")
-						if depthResponse.Data.Bids != nil {
+						if d.Bids != nil {
 							b := depthResponse.Data.Bids
+							applogger.Info("Bid, count=%d", len(b))
 							for i := 0; i < len(b); i++ {
-								fmt.Printf("%v - %v\n", b[i][0], b[i][1])
+								applogger.Info("%v - %v", b[i][0], b[i][1])
 							}
 						}
-						fmt.Println()
 					}
 				}
 			} else {
-				fmt.Printf("Unknown response: %v\n", resp)
+				applogger.Error("Unknown response: %v", resp)
 			}
 
 		})
 
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Client connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	err = client.UnSubscribe("btcusdt", "1437")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribe("btcusdt", "1437")
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 
-func SubscribeFullMarketByPrice() {
+func subscribeFullMarketByPrice() {
 
 	client := new(marketwebsocketclient.MarketByPriceWebSocketClient).Init(config.Host)
 
 	client.SetHandler(
 		func() {
-			err := client.SubscribeFull("btcusdt", 20, "1437")
-			if err != nil {
-				fmt.Printf("Subscribe error: %s\n", err)
-			} else {
-				fmt.Println("Sent subscription")
-			}
+			client.SubscribeFull("btcusdt", 20, "1437")
 		},
 		func(resp interface{}) {
 			depthResponse, ok := resp.(market.SubscribeMarketByPriceResponse)
@@ -266,43 +214,36 @@ func SubscribeFullMarketByPrice() {
 				if &depthResponse != nil {
 					if depthResponse.Tick != nil {
 						t := depthResponse.Tick
-						fmt.Printf("MBP Update: seqNum: %d\n", t.SeqNum)
+						applogger.Info("WebSocket received Full MBP update: seqNum=%d", t.SeqNum)
 						if t.Asks != nil {
+							applogger.Info("Ask, count=%d", len(t.Asks))
 							for i := len(t.Asks) - 1; i >= 0; i-- {
-								fmt.Printf("%v - %v\n", t.Asks[i][0], t.Asks[i][1])
+								applogger.Info("%v - %v", t.Asks[i][0], t.Asks[i][1])
 							}
 						}
-						fmt.Println("--------")
 						if t.Bids != nil {
+							applogger.Info("Bid, count=%d", len(t.Bids))
 							for i := 0; i < len(t.Bids); i++ {
-								fmt.Printf("%v - %v\n", t.Bids[i][0], t.Bids[i][1])
+								applogger.Info("%v - %v", t.Bids[i][0], t.Bids[i][1])
 							}
 						}
-						fmt.Println()
 					}
 				}
 			} else {
-				fmt.Printf("Unknown response: %v\n", resp)
+				applogger.Error("Unknown response: %v", resp)
 			}
 
 		})
 
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Client connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	err = client.UnSubscribeFull("btcusdt", 20, "1437")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribeFull("btcusdt", 20, "1437")
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 
@@ -312,39 +253,28 @@ func subscribeBBO() {
 
 	client.SetHandler(
 		func() {
-			err := client.Subscribe("btcusdt", "2118")
-			if err != nil {
-				fmt.Printf("Subscribe error: %s\n", err)
-				return
-			}
+			client.Subscribe("btcusdt", "2118")
 		},
 		func(resp interface{}) {
 			bboResponse, ok := resp.(market.SubscribeBestBidOfferResponse)
 			if ok {
 				if bboResponse.Tick != nil {
 					t := bboResponse.Tick
-					fmt.Printf("Received update, symbol: %s, ask: [%v, %v], bid: [%v, %v]\n", t.Symbol, t.Ask, t.AskSize, t.Bid, t.BidSize)
+					applogger.Info("WebSocket received update, symbol: %s, ask: [%v, %v], bid: [%v, %v]", t.Symbol, t.Ask, t.AskSize, t.Bid, t.BidSize)
 				}
 			}
 
 		})
 
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	err = client.UnSubscribe("btcusdt", "2118")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribe("btcusdt", "2118")
 
 	client.Close()
-	fmt.Println("Connection closed")
+	applogger.Info("Connection closed")
 }
 
 func reqAndSubscribeTrade() {
@@ -353,58 +283,43 @@ func reqAndSubscribeTrade() {
 
 	client.SetHandler(
 		func() {
-			err := client.Request("btcusdt", "1608")
-			if err != nil {
-				fmt.Printf("Sent error: %s\n", err)
-			} else {
-				fmt.Println("Sent request")
-			}
+			client.Request("btcusdt", "1608")
 
-			err = client.Subscribe("btcusdt", "1608")
-			if err != nil {
-				fmt.Printf("Subscribe error: %s\n", err)
-			} else {
-				fmt.Println("Sent subscription")
-			}
+			client.Subscribe("btcusdt", "1608")
 		},
 		func(resp interface{}) {
 			depthResponse, ok := resp.(market.SubscribeTradeResponse)
 			if ok {
 				if &depthResponse != nil {
 					if depthResponse.Tick != nil && depthResponse.Tick.Data != nil {
+						applogger.Info("WebSocket received trade update: count=%d", len(depthResponse.Tick.Data))
 						for _, t := range depthResponse.Tick.Data {
-							fmt.Printf("Trade update, id: %d, price: %v, amount: %v\n", t.TradeId, t.Price, t.Amount)
+							applogger.Info("Trade update, id: %d, price: %v, amount: %v", t.TradeId, t.Price, t.Amount)
 						}
 					}
 
 					if depthResponse.Data != nil {
+						applogger.Info("WebSocket received trade data: count=%d", len(depthResponse.Data))
 						for _, t := range depthResponse.Data {
-							fmt.Printf("Trade data, id: %d, price: %v, amount: %v\n", t.TradeId, t.Price, t.Amount)
+							applogger.Info("Trade data, id: %d, price: %v, amount: %v", t.TradeId, t.Price, t.Amount)
 						}
 					}
 				}
 			} else {
-				fmt.Printf("Unknown response: %v\n", resp)
+				applogger.Error("Unknown response: %v", resp)
 			}
 
 		})
 
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Client connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	err = client.UnSubscribe("btcusdt", "1608")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribe("btcusdt", "1608")
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func reqAndSubscribeLast24hCandlestick() {
@@ -415,19 +330,9 @@ func reqAndSubscribeLast24hCandlestick() {
 	client.SetHandler(
 		// Connected handler
 		func() {
-			err := client.Request("btcusdt", "1608")
-			if err != nil {
-				fmt.Printf("Sent error: %s\n", err)
-			} else {
-				fmt.Println("Sent request")
-			}
+			client.Request("btcusdt", "1608")
 
-			err = client.Subscribe("btcusdt", "1608")
-			if err != nil {
-				fmt.Printf("Subscribe error: %s\n", err)
-			} else {
-				fmt.Println("Sent subscription")
-			}
+			client.Subscribe("btcusdt", "1608")
 		},
 		// Response handler
 		func(resp interface{}) {
@@ -436,37 +341,29 @@ func reqAndSubscribeLast24hCandlestick() {
 				if &candlestickResponse != nil {
 					if candlestickResponse.Tick != nil {
 						t := candlestickResponse.Tick
-						fmt.Printf("Candlestick update, id: %d, count: %v, volume: %v [%v-%v-%v-%v]\n",
+						applogger.Info("WebSocket received candlestick update, id: %d, count: %v, volume: %v [%v-%v-%v-%v]",
 							t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
 					}
 
 					if candlestickResponse.Data != nil {
 						t := candlestickResponse.Data
-						fmt.Printf("Candlestick data, id: %d, count: %v, volume: %v [%v-%v-%v-%v]\n",
+						applogger.Info("WebSocket received candlestick data, id: %d, count: %v, volume: %v [%v-%v-%v-%v]",
 							t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
 					}
 				}
 			} else {
-				fmt.Printf("Unknown response: %v\n", resp)
+				applogger.Error("Unknown response: %v", resp)
 			}
-
 		})
 
 	// Connect to the server and wait for the handler to handle the response
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Client connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	err = client.UnSubscribe("btcusdt", "1608")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribe("btcusdt", "1608")
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }

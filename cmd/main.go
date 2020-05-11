@@ -12,7 +12,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/cmd/orderclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/orderwebsocketclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/walletclientexample"
-	"github.com/huobirdcenter/huobi_golang/logging"
+	"github.com/huobirdcenter/huobi_golang/logging/perflogger"
 )
 
 func main() {
@@ -35,8 +35,8 @@ func runAll() {
 }
 
 // Run performance test
-func perfTest() {
-	logging.EnablePerformanceLog(true)
+func runPerfTest() {
+	perflogger.Enable(true)
 
 	commonclientexample.RunAllExamples()
 	accountclientexample.RunAllExamples()

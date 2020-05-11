@@ -3,6 +3,7 @@ package marketwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
 )
@@ -26,33 +27,53 @@ func (p *MarketByPriceWebSocketClient) SetHandler(
 }
 
 // Request full Market By Price order book
-func (p *MarketByPriceWebSocketClient) Request(symbol string, clientId string) error {
-	req := fmt.Sprintf("{\"req\": \"market.%s.mbp.150\",\"id\": \"%s\" }", symbol, clientId)
-	return p.WebSocketClientBase.Send(req)
+func (p *MarketByPriceWebSocketClient) Request(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.mbp.150", symbol)
+	req := fmt.Sprintf("{\"req\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.WebSocketClientBase.Send(req)
+
+	applogger.Info("WebSocket requested, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Subscribe incremental update of Market By Price order book
-func (p *MarketByPriceWebSocketClient) Subscribe(symbol string, clientId string) error {
-	sub := fmt.Sprintf("{\"sub\": \"market.%s.mbp.150\",\"id\": \"%s\" }", symbol, clientId)
-	return p.WebSocketClientBase.Send(sub)
+func (p *MarketByPriceWebSocketClient) Subscribe(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.mbp.150", symbol)
+	sub := fmt.Sprintf("{\"sub\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.WebSocketClientBase.Send(sub)
+
+	applogger.Info("WebSocket subscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Subscribe full Market By Price order book
-func (p *MarketByPriceWebSocketClient) SubscribeFull(symbol string, level int, clientId string) error {
-	sub := fmt.Sprintf("{\"sub\": \"market.%s.mbp.refresh.%d\",\"id\": \"%s\" }", symbol, level, clientId)
-	return p.WebSocketClientBase.Send(sub)
+func (p *MarketByPriceWebSocketClient) SubscribeFull(symbol string, level int, clientId string) {
+	topic := fmt.Sprintf("market.%s.mbp.refresh.%d", symbol, level)
+	sub := fmt.Sprintf("{\"sub\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.Send(sub)
+
+	applogger.Info("WebSocket subscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Unsubscribe update of Market By Price order book
-func (p *MarketByPriceWebSocketClient) UnSubscribe(symbol string, clientId string) error {
-	unsub := fmt.Sprintf("{\"unsub\": \"market.%s.mbp.150\",\"id\": \"%s\" }", symbol, clientId)
-	return p.WebSocketClientBase.Send(unsub)
+func (p *MarketByPriceWebSocketClient) UnSubscribe(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.mbp.150", symbol)
+	unsub := fmt.Sprintf("{\"unsub\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.Send(unsub)
+
+	applogger.Info("WebSocket unsubscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Unsubscribe full Market By Price order book
-func (p *MarketByPriceWebSocketClient) UnSubscribeFull(symbol string, level int, clientId string) error {
-	unsub := fmt.Sprintf("{\"unsub\": \"market.%s.mbp.refresh.%d\",\"id\": \"%s\" }", symbol, level, clientId)
-	return p.WebSocketClientBase.Send(unsub)
+func (p *MarketByPriceWebSocketClient) UnSubscribeFull(symbol string, level int, clientId string) {
+	topic := fmt.Sprintf("market.%s.mbp.refresh.%d", symbol, level)
+	unsub := fmt.Sprintf("{\"unsub\": \"%s\",\"id\": \"%s\" }", topic, clientId)
+
+	p.Send(unsub)
+
+	applogger.Info("WebSocket unsubscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 func (p *MarketByPriceWebSocketClient) handleMessage(msg string) (interface{}, error) {

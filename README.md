@@ -81,7 +81,8 @@ This is the folder and package structure of SDK source code and the description
   - **gzip**: it provide the gzip decompress functionality that unzip the websocket binary data
   - **model**: The internal data model
   - **requestbuilder**: Responsible to build the request with the signature
-- **config**: it stores the common configuration, such as host, access key.
+- **logging**: It provides the logging function
+- **config**: It stores the common configuration, such as host, access key.
 - **cmd**: The main package is defined here, it provides the examples how to use **client** package and **response** package to access API and read response.
 
 As the example indicates, there are two important namespaces: **client** and **response**,  this section will introduce both of them below.
@@ -200,6 +201,16 @@ for _, kline := range resp {
 ### Init function
 
 Golang is not a pure object oriented programming language, and there is no native constructor. In this SDK, every struct has an ***Init*** function for each struct, you must call Init function first, otherwise the member variables may not be initialized expected.
+
+###Logging
+
+This SDK uses the high performance logging library [zap](https://github.com/uber-go/zap), which provide different kind of loggers. To better support format message, this SDK uses the SugaredLogger, and wrapped a few interfaces in package *logging/applogger*. It has below features:
+
+1. Logging target is console (In the future we will support output to file)
+2. Support multiple levels (Fatal, Error, Panic, Warn, Info and Debug) and minimum log level
+3. Support colorful text (by default)
+
+You can customize your own logging by updating *applogger.go* file.
 
 ## Request Examples
 

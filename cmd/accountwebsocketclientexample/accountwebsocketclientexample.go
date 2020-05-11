@@ -3,6 +3,7 @@ package accountwebsocketclientexample
 import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/accountwebsocketclient"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
@@ -136,14 +137,9 @@ func subAccountUpdateV2() {
 		// Authentication response handler
 		func(resp *auth.WebSocketV2AuthenticationResponse) {
 			if resp.IsSuccess() {
-				err := client.Subscribe("1", "1149")
-				if err != nil {
-					fmt.Printf("Subscribe error: %s\n", err)
-				} else {
-					fmt.Println("Sent subscription")
-				}
+				client.Subscribe("1", "1149")
 			} else {
-				fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
+				applogger.Error("Authentication error, code: %d, message:%s", resp.Code, resp.Message)
 			}
 		},
 		// Response handler
@@ -152,42 +148,35 @@ func subAccountUpdateV2() {
 			if ok {
 				if subResponse.Action == "sub" {
 					if subResponse.IsSuccess() {
-						fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
+						applogger.Info("Subscription topic %s successfully", subResponse.Ch)
 					} else {
-						fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+						applogger.Error("Subscription topic %s error, code: %d, message: %s", subResponse.Ch, subResponse.Code, subResponse.Message)
 					}
 				} else if subResponse.Action == "push" {
 					if subResponse.Data != nil {
 						b := subResponse.Data
 						if b.ChangeTime == 0 {
-							fmt.Printf("Account overview, id: %d, currency: %s, balance: %s\n", b.AccountId, b.Currency, b.Balance)
+							applogger.Info("Account overview, id: %d, currency: %s, balance: %s", b.AccountId, b.Currency, b.Balance)
 						} else {
-							fmt.Printf("Account update, id: %d, currency: %s, balance: %s, time: %d\n", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
+							applogger.Info("Account update, id: %d, currency: %s, balance: %s, time: %d", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
 						}
 					}
 				}
 			} else {
-				fmt.Printf("Received unknown response: %v\n", resp)
+				applogger.Error("Received unknown response: %v", resp)
 			}
 		})
 
 	// Connect to the server and wait for the handler to handle the response
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Client Connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
 	// Unsubscribe the topic
-	err = client.UnSubscribe("1", "1250")
-	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
-	}
+	client.UnSubscribe("1", "1250")
 
 	// Close the connection
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }

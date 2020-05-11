@@ -3,6 +3,7 @@ package marketwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
 )
@@ -26,21 +27,33 @@ func (p *CandlestickWebSocketClient) SetHandler(
 }
 
 // Request the full candlestick data according to specified criteria
-func (p *CandlestickWebSocketClient) Request(symbol string, period string, from int64, to int64, clientId string) error {
-	req := fmt.Sprintf("{\"req\": \"market.%s.kline.%s\", \"from\":%d, \"to\":%d, \"id\": \"%s\" }", symbol, period, from, to, clientId)
-	return p.WebSocketClientBase.Send(req)
+func (p *CandlestickWebSocketClient) Request(symbol string, period string, from int64, to int64, clientId string) {
+	topic := fmt.Sprintf("market.%s.kline.%s", symbol, period)
+	req := fmt.Sprintf("{\"req\": \"%s\", \"from\":%d, \"to\":%d, \"id\": \"%s\" }", topic, from, to, clientId)
+
+	p.Send(req)
+
+	applogger.Info("WebSocket requested, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Subscribe candlestick data
-func (p *CandlestickWebSocketClient) Subscribe(symbol string, period string, clientId string) error {
-	sub := fmt.Sprintf("{\"sub\": \"market.%s.kline.%s\", \"id\": \"%s\"}", symbol, period, clientId)
-	return p.WebSocketClientBase.Send(sub)
+func (p *CandlestickWebSocketClient) Subscribe(symbol string, period string, clientId string) {
+	topic := fmt.Sprintf("market.%s.kline.%s", symbol, period)
+	sub := fmt.Sprintf("{\"sub\": \"%s\", \"id\": \"%s\"}", topic, clientId)
+
+	p.Send(sub)
+
+	applogger.Info("WebSocket subscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Unsubscribe candlestick data
-func (p *CandlestickWebSocketClient) UnSubscribe(symbol string, period string, clientId string) error {
-	unsub := fmt.Sprintf("{\"unsub\": \"market.%s.kline.%s\", \"id\": \"%s\" }", symbol, period, clientId)
-	return p.WebSocketClientBase.Send(unsub)
+func (p *CandlestickWebSocketClient) UnSubscribe(symbol string, period string, clientId string) {
+	topic := fmt.Sprintf("market.%s.kline.%s", symbol, period)
+	unsub := fmt.Sprintf("{\"unsub\": \"%s\", \"id\": \"%s\" }", topic, clientId)
+
+	p.Send(unsub)
+
+	applogger.Info("WebSocket unsubscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 func (p *CandlestickWebSocketClient) handleMessage(msg string) (interface{}, error) {

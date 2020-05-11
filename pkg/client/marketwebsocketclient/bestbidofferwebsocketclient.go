@@ -3,6 +3,7 @@ package marketwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
 )
@@ -26,15 +27,23 @@ func (p *BestBidOfferWebSocketClient) SetHandler(
 }
 
 // Subscribe latest market by price order book in snapshot mode at 1-second interval.
-func (p *BestBidOfferWebSocketClient) Subscribe(symbol string, clientId string) error {
-	sub := fmt.Sprintf("{\"sub\": \"market.%s.bbo\", \"id\": \"%s\"}", symbol, clientId)
-	return p.WebSocketClientBase.Send(sub)
+func (p *BestBidOfferWebSocketClient) Subscribe(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.bbo", symbol)
+	sub := fmt.Sprintf("{\"sub\": \"%s\", \"id\": \"%s\"}", topic, clientId)
+
+	p.Send(sub)
+
+	applogger.Info("WebSocket subscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 // Unsubscribe market by price order book
-func (p *BestBidOfferWebSocketClient) UnSubscribe(symbol string, clientId string) error {
-	unsub := fmt.Sprintf("{\"unsub\": \"market.%s.bbo\", \"id\": \"%s\" }", symbol, clientId)
-	return p.WebSocketClientBase.Send(unsub)
+func (p *BestBidOfferWebSocketClient) UnSubscribe(symbol string, clientId string) {
+	topic := fmt.Sprintf("market.%s.bbo", symbol)
+	unsub := fmt.Sprintf("{\"unsub\": \"%s\", \"id\": \"%s\" }", topic, clientId)
+
+	p.Send(unsub)
+
+	applogger.Info("WebSocket unsubscribed, topic=%s, clientId=%s", topic, clientId)
 }
 
 func (p *BestBidOfferWebSocketClient) handleMessage(msg string) (interface{}, error) {

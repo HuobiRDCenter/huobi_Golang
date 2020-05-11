@@ -35,11 +35,7 @@ func subMultipleBBO() {
 
 		})
 
-	err := client.Connect(true)
-	if err != nil {
-		fmt.Printf("Connect error: %s\n", err)
-		return
-	}
+	client.Connect(true)
 
 	fmt.Println("Press ENTER to stop...")
 	fmt.Scanln()

@@ -3,6 +3,7 @@ package orderwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/order"
 )
@@ -27,15 +28,23 @@ func (p *SubscribeOrderWebSocketV2Client) SetHandler(
 }
 
 // Subscribe all order updates of the current account
-func (p *SubscribeOrderWebSocketV2Client) Subscribe(symbol string, clientId string) error {
-	sub := fmt.Sprintf("{\"action\":\"sub\", \"ch\":\"orders#%s\", \"cid\": \"%s\"}", symbol, clientId)
-	return p.Send(sub)
+func (p *SubscribeOrderWebSocketV2Client) Subscribe(symbol string, clientId string) {
+	channel := fmt.Sprintf("orders#%s", symbol)
+	sub := fmt.Sprintf("{\"action\":\"sub\", \"ch\":\"%s\", \"cid\": \"%s\"}", channel, clientId)
+
+	p.Send(sub)
+
+	applogger.Info("WebSocket subscribed, channel=%s, clientId=%s", channel, clientId)
 }
 
 // Unsubscribe order updates
-func (p *SubscribeOrderWebSocketV2Client) UnSubscribe(symbol string, clientId string) error {
-	unsub := fmt.Sprintf("{\"action\":\"unsub\", \"ch\":\"orders#%s\", \"cid\": \"%s\"}", symbol, clientId)
-	return p.Send(unsub)
+func (p *SubscribeOrderWebSocketV2Client) UnSubscribe(symbol string, clientId string) {
+	channel := fmt.Sprintf("orders#%s", symbol)
+	unsub := fmt.Sprintf("{\"action\":\"unsub\", \"ch\":\"%s\", \"cid\": \"%s\"}", channel, clientId)
+
+	p.Send(unsub)
+
+	applogger.Info("WebSocket unsubscribed, channel=%s, clientId=%s", channel, clientId)
 }
 
 func (p *SubscribeOrderWebSocketV2Client) handleMessage(msg string) (interface{}, error) {

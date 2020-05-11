@@ -62,9 +62,5 @@ func (p *WebSocketV1RequestBuilder) build(utcDate time.Time) (string, error) {
 	auth.Signature = signature
 
 	result, err := postrequest.ToJson(auth)
-	if err != nil {
-		return "", err
-	}
-
-	return result, nil
+	return result, err
 }

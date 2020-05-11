@@ -1,14 +1,14 @@
 package internal
 
 import (
-	"github.com/huobirdcenter/huobi_golang/logging"
+	"github.com/huobirdcenter/huobi_golang/logging/perflogger"
 	"io/ioutil"
 	"net/http"
 	"strings"
 )
 
 func HttpGet(url string) (string, error) {
-	logger := logging.GetPerformanceLoggerInstance()
+	logger := perflogger.GetInstance()
 	logger.Start()
 
 	resp, err := http.Get(url)
@@ -24,7 +24,7 @@ func HttpGet(url string) (string, error) {
 }
 
 func HttpPost(url string, body string) (string, error) {
-	logger := logging.GetPerformanceLoggerInstance()
+	logger := perflogger.GetInstance()
 	logger.Start()
 
 	resp, err := http.Post(url, "application/json", strings.NewReader(body))

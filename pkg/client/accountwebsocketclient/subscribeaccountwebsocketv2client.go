@@ -3,6 +3,7 @@ package accountwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
 )
@@ -29,15 +30,23 @@ func (p *SubscribeAccountWebSocketV2Client) SetHandler(
 // Subscribe all balance updates of the current account
 // 0: Only update when account balance changed
 // 1: Update when either account balance changed or available balance changed
-func (p *SubscribeAccountWebSocketV2Client) Subscribe(mode string, clientId string) error {
-	sub := fmt.Sprintf("{\"action\":\"sub\", \"ch\":\"accounts.update#%s\", \"cid\": \"%s\"}", mode, clientId)
-	return p.Send(sub)
+func (p *SubscribeAccountWebSocketV2Client) Subscribe(mode string, clientId string) {
+	channel := fmt.Sprintf("accounts.update#%s", mode)
+	sub := fmt.Sprintf("{\"action\":\"sub\", \"ch\":\"%s\", \"cid\": \"%s\"}", channel, clientId)
+
+	p.Send(sub)
+
+	applogger.Info("WebSocket subscribed, channel=%s, clientId=%s", channel, clientId)
 }
 
 // Unsubscribe balance updates
-func (p *SubscribeAccountWebSocketV2Client) UnSubscribe(mode string, clientId string) error {
-	unsub := fmt.Sprintf("{\"action\":\"unsub\", \"ch\":\"accounts.update#%s\", \"cid\": \"%s\"}", mode, clientId)
-	return p.Send(unsub)
+func (p *SubscribeAccountWebSocketV2Client) UnSubscribe(mode string, clientId string) {
+	channel := fmt.Sprintf("accounts.update#%s", mode)
+	unsub := fmt.Sprintf("{\"action\":\"unsub\", \"ch\":\"%s\", \"cid\": \"%s\"}", channel, clientId)
+
+	p.Send(unsub)
+
+	applogger.Info("WebSocket unsubscribed, channel=%s, clientId=%s", channel, clientId)
 }
 
 func (p *SubscribeAccountWebSocketV2Client) handleMessage(msg string) (interface{}, error) {

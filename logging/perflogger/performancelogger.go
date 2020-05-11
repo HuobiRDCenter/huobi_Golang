@@ -1,4 +1,4 @@
-package logging
+package perflogger
 
 import (
 	"fmt"
@@ -20,12 +20,12 @@ var performanceLogger *PerformanceLogger
 
 var logEnabled = false
 
-func EnablePerformanceLog(enable bool) {
+func Enable(enable bool) {
 	logEnabled = enable
 }
 
 // Get unique PerformanceLogger instance
-func GetPerformanceLoggerInstance() *PerformanceLogger {
+func GetInstance() *PerformanceLogger {
 	if performanceLogger == nil {
 		performanceLogger = new(PerformanceLogger).init()
 	}
