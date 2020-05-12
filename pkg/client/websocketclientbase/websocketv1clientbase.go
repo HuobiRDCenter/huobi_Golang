@@ -7,6 +7,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/gzip"
 	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
 	"strings"
 	"sync"
@@ -92,12 +93,12 @@ func (p *WebSocketV1ClientBase) Close() {
 func (p *WebSocketV1ClientBase) connectWebSocket() error {
 	var err error
 	url := fmt.Sprintf("wss://%s%s", p.host, websocketV1Path)
-	fmt.Println("WebSocket connecting...")
+	applogger.Debug("WebSocket connecting...")
 	p.conn, _, err = websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
 		return err
 	}
-	fmt.Println("WebSocket connected")
+	applogger.Info("WebSocket connected")
 
 	auth, err := p.requestBuilder.Build()
 	if err != nil {
@@ -121,14 +122,14 @@ func (p *WebSocketV1ClientBase) disconnectWebSocket() {
 
 	p.stopReadLoop()
 
-	fmt.Println("WebSocket disconnecting...")
+	applogger.Info("WebSocket disconnecting...")
 	err := p.conn.Close()
 	if err != nil {
-		fmt.Printf("WebSocket disconnect error: %s\n", err)
+		applogger.Error("WebSocket disconnect error: %s", err)
 		return
 	}
 
-	fmt.Println("WebSocket disconnected")
+	applogger.Info("WebSocket disconnected")
 }
 
 // initialize a ticker and start a goroutine tickerLoop()
@@ -155,20 +156,20 @@ func (p *WebSocketV1ClientBase) tickerLoop() {
 		select {
 		// Receive data from stopChannel
 		case <-p.stopTickerChannel:
-			fmt.Println("tickerLoop stopped")
+			applogger.Debug("tickerLoop stopped")
 			return
 
 		// Receive tick from tickChannel
 		case <-p.ticker.C:
 			elapsedSecond := time.Now().Sub(p.lastReceivedTime).Seconds()
-			fmt.Printf("WebSocket received data %f sec ago\n", elapsedSecond)
+			applogger.Debug("WebSocket received data %f sec ago", elapsedSecond)
 
 			if elapsedSecond > ReconnectWaitSecond {
-				fmt.Println("WebSocket reconnect...")
+				applogger.Info("WebSocket reconnect...")
 				p.disconnectWebSocket()
 				err := p.connectWebSocket()
 				if err != nil {
-					fmt.Printf("WebSocket reconnect error: %s\n", err)
+					applogger.Error("WebSocket reconnect error: %s", err)
 				}
 			}
 		}
@@ -192,19 +193,19 @@ func (p *WebSocketV1ClientBase) readLoop() {
 		select {
 		// Receive data from stopChannel
 		case <-p.stopReadChannel:
-			fmt.Println("readLoop stopped")
+			applogger.Debug("readLoop stopped")
 			return
 
 		default:
 			if p.conn == nil {
-				fmt.Printf("Read error: no connection available")
+				applogger.Error("Read error: no connection available")
 				time.Sleep(TimerIntervalSecond * time.Second)
 				continue
 			}
 
 			msgType, buf, err := p.conn.ReadMessage()
 			if err != nil {
-				fmt.Printf("Read error: %s\n", err)
+				applogger.Error("Read error: %s", err)
 				time.Sleep(TimerIntervalSecond * time.Second)
 				continue
 			}
@@ -215,17 +216,17 @@ func (p *WebSocketV1ClientBase) readLoop() {
 			if msgType == websocket.BinaryMessage {
 				message, err := gzip.GZipDecompress(buf)
 				if err != nil {
-					fmt.Printf("UnGZip data error: %s\n", err)
+					applogger.Error("UnGZip data error: %s", err)
 				}
 
 				// Try to pass as PingV1Message
 				// If it is Ping then respond Pong
 				pingV1Msg := model.ParsePingV1Message(message)
 				if pingV1Msg.IsPing() {
-					fmt.Printf("Received Ping: %d\n", pingV1Msg.Timestamp)
+					applogger.Debug("Received Ping: %d", pingV1Msg.Timestamp)
 					pongMsg := fmt.Sprintf("{\"op\": \"pong\", \"ts\": %d}", pingV1Msg.Timestamp)
 					p.Send(pongMsg)
-					fmt.Printf("Respond  Pong: %d\n", pingV1Msg.Timestamp)
+					applogger.Debug("Respond  Pong: %d", pingV1Msg.Timestamp)
 				} else {
 					// Try to pass as websocket v1 authentication response
 					// If it is then invoke authentication handler
@@ -238,7 +239,7 @@ func (p *WebSocketV1ClientBase) readLoop() {
 						// If it contains expected string, then invoke message handler and response handler
 						result, err := p.messageHandler(message)
 						if err != nil {
-							fmt.Printf("Handle message error: %s\n", err)
+							applogger.Error("Handle message error: %s", err)
 							continue
 						}
 						if p.responseHandler != nil {

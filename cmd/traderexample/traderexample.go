@@ -3,6 +3,7 @@ package traderexample
 import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/marketwebsocketclient"
 	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
 )
@@ -29,7 +30,7 @@ func subMultipleBBO() {
 			if ok {
 				if bboResponse.Tick != nil {
 					t := bboResponse.Tick
-					fmt.Printf("Received update, symbol: %s, ask: [%v, %v], bid: [%v, %v]\n", t.Symbol, t.Ask, t.AskSize, t.Bid, t.BidSize)
+					applogger.Info("Received update, symbol: %s, ask: [%v, %v], bid: [%v, %v]", t.Symbol, t.Ask, t.AskSize, t.Bid, t.BidSize)
 				}
 			}
 
@@ -41,5 +42,5 @@ func subMultipleBBO() {
 	fmt.Scanln()
 
 	client.Close()
-	fmt.Println("Connection closed")
+	applogger.Info("Connection closed")
 }

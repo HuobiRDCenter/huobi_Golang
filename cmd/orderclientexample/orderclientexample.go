@@ -1,8 +1,8 @@
 package orderclientexample
 
 import (
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
@@ -37,13 +37,13 @@ func placeOrder() {
 	}
 	resp, err := client.PlaceOrder(&request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
-			fmt.Printf("Place order successfully, order id: %s\n", resp.Data)
+			applogger.Info("Place order successfully, order id: %s", resp.Data)
 		case "error":
-			fmt.Printf("Place order error: %s\n", resp.ErrorMessage)
+			applogger.Error("Place order error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -64,21 +64,21 @@ func placeOrders() {
 	requests = append(requests, request)
 	resp, err := client.PlaceOrders(requests)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				for _, r := range resp.Data {
 					if r.OrderId != 0 {
-						fmt.Printf("Place order successfully: order id %d\n", r.OrderId)
+						applogger.Info("Place order successfully: order id %d", r.OrderId)
 					} else {
-						fmt.Printf("Place order error: %s\n", r.ErrorMessage)
+						applogger.Info("Place order error: %s", r.ErrorMessage)
 					}
 				}
 			}
 		case "error":
-			fmt.Printf("Place order error: %s", resp.ErrorMessage)
+			applogger.Error("Place order error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -87,13 +87,13 @@ func cancelOrderById() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.CancelOrderById("1")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
-			fmt.Printf("Cancel order successfully, order id: %s\n", resp.Data)
+			applogger.Info("Cancel order successfully, order id: %s", resp.Data)
 		case "error":
-			fmt.Printf("Cancel order error: %s\n", resp.ErrorMessage)
+			applogger.Info("Cancel order error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -102,13 +102,13 @@ func cancelOrderByClient() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.CancelOrderByClientOrderId("1")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
-			fmt.Printf("Cancel order successfully, order id: %d\n", resp.Data)
+			applogger.Info("Cancel order successfully, order id: %d", resp.Data)
 		case "error":
-			fmt.Printf("Cancel order error: %s\n", resp.ErrorMessage)
+			applogger.Info("Cancel order error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -120,18 +120,18 @@ func getOpenOrders() {
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetOpenOrders(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				for _, o := range resp.Data {
-					fmt.Printf("Open orders, symbol: %s, price: %s, amount: %s\n", o.Symbol, o.Price, o.Amount)
+					applogger.Info("Open orders, symbol: %s, price: %s, amount: %s", o.Symbol, o.Price, o.Amount)
 				}
-				fmt.Printf("There are total %d open orders\n", len(resp.Data))
+				applogger.Info("There are total %d open orders", len(resp.Data))
 			}
 		case "error":
-			fmt.Printf("Get open order error: %s\n", resp.ErrorMessage)
+			applogger.Error("Get open order error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -145,16 +145,16 @@ func cancelOrdersByCriteria() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.CancelOrdersByCriteria(&request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				d := resp.Data
-				fmt.Printf("Cancel orders successfully, success count: %d, failed count: %d, next id: %d\n", d.SuccessCount, d.FailedCount, d.NextId)
+				applogger.Info("Cancel orders successfully, success count: %d, failed count: %d, next id: %d", d.SuccessCount, d.FailedCount, d.NextId)
 			}
 		case "error":
-			fmt.Printf("Cancel orders error: %s\n", resp.ErrorMessage)
+			applogger.Error("Cancel orders error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -167,14 +167,14 @@ func cancelOrdersByIds() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.CancelOrdersByIds(&request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				if resp.Data.Success != nil {
 					for _, id := range resp.Data.Success {
-						fmt.Printf("Cancel orders successfully, id: %s\n", id)
+						applogger.Info("Cancel orders successfully, id: %s", id)
 					}
 				}
 				if resp.Data.Failed != nil {
@@ -183,12 +183,12 @@ func cancelOrdersByIds() {
 						if id == "" {
 							id = f.ClientOrderId
 						}
-						fmt.Printf("Cancel orders failed, id: %s, error: %s\n", id, f.ErrorMessage)
+						applogger.Error("Cancel orders failed, id: %s, error: %s", id, f.ErrorMessage)
 					}
 				}
 			}
 		case "error":
-			fmt.Printf("Cancel orders error: %s\n", resp.ErrorMessage)
+			applogger.Error("Cancel orders error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -197,17 +197,17 @@ func getOrderById() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.GetOrderById("1")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				o := resp.Data
-				fmt.Printf("Get order, symbol: %s, price: %s, amount: %s, filled amount: %s, filled cash amount: %s, filled fees: %s\n",
+				applogger.Info("Get order, symbol: %s, price: %s, amount: %s, filled amount: %s, filled cash amount: %s, filled fees: %s",
 					o.Symbol, o.Price, o.Amount, o.FilledAmount, o.FilledCashAmount, o.FilledFees)
 			}
 		case "error":
-			fmt.Printf("Get order by id error: %s\n", resp.ErrorMessage)
+			applogger.Error("Get order by id error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -218,17 +218,17 @@ func getOrderByCriteria() {
 	request.AddParam("clientOrderId", "cid12345")
 	resp, err := client.GetOrderByCriteria(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				o := resp.Data
-				fmt.Printf("Get order, symbol: %s, price: %s, amount: %s, filled amount: %s, filled cash amount: %s, filled fees: %s\n",
+				applogger.Info("Get order, symbol: %s, price: %s, amount: %s, filled amount: %s, filled cash amount: %s, filled fees: %s",
 					o.Symbol, o.Price, o.Amount, o.FilledAmount, o.FilledCashAmount, o.FilledFees)
 			}
 		case "error":
-			fmt.Printf("Get order by criteria error: %s\n", resp.ErrorMessage)
+			applogger.Error("Get order by criteria error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -237,18 +237,18 @@ func getMatchResultById() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.GetMatchResultsById("63403286375")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				for _, r := range resp.Data {
-					fmt.Printf("Match result, symbol: %s, filled amount: %s, filled fees: %s\n", r.Symbol, r.FilledAmount, r.FilledFees)
+					applogger.Info("Match result, symbol: %s, filled amount: %s, filled fees: %s", r.Symbol, r.FilledAmount, r.FilledFees)
 				}
-				fmt.Printf("There are total %d match results\n", len(resp.Data))
+				applogger.Info("There are total %d match results", len(resp.Data))
 			}
 		case "error":
-			fmt.Printf("Get match results error: %s\n", resp.ErrorMessage)
+			applogger.Error("Get match results error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -260,18 +260,18 @@ func getHistoryOrders() {
 	request.AddParam("states", "canceled")
 	resp, err := client.GetHistoryOrders(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				for _, o := range resp.Data {
-					fmt.Printf("Order history, symbol: %s, price: %s, amount: %s, state: %s\n", o.Symbol, o.Price, o.Amount, o.State)
+					applogger.Info("Order history, symbol: %s, price: %s, amount: %s, state: %s", o.Symbol, o.Price, o.Amount, o.State)
 				}
-				fmt.Printf("There are total %d orders\n", len(resp.Data))
+				applogger.Info("There are total %d orders", len(resp.Data))
 			}
 		case "error":
-			fmt.Printf("Get history order error: %s\n", resp.ErrorMessage)
+			applogger.Error("Get history order error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -282,18 +282,18 @@ func getLast48hOrders() {
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetLast48hOrders(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				for _, o := range resp.Data {
-					fmt.Printf("Order history, symbol: %s, price: %s, amount: %s, state: %s\n", o.Symbol, o.Price, o.Amount, o.State)
+					applogger.Info("Order history, symbol: %s, price: %s, amount: %s, state: %s", o.Symbol, o.Price, o.Amount, o.State)
 				}
-				fmt.Printf("There are total %d orders\n", len(resp.Data))
+				applogger.Info("There are total %d orders", len(resp.Data))
 			}
 		case "error":
-			fmt.Printf("Get history order error: %s\n", resp.ErrorMessage)
+			applogger.Error("Get history order error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -304,18 +304,18 @@ func getMatchResultByCriteria() {
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetMatchResultsByCriteria(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Status {
 		case "ok":
 			if resp.Data != nil {
 				for _, r := range resp.Data {
-					fmt.Printf("Match result, symbol: %s, filled amount: %s, filled fees: %s\n", r.Symbol, r.FilledAmount, r.FilledFees)
+					applogger.Info("Match result, symbol: %s, filled amount: %s, filled fees: %s", r.Symbol, r.FilledAmount, r.FilledFees)
 				}
-				fmt.Printf("There are total %d match results\n", len(resp.Data))
+				applogger.Info("There are total %d match results", len(resp.Data))
 			}
 		case "error":
-			fmt.Printf("Get match results error: %s\n", resp.ErrorMessage)
+			applogger.Error("Get match results error: %s", resp.ErrorMessage)
 		}
 	}
 }
@@ -326,19 +326,19 @@ func getTransactFeeRate() {
 	request.AddParam("symbols", "btcusdt,eosht")
 	resp, err := client.GetTransactFeeRate(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		switch resp.Code {
 		case 200:
 			if resp.Data != nil {
 				for _, f := range resp.Data {
-					fmt.Printf("Fee rate , symbol: %s, maker-taker fee: %s-%s, actual maker-taker fee: %s-%s\n",
+					applogger.Info("Fee rate , symbol: %s, maker-taker fee: %s-%s, actual maker-taker fee: %s-%s",
 						f.Symbol, f.MakerFeeRate, f.TakerFeeRate, f.ActualMakerRate, f.ActualTakerRate)
 				}
-				fmt.Printf("There are total %d fee rate result\n", len(resp.Data))
+				applogger.Info("There are total %d fee rate result", len(resp.Data))
 			}
 		default:
-			fmt.Printf("Get fee error: %s\n", resp.Message)
+			applogger.Error("Get fee error: %s", resp.Message)
 		}
 	}
 }

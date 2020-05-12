@@ -122,28 +122,28 @@ func (p *CrossMarginClient) ApplyLoan(request postrequest.CrossMarginOrdersReque
 }
 
 // Repays margin loan with you asset in your margin account.
-func (p *CrossMarginClient) Repay(orderId string, request postrequest.MarginOrdersRepayRequest) error {
+func (p *CrossMarginClient) Repay(orderId string, request postrequest.MarginOrdersRepayRequest) (int, error) {
 	postBody, jsonErr := postrequest.ToJson(request)
 	if jsonErr != nil {
-		return jsonErr
+		return 0, jsonErr
 	}
 
 	url := p.privateUrlBuilder.Build("POST", "/v1/cross-margin/orders/"+orderId+"/repay", nil)
 	postResp, postErr := internal.HttpPost(url, postBody)
 	if postErr != nil {
-		return postErr
+		return 0, postErr
 	}
 
 	result := margin.MarginOrdersRepayResponse{}
 	jsonErr = json.Unmarshal([]byte(postResp), &result)
 	if jsonErr != nil {
-		return jsonErr
+		return 0, jsonErr
 	}
 	if result.Status != "ok" {
-		return errors.New(postResp)
+		return 0, errors.New(postResp)
 
 	}
-	return nil
+	return result.Data, nil
 }
 
 // Returns margin orders based on a specific searching criteria.

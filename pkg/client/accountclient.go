@@ -3,6 +3,7 @@ package client
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
@@ -194,7 +195,6 @@ func (p *AccountClient) SubUserTransfer(request postrequest.SubUserTransferReque
 
 // Returns the aggregated balance from all the sub-users
 func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
-
 	url := p.privateUrlBuilder.Build("GET", "/v1/subuser/aggregate-balance", nil)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
@@ -215,8 +215,7 @@ func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) 
 
 // Returns the balance of a sub-account specified by sub-uid
 func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccount, error) {
-
-	url := p.privateUrlBuilder.Build("GET", "/v1/account/accounts/"+strconv.FormatInt(subUid, 10), nil)
+	url := p.privateUrlBuilder.Build("GET", fmt.Sprintf("/v1/account/accounts/%d", subUid), nil)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
 		return nil, getErr
@@ -227,7 +226,6 @@ func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccoun
 		return nil, jsonErr
 	}
 	if result.Status == "ok" && result.Data != nil {
-
 		return result.Data, nil
 	}
 

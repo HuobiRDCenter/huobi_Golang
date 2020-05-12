@@ -1,8 +1,8 @@
 package isolatedmarginclientexample
 
 import (
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
@@ -27,9 +27,9 @@ func transferIn() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.TransferIn(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Data: ", resp)
+		applogger.Info("Data: %+v", resp)
 	}
 }
 
@@ -42,9 +42,9 @@ func transferOut() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.TransferOut(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Data: ", resp)
+		applogger.Info("Data: %+v", resp)
 	}
 }
 
@@ -54,11 +54,10 @@ func getMarginLoanInfo() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.GetMarginLoanInfo(optionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, info := range resp {
-			fmt.Println("Symbol: ", info.Symbol)
-
+			applogger.Info("Symbol: %s", info.Symbol)
 		}
 	}
 }
@@ -73,9 +72,9 @@ func marginOrders() {
 	}
 	resp, err := client.Apply(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Data: ", resp)
+		applogger.Info("Data: %+v", resp)
 	}
 }
 
@@ -86,9 +85,9 @@ func marginOrdersRepay() {
 	request := postrequest.MarginOrdersRepayRequest{Amount: "1.0"}
 	resp, err := client.Repay(orderId, request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Data: ", resp)
+		applogger.Info("Data: %+v", resp)
 	}
 }
 
@@ -100,10 +99,10 @@ func marginLoanOrders() {
 	}
 	resp, err := client.MarginLoanOrders("btcusdt", optionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, order := range resp {
-			fmt.Println("Order: ", order)
+			applogger.Info("Order: %+v", order)
 		}
 	}
 }
@@ -115,12 +114,12 @@ func marginAccountsBalance() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.MarginAccountsBalance(optionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, account := range resp {
-			fmt.Println("Id: ", account.Id)
+			applogger.Info("Id: %d", account.Id)
 			for _, balance := range account.List {
-				fmt.Printf("Balance: %+v\n", balance)
+				applogger.Info("Balance: %+v", balance)
 			}
 		}
 	}

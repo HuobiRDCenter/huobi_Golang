@@ -48,7 +48,7 @@ func reqAndSubscribeCandlestick() {
 					}
 				}
 			} else {
-				applogger.Info("Unknown response: %v", resp)
+				applogger.Warn("Unknown response: %v", resp)
 			}
 
 		})
@@ -115,7 +115,7 @@ func reqAndSubscribeDepth() {
 					}
 				}
 			} else {
-				applogger.Error("Unknown response: %v", resp)
+				applogger.Warn("Unknown response: %v", resp)
 			}
 
 		})
@@ -183,7 +183,7 @@ func reqAndSubscribeMarketByPrice() {
 					}
 				}
 			} else {
-				applogger.Error("Unknown response: %v", resp)
+				applogger.Warn("Unknown response: %v", resp)
 			}
 
 		})
@@ -230,7 +230,7 @@ func subscribeFullMarketByPrice() {
 					}
 				}
 			} else {
-				applogger.Error("Unknown response: %v", resp)
+				applogger.Warn("Unknown response: %v", resp)
 			}
 
 		})
@@ -306,7 +306,7 @@ func reqAndSubscribeTrade() {
 					}
 				}
 			} else {
-				applogger.Error("Unknown response: %v", resp)
+				applogger.Warn("Unknown response: %v", resp)
 			}
 
 		})
@@ -352,7 +352,7 @@ func reqAndSubscribeLast24hCandlestick() {
 					}
 				}
 			} else {
-				applogger.Error("Unknown response: %v", resp)
+				applogger.Warn("Unknown response: %v", resp)
 			}
 		})
 

@@ -1,8 +1,8 @@
 package commonclientexample
 
 import (
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 )
@@ -19,9 +19,9 @@ func getSystemStatus() {
 	client := new(client.CommonClient).Init(config.Host)
 	resp, err := client.GetSystemStatus()
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Get system status error: %s", err)
 	} else {
-		fmt.Printf("Get system status %s\n", resp)
+		applogger.Info("Get system status %s", resp)
 	}
 }
 
@@ -29,12 +29,12 @@ func getSymbols() {
 	client := new(client.CommonClient).Init(config.Host)
 	resp, err := client.GetSymbols()
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Get symbols error: %s", err)
 	} else {
+		applogger.Info("Get symbols, count=%d", len(resp))
 		for _, result := range resp {
-			fmt.Printf("symbol:%s, BaseCurrency:%s, QuoteCurrency:%s \n", result.Symbol, result.BaseCurrency, result.QuoteCurrency)
+			applogger.Info("symbol=%s, BaseCurrency=%s, QuoteCurrency=%s", result.Symbol, result.BaseCurrency, result.QuoteCurrency)
 		}
-		fmt.Printf("There are total %d symbols\n", len(resp))
 	}
 }
 
@@ -43,12 +43,12 @@ func getCurrencys() {
 	resp, err := client.GetCurrencys()
 
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Get currency error: %s", err)
 	} else {
+		applogger.Info("Get currency, count=%d", len(resp))
 		for _, result := range resp {
-			fmt.Println(result)
+			applogger.Info("currency: %+v", result)
 		}
-		fmt.Printf("There are total %d currencies\n", len(resp))
 	}
 }
 
@@ -59,20 +59,16 @@ func getV2ReferenceCurrencies() {
 	resp, err := client.GetV2ReferenceCurrencies(optionalRequest)
 
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Get reference currency error: %s", err)
 	} else {
+		applogger.Info("Get reference currency, count=%d", len(resp))
 		for _, result := range resp {
-			fmt.Printf("currency:%s, ", result.Currency)
+			applogger.Info("currency:%s, ", result.Currency)
 
 			for _, chain := range result.Chains {
-				fmt.Printf("Chain:%s, ", chain.Chain)
-				fmt.Printf("BaseChain:%s, ", chain.BaseChain)
-				fmt.Printf("WithdrawPrecision:%d ", chain.WithdrawPrecision)
+				applogger.Info("Chain: %+v", chain)
 			}
-			fmt.Printf("\n")
 		}
-
-		fmt.Printf("There are total %d CurrencyChain\n", len(resp))
 	}
 }
 
@@ -81,8 +77,8 @@ func getTimestamp() {
 	resp, err := client.GetTimestamp()
 
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Get timestamp error: %s", err)
 	} else {
-		fmt.Println("timestamp:", resp)
+		applogger.Info("Get timestamp: %d", resp)
 	}
 }

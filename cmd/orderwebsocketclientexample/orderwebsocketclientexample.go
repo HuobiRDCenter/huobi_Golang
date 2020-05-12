@@ -25,12 +25,12 @@ func reqOrderV1() {
 			if resp.ErrorCode == 0 {
 				err := client.Request("1", "1601")
 				if err != nil {
-					fmt.Printf("Request error: %s\n", err)
+					applogger.Error("Request error: %s", err)
 				} else {
-					fmt.Println("Sent request")
+					applogger.Debug("Sent request")
 				}
 			} else {
-				fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
+				applogger.Error("Authentication error: %d", resp.ErrorCode)
 			}
 
 		},
@@ -39,18 +39,18 @@ func reqOrderV1() {
 			if ok {
 				if &reqResponse.Data != nil {
 					o := reqResponse.Data
-					fmt.Printf("Request order, id: %d, state: %s, symbol: %s, price: %s, filled amount: %s", o.Id, o.State, o.Symbol, o.Price, o.FilledAmount)
+					applogger.Info("Request order, id: %d, state: %s, symbol: %s, price: %s, filled amount: %s", o.Id, o.State, o.Symbol, o.Price, o.FilledAmount)
 				} else {
-					fmt.Printf("Request order error: %s", reqResponse.ErrorCode)
+					applogger.Error("Request order error: %s", reqResponse.ErrorCode)
 				}
 			} else {
-				fmt.Printf("Received unknown response: %v\n", resp)
+				applogger.Warn("Received unknown response: %v", resp)
 			}
 		})
 
 	err := client.Connect(true)
 	if err != nil {
-		fmt.Printf("Client Connect error: %s\n", err)
+		applogger.Error("Client Connect error: %s", err)
 		return
 	}
 
@@ -58,7 +58,7 @@ func reqOrderV1() {
 	fmt.Scanln()
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func reqOrdersV1() {
@@ -73,12 +73,12 @@ func reqOrdersV1() {
 				}
 				err := client.Request(req)
 				if err != nil {
-					fmt.Printf("Request error: %s\n", err)
+					applogger.Error("Request error: %s", err)
 				} else {
-					fmt.Println("Sent request")
+					applogger.Debug("Sent request")
 				}
 			} else {
-				fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
+				applogger.Error("Authentication error: %d", resp.ErrorCode)
 			}
 
 		},
@@ -87,19 +87,19 @@ func reqOrdersV1() {
 			if ok {
 				if &reqResponse.Data != nil {
 					for _, o := range reqResponse.Data {
-						fmt.Printf("Request order, id: %d, state: %s, symbol: %s, price: %s, filled amount: %s", o.Id, o.State, o.Symbol, o.Price, o.FilledAmount)
+						applogger.Info("Request order, id: %d, state: %s, symbol: %s, price: %s, filled amount: %s", o.Id, o.State, o.Symbol, o.Price, o.FilledAmount)
 					}
 				} else {
-					fmt.Printf("Request order error: %s", reqResponse.ErrorCode)
+					applogger.Error("Request order error: %s", reqResponse.ErrorCode)
 				}
 			} else {
-				fmt.Printf("Received unknown response: %v\n", resp)
+				applogger.Warn("Received unknown response: %+v", resp)
 			}
 		})
 
 	err := client.Connect(true)
 	if err != nil {
-		fmt.Printf("Client Connect error: %s\n", err)
+		applogger.Error("Client Connect error: %s", err)
 		return
 	}
 
@@ -107,7 +107,7 @@ func reqOrdersV1() {
 	fmt.Scanln()
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func subOrderUpdateV1() {
@@ -121,12 +121,12 @@ func subOrderUpdateV1() {
 			if resp.ErrorCode == 0 {
 				err := client.Subscribe("btcusdt", "1601")
 				if err != nil {
-					fmt.Printf("Subscribe error: %s\n", err)
+					applogger.Error("Subscribe error: %s", err)
 				} else {
-					fmt.Println("Sent subscription")
+					applogger.Debug("Sent subscription")
 				}
 			} else {
-				fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
+				applogger.Error("Authentication error: %d", resp.ErrorCode)
 			}
 
 		},
@@ -136,17 +136,17 @@ func subOrderUpdateV1() {
 			if ok {
 				if &subResponse.Data != nil {
 					o := subResponse.Data
-					fmt.Printf("Order update, id: %d, state: %s, symbol: %s, price: %s, filled amount: %s", o.OrderId, o.OrderState, o.Symbol, o.Price, o.FilledAmount)
+					applogger.Info("Order update, id: %d, state: %s, symbol: %s, price: %s, filled amount: %s", o.OrderId, o.OrderState, o.Symbol, o.Price, o.FilledAmount)
 				}
 			} else {
-				fmt.Printf("Received unknown response: %v\n", resp)
+				applogger.Warn("Received unknown response: %+v", resp)
 			}
 		})
 
 	// Connect to the server and wait for the handler to handle the response
 	err := client.Connect(true)
 	if err != nil {
-		fmt.Printf("Client Connect error: %s\n", err)
+		applogger.Error("Client Connect error: %s", err)
 		return
 	}
 
@@ -155,11 +155,11 @@ func subOrderUpdateV1() {
 
 	err = client.UnSubscribe("1", "1250")
 	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
+		applogger.Error("UnSubscribe error: %s", err)
 	}
 
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func subOrderUpdateV2() {
@@ -195,7 +195,7 @@ func subOrderUpdateV2() {
 					}
 				}
 			} else {
-				applogger.Error("Received unknown response: %v", resp)
+				applogger.Warn("Received unknown response: %v", resp)
 			}
 		})
 
@@ -244,7 +244,7 @@ func subTradeClear() {
 					}
 				}
 			} else {
-				applogger.Error("Received unknown response: %v", resp)
+				applogger.Warn("Received unknown response: %v", resp)
 			}
 		})
 

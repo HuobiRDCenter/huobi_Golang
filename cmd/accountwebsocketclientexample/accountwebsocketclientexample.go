@@ -26,12 +26,12 @@ func reqAccountUpdateV1() {
 			if resp.ErrorCode == 0 {
 				err := client.Request("")
 				if err != nil {
-					fmt.Printf("Request error: %s\n", err)
+					applogger.Error("Request error: %s", err)
 				} else {
-					fmt.Println("Sent request")
+					applogger.Debug("Sent request")
 				}
 			} else {
-				fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
+				applogger.Error("Authentication error: %d", resp.ErrorCode)
 			}
 
 		},
@@ -41,23 +41,23 @@ func reqAccountUpdateV1() {
 			if ok {
 				if &reqResponse.Data != nil {
 					for _, a := range reqResponse.Data {
-						fmt.Printf("Account id: %d, type: %s, state: %s\n", a.Id, a.Type, a.State)
+						applogger.Info("Account id: %d, type: %s, state: %s", a.Id, a.Type, a.State)
 						if &a.List != nil {
 							for _, b := range a.List {
-								fmt.Printf("Currency: %s, type: %s, balance: %s\n", b.Currency, b.Type, b.Balance)
+								applogger.Info("Currency: %s, type: %s, balance: %s", b.Currency, b.Type, b.Balance)
 							}
 						}
 					}
 				}
 			} else {
-				fmt.Printf("Received unknown response: %v\n", resp)
+				applogger.Warn("Received unknown response: %+v", resp)
 			}
 		})
 
 	// Connect to the server and wait for the handler to handle the response
 	err := client.Connect(false)
 	if err != nil {
-		fmt.Printf("Client Connect error: %s\n", err)
+		applogger.Error("Client Connect error: %s", err)
 		return
 	}
 
@@ -67,7 +67,7 @@ func reqAccountUpdateV1() {
 
 	// Close the connection
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func subAccountUpdateV1() {
@@ -81,12 +81,12 @@ func subAccountUpdateV1() {
 			if resp.ErrorCode == 0 {
 				err := client.Subscribe("1", "1250")
 				if err != nil {
-					fmt.Printf("Subscribe error: %s\n", err)
+					applogger.Error("Subscribe error: %s", err)
 				} else {
-					fmt.Println("Sent subscription")
+					applogger.Debug("Sent subscription")
 				}
 			} else {
-				fmt.Printf("Authentication error: %d\n", resp.ErrorCode)
+				applogger.Error("Authentication error: %d", resp.ErrorCode)
 			}
 
 		},
@@ -95,22 +95,22 @@ func subAccountUpdateV1() {
 			subResponse, ok := resp.(account.SubscribeAccountV1Response)
 			if ok {
 				if &subResponse.Data != nil {
-					fmt.Printf("Account update event: %s\n", subResponse.Data.Event)
+					applogger.Info("Account update event: %s", subResponse.Data.Event)
 					if &subResponse.Data.List != nil {
 						for _, b := range subResponse.Data.List {
-							fmt.Printf("Account id: %d, currency: %s, type: %s, balance: %s\n", b.AccountId, b.Currency, b.Type, b.Balance)
+							applogger.Info("Account id: %d, currency: %s, type: %s, balance: %s", b.AccountId, b.Currency, b.Type, b.Balance)
 						}
 					}
 				}
 			} else {
-				fmt.Printf("Received unknown response: %v\n", resp)
+				applogger.Warn("Received unknown response: %+v", resp)
 			}
 		})
 
 	// Connect to the server and wait for the handler to handle the response
 	err := client.Connect(true)
 	if err != nil {
-		fmt.Printf("Client Connect error: %s\n", err)
+		applogger.Error("Client Connect error: %s", err)
 		return
 	}
 
@@ -120,12 +120,12 @@ func subAccountUpdateV1() {
 	// Unsubscribe the topic
 	err = client.UnSubscribe("1", "1250")
 	if err != nil {
-		fmt.Printf("UnSubscribe error: %s\n", err)
+		applogger.Error("UnSubscribe error: %s", err)
 	}
 
 	// Close the connection
 	client.Close()
-	fmt.Println("Client closed")
+	applogger.Info("Client closed")
 }
 
 func subAccountUpdateV2() {
@@ -163,7 +163,7 @@ func subAccountUpdateV2() {
 					}
 				}
 			} else {
-				applogger.Error("Received unknown response: %v", resp)
+				applogger.Warn("Received unknown response: %v", resp)
 			}
 		})
 

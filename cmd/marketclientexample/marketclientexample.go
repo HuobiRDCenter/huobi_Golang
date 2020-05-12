@@ -1,8 +1,8 @@
 package marketclientexample
 
 import (
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 )
@@ -24,10 +24,10 @@ func getCandlestick() {
 	optionalRequest := getrequest.GetCandlestickOptionalRequest{Period: getrequest.MIN1, Size: 10}
 	resp, err := client.GetCandlestick("btcusdt", optionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, kline := range resp {
-			fmt.Println("High: ", kline.High, "Low:", kline.Low)
+			applogger.Info("High=%f, Low=%f", kline.High, kline.Low)
 		}
 	}
 }
@@ -38,9 +38,9 @@ func getLast24hCandlestickAskBid() {
 
 	resp, err := client.GetLast24hCandlestickAskBid("btcusdt")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Bid: ", resp.Bid, "Ask: ", resp.Ask)
+		applogger.Info("Bid=%+v, Ask=%+v", resp.Bid, resp.Ask)
 	}
 }
 
@@ -50,10 +50,10 @@ func getLast24hCandlesticks() {
 
 	resp, err := client.GetAllSymbolsLast24hCandlesticksAskBid()
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, tick := range resp {
-			fmt.Printf("Symbol: %s, High: %v, Low: %v, Ask[%v, %v], Bid[%v, %v]\n",
+			applogger.Info("Symbol: %s, High: %v, Low: %v, Ask[%v, %v], Bid[%v, %v]",
 				tick.Symbol, tick.High, tick.Low, tick.Ask, tick.AskSize, tick.Bid, tick.BidSize)
 		}
 	}
@@ -66,13 +66,13 @@ func getDepth() {
 
 	resp, err := client.GetDepth("btcusdt", getrequest.STEP0, optionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, ask := range resp.Asks {
-			fmt.Println("ask: ", ask)
+			applogger.Info("ask: %+v", ask)
 		}
 		for _, bid := range resp.Bids {
-			fmt.Println("bid: ", bid)
+			applogger.Info("bid: %+v", bid)
 		}
 
 	}
@@ -84,10 +84,10 @@ func getLatestTrade() {
 
 	resp, err := client.GetLatestTrade("btcusdt")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, trade := range resp.Data {
-			fmt.Println("Id: ", trade.Id, "Price:", trade.Price)
+			applogger.Info("Id=%d, Price=%f", trade.Id, trade.Price)
 		}
 	}
 }
@@ -98,11 +98,11 @@ func getHistoricalTrade() {
 	optionalRequest := getrequest.GetHistoricalTradeOptionalRequest{5}
 	resp, err := client.GetHistoricalTrade("btcusdt", optionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, tradeData := range resp {
 			for _, trade := range tradeData.Data {
-				fmt.Println("price: ", trade.Price)
+				applogger.Info("price: %f", trade.Price)
 			}
 		}
 	}
@@ -114,8 +114,8 @@ func getLast24hCandlestick() {
 
 	resp, err := client.GetLast24hCandlestick("btcusdt")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Close: ", resp.Close, "Open: ", resp.Open)
+		applogger.Info("Close=%f, Open=%f", resp.Close, resp.Open)
 	}
 }

@@ -13,6 +13,7 @@ The SDK supports RESTful API invoking, and concurrently subscribing the market, 
   - [Client](#Client)
   - [Response](#Response)
   - [Init function](#Init-function)
+  - [Logging](#logging)
 - [Request examples](#Request-examples)
   - [Common data](#Common-data)
   - [Market data](#Market-data)
@@ -46,9 +47,9 @@ client := new(client.CommonClient).Init(config.Host)
 resp, err := client.GetTimestamp()
 
 if err != nil {
-  fmt.Println(err)
+  applogger.Error("Get timestamp error: %s", err)
 } else {
-  fmt.Println("timestamp:", resp)
+  applogger.Info("Get timestamp: %d", resp)
 }
 
 
@@ -56,11 +57,12 @@ if err != nil {
 client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
 resp, err := client.GetAccountInfo()
 if err != nil {
-  fmt.Println(err)
+  applogger.Error("Get account error: %s", err)
 } else {
+  applogger.Info("Get account, count=%d", len(resp))
   for _, result := range resp {
-    fmt.Printf("account: %+v\n", result)
-    }
+    applogger.Info("account: %+v", result)
+  }
 }
 ```
 
@@ -183,9 +185,9 @@ resp, err := client.GetTimestamp()
 
 // Check error first
 if err != nil {
-  fmt.Println(err)
+  applogger.Error("Get timestamp error: %s", err)
 } else {
-  fmt.Println("timestamp:", resp)
+  applogger.Info("Get timestamp: %d", resp)
 }
 ```
 
@@ -194,7 +196,7 @@ For array struct, you can use for/range to iterate each element
 ```go
 // Check the status of response and print some properties
 for _, kline := range resp {
-  fmt.Println("High: ", kline.High, "Low:", kline.Low)
+  applogger.Info("High=%f, Low=%f", kline.High, kline.Low)
 }
 ```
 
@@ -202,7 +204,7 @@ for _, kline := range resp {
 
 Golang is not a pure object oriented programming language, and there is no native constructor. In this SDK, every struct has an ***Init*** function for each struct, you must call Init function first, otherwise the member variables may not be initialized expected.
 
-###Logging
+### Logging
 
 This SDK uses the high performance logging library [zap](https://github.com/uber-go/zap), which provide different kind of loggers. To better support format message, this SDK uses the SugaredLogger, and wrapped a few interfaces in package *logging/applogger*. It has below features:
 
@@ -210,7 +212,7 @@ This SDK uses the high performance logging library [zap](https://github.com/uber
 2. Support multiple levels (Fatal, Error, Panic, Warn, Info and Debug) and minimum log level
 3. Support colorful text (by default)
 
-You can customize your own logging by updating *applogger.go* file.
+You can customize your own logging by updating *applogger.go* file.
 
 ## Request Examples
 
@@ -423,19 +425,9 @@ client := new(marketwebsocketclient.Last24hCandlestickWebSocketClient).Init(conf
 client.SetHandler(
   // Connected handler
   func() {
-    err := client.Request("btcusdt", "1608")
-      if err != nil {
-        fmt.Printf("Sent error: %s\n", err)
-      } else {
-        fmt.Println("Sent request")
-      }
+    client.Request("btcusdt", "1608")
 
-    err = client.Subscribe("btcusdt", "1608")
-      if err != nil {
-        fmt.Printf("Subscribe error: %s\n", err)
-      } else {
-        fmt.Println("Sent subscription")
-      }
+    client.Subscribe("btcusdt", "1608")
   },
   // Response handler
   func(resp interface{}) {
@@ -444,27 +436,23 @@ client.SetHandler(
         if &candlestickResponse != nil {
           if candlestickResponse.Tick != nil {
             t := candlestickResponse.Tick
-              fmt.Printf("Candlestick update, id: %d, count: %v, volume: %v [%v-%v-%v-%v]\n",
+              applogger.Info("Candlestick update, id: %d, count: %v, volume: %v [%v-%v-%v-%v]",
                          t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
           }
 
           if candlestickResponse.Data != nil {
             t := candlestickResponse.Data
-              fmt.Printf("Candlestick data, id: %d, count: %v, volume: %v [%v-%v-%v-%v]\n",
+              applogger.Info("Candlestick data, id: %d, count: %v, volume: %v [%v-%v-%v-%v]",
                          t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
           }
         }
       } else {
-        fmt.Printf("Unknown response: %v\n", resp)
+        applogger.Warn("Unknown response: %v", resp)
       }
   })
 
 // Connect to the server and wait for the handler to handle the response
-err := client.Connect(true)
-if err != nil {
-  fmt.Printf("Client connect error: %s\n", err)
-  return
-}
+client.Connect(true)
 ```
 
 ### Subscribe account update
@@ -480,14 +468,9 @@ if err != nil {
     // Authentication response handler
     func(resp *auth.WebSocketV2AuthenticationResponse) {
       if resp.IsSuccess() {
-        err := client.Subscribe("1", "1149")
-        if err != nil {
-          fmt.Printf("Subscribe error: %s\n", err)
-        } else {
-          fmt.Println("Sent subscription")
-        }
+        client.Subscribe("1", "1149")        
       } else {
-        fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
+        applogger.Error("Authentication error, code: %d, message:%s", resp.Code, resp.Message)
       }
     },
     // Response handler
@@ -496,31 +479,27 @@ if err != nil {
       if ok {
         if subResponse.Action == "sub" {
           if subResponse.IsSuccess() {
-            fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
+            applogger.Info("Subscription topic %s successfully", subResponse.Ch)
           } else {
-            fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+            applogger.Error("Subscription topic %s error, code: %d, message: %s", subResponse.Ch, subResponse.Code, subResponse.Message)
           }
         } else if subResponse.Action == "push" {
           if subResponse.Data != nil {
             b := subResponse.Data
             if b.ChangeTime == 0 {
-              fmt.Printf("Account overview, id: %d, currency: %s, balance: %s\n", b.AccountId, b.Currency, b.Balance)
+              applogger.Info("Account overview, id: %d, currency: %s, balance: %s", b.AccountId, b.Currency, b.Balance)
             } else {
-              fmt.Printf("Account update, id: %d, currency: %s, balance: %s, time: %d\n", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
+              applogger.Info("Account update, id: %d, currency: %s, balance: %s, time: %d", b.AccountId, b.Currency, b.Balance, b.ChangeTime)
             }
           }
         }
       } else {
-        fmt.Printf("Received unknown response: %v\n", resp)
+        applogger.Warn("Received unknown response: %v", resp)
       }
     })
 
   // Connect to the server and wait for the handler to handle the response
-  err := client.Connect(true)
-  if err != nil {
-    fmt.Printf("Client Connect error: %s\n", err)
-    return
-  }
+  client.Connect(true)
 ```
 
 ### Subscribe order update
@@ -537,14 +516,9 @@ if err != nil {
     func(resp *auth.WebSocketV2AuthenticationResponse) {
       if resp.IsSuccess() {
         // Subscribe if authentication passed
-        err := client.Subscribe("btcusdt", "1149")
-        if err != nil {
-          fmt.Printf("Subscribe error: %s\n", err)
-        } else {
-          fmt.Println("Sent subscription")
-        }
+        client.Subscribe("btcusdt", "1149")
       } else {
-        fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
+        applogger.Info("Authentication error, code: %d, message:%s", resp.Code, resp.Message)
       }
     },
     // Response handler
@@ -553,28 +527,24 @@ if err != nil {
       if ok {
         if subResponse.Action == "sub" {
           if subResponse.IsSuccess() {
-            fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
+            applogger.Info("Subscription topic %s successfully", subResponse.Ch)
           } else {
-            fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+            applogger.Error("Subscription topic %s error, code: %d, message: %s", subResponse.Ch, subResponse.Code, subResponse.Message)
           }
         } else if subResponse.Action == "push" {
           if subResponse.Data != nil {
             o := subResponse.Data
-            fmt.Printf("Order update, event: %s, symbol: %s, type: %s, status: %s\n",
+            applogger.Info("Order update, event: %s, symbol: %s, type: %s, status: %s",
               o.EventType, o.Symbol, o.Type, o.OrderStatus)
           }
         }
       } else {
-        fmt.Printf("Received unknown response: %v\n", resp)
+        applogger.Warn("Received unknown response: %v", resp)
       }
     })
 
   // Connect to the server and wait for the handler to handle the response
-  err := client.Connect(true)
-  if err != nil {
-    fmt.Printf("Client Connect error: %s\n", err)
-    return
-  }
+  client.Connect(true)
 ```
 
 ### Subscribe trade update
@@ -591,14 +561,9 @@ if err != nil {
     func(resp *auth.WebSocketV2AuthenticationResponse) {
       if resp.IsSuccess() {
         // Subscribe if authentication passed
-        err := client.Subscribe("btcusdt", "1149")
-        if err != nil {
-          fmt.Printf("Subscribe error: %s\n", err)
-        } else {
-          fmt.Println("Sent subscription")
-        }
+        client.Subscribe("btcusdt", "1149")
       } else {
-        fmt.Printf("Authentication error, code: %d, message:%s\n", resp.Code, resp.Message)
+        applogger.Error("Authentication error, code: %d, message:%s", resp.Code, resp.Message)
       }
     },
     // Response handler
@@ -607,28 +572,24 @@ if err != nil {
       if ok {
         if subResponse.Action == "sub" {
           if subResponse.IsSuccess() {
-            fmt.Printf("Subscription topic %s successfully\n", subResponse.Ch)
+            applogger.Info("Subscription topic %s successfully", subResponse.Ch)
           } else {
-            fmt.Printf("Subscription topic %s error, code: %d, message: %s\n", subResponse.Ch, subResponse.Code, subResponse.Message)
+            applogger.Error("Subscription topic %s error, code: %d, message: %s", subResponse.Ch, subResponse.Code, subResponse.Message)
           }
         } else if subResponse.Action == "push" {
           if subResponse.Data != nil {
             o := subResponse.Data
-            fmt.Printf("Order update, symbol: %s, order id: %d, price: %s, volume: %s\n",
+            applogger.Info("Order update, symbol: %s, order id: %d, price: %s, volume: %s",
               o.Symbol, o.OrderId, o.TradePrice, o.TradeVolume)
           }
         }
       } else {
-        fmt.Printf("Received unknown response: %v\n", resp)
+        applogger.Warn("Received unknown response: %v", resp)
       }
     })
 
   // Connect to the server and wait for the handler to handle the response
-  err := client.Connect(true)
-  if err != nil {
-    fmt.Printf("Client Connect error: %s\n", err)
-    return
-  }
+  client.Connect(true)
 ```
 
 ## Unsubscribe

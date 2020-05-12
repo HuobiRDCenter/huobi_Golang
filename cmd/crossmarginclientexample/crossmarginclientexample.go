@@ -1,8 +1,8 @@
 package crossmarginclientexample
 
 import (
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
@@ -26,9 +26,9 @@ func transferIn() {
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.TransferIn(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Data: ", resp)
+		applogger.Info("Data: %+v", resp)
 	}
 }
 
@@ -40,9 +40,9 @@ func transferOut() {
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.TransferOut(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Data: ", resp)
+		applogger.Info("Data: %+v", resp)
 	}
 }
 
@@ -51,10 +51,10 @@ func getMarginLoanInfo() {
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.GetMarginLoanInfo()
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, info := range resp {
-			fmt.Printf("Info: %+v \n", info)
+			applogger.Info("Info: %+v", info)
 		}
 	}
 }
@@ -66,9 +66,9 @@ func marginOrders() {
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.ApplyLoan(request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("Data: ", resp)
+		applogger.Info("Data: %+v", resp)
 	}
 }
 
@@ -77,9 +77,11 @@ func marginOrdersRepay() {
 	orderId := "12345"
 	request := postrequest.MarginOrdersRepayRequest{Amount: "1.0"}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	err := client.Repay(orderId, request)
+	resp, err := client.Repay(orderId, request)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Repay error: %s", err)
+	} else {
+		applogger.Info("Repay successfully, id=%d", resp)
 	}
 }
 
@@ -89,10 +91,10 @@ func marginLoanOrders() {
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.MarginLoanOrders(optionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, order := range resp {
-			fmt.Printf("Order: %+v\n", order)
+			applogger.Info("Order: %+v", order)
 		}
 	}
 }
@@ -102,10 +104,10 @@ func marginAccountsBalance() {
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.MarginAccountsBalance("")
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, account := range resp.List {
-			fmt.Printf("Account: %+v\n", account)
+			applogger.Info("Account: %+v", account)
 		}
 	}
 }

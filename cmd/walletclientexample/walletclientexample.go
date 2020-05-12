@@ -1,8 +1,8 @@
 package walletclientexample
 
 import (
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
@@ -10,39 +10,53 @@ import (
 
 func RunAllExamples() {
 	getDepositAddress()
+	getSubUserDepositAddress()
 	getWithdrawQuota()
 	createWithdraw()
 	cancelWithdraw()
 	queryDepositWithdraw()
+	querySubUserDepositHistory()
 }
 
-//  Get deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 func getDepositAddress() {
 	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	currency := "usdt"
 	resp, err := client.GetDepositAddress(currency)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Get deposit address error: %s", err)
 	} else {
+		applogger.Info("Get deposit address, count=%d", len(resp))
 		for _, result := range resp {
-			fmt.Printf("DepositAddress: %+v\n", result)
+			applogger.Info("DepositAddress: %+v", result)
 		}
 	}
 }
 
-//  Get the withdraw quota for currencies
+func getSubUserDepositAddress() {
+	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	currency := "usdt"
+	resp, err := client.GetSubUserDepositAddress(config.SubUid, currency)
+	if err != nil {
+		applogger.Error("Get sub user deposit address error: %s", err)
+	} else {
+		applogger.Info("Get sub user deposit address, count=%d", len(resp))
+		for _, result := range resp {
+			applogger.Info("DepositAddress: %+v", result)
+		}
+	}
+}
+
 func getWithdrawQuota() {
 	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	currency := "usdt"
 	resp, err := client.GetWithdrawQuota(currency)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Get withdraw quota error: %s", err)
 	} else {
-		fmt.Println("Currency: ", resp.Currency, "Chain: ", resp.Chains[0].Chain, "MaxWithdrawAmt: ", resp.Chains[0].MaxWithdrawAmt)
+		applogger.Info("Currency: %s, Chain: %s, MaxWithdrawAmt: %s", resp.Currency, resp.Chains[0].Chain, resp.Chains[0].MaxWithdrawAmt)
 	}
 }
 
-//  Create a withdraw request from your spot trading account to an external address.
 func createWithdraw() {
 	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	createWithdrawRequest := postrequest.CreateWithdrawRequest{
@@ -52,35 +66,47 @@ func createWithdraw() {
 		Fee:      "1.0"}
 	resp, err := client.CreateWithdraw(createWithdrawRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Create withdraw request error: %s", err)
 	} else {
-		fmt.Println(resp)
+		applogger.Info("Create withdraw request successfully: id=%d", resp)
 	}
 }
 
-//  Cancel a previously created withdraw request by its transfer id.
 func cancelWithdraw() {
 	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.CancelWithdraw(12345)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Cancel withdraw error: %s", err)
 	} else {
-		fmt.Println(resp)
+		applogger.Info("Cancel withdraw successfully: id=%d", resp)
 	}
 }
 
-//  Get all existed withdraws and deposits and return their latest status.
 func queryDepositWithdraw() {
 	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	depositType := "deposit"
 	queryDepositWithdrawOptionalRequest := getrequest.QueryDepositWithdrawOptionalRequest{Currency: "usdt"}
 	resp, err := client.QueryDepositWithdraw(depositType, queryDepositWithdrawOptionalRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error("Query deposit-withdraw history error: %s", err)
 	} else {
+		applogger.Info("Query deposit-withdraw history, count=%d", len(resp))
 		for _, result := range resp {
-			fmt.Printf("resp: %+v\n", result)
+			applogger.Info("resp: %+v", result)
 		}
-		fmt.Printf("There are total %d deposit-withdraw history", len(resp))
+	}
+}
+
+func querySubUserDepositHistory() {
+	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	optionalRequest := getrequest.QuerySubUserDepositHistoryOptionalRequest{Currency: "usdt"}
+	resp, err := client.QuerySubUserDepositHistory(config.SubUid, optionalRequest)
+	if err != nil {
+		applogger.Error("Query sub user deposit history error: %s", err)
+	} else {
+		applogger.Info("Query sub user deposit history, count=%d", len(resp))
+		for _, result := range resp {
+			applogger.Info("resp: %+v", result)
+		}
 	}
 }

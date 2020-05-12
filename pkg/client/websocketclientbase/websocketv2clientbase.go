@@ -197,9 +197,7 @@ func (p *WebSocketV2ClientBase) readLoop() {
 				continue
 			}
 
-			applogger.Debug("Reading...")
 			msgType, buf, err := p.conn.ReadMessage()
-			applogger.Debug("Reading done")
 			if err != nil {
 				applogger.Error("Read error: %s", err)
 				time.Sleep(TimerIntervalSecond * time.Second)

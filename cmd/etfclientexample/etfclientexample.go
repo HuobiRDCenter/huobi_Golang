@@ -1,8 +1,8 @@
 package etfclientexample
 
 import (
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
@@ -20,9 +20,9 @@ func getSwapConfig() {
 	currency := "hb10"
 	resp, err := client.GetSwapConfig(currency)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("EtfStatus: ", resp.EtfStatus, "PurchaseFeeRate: ", resp.PurchaseFeeRate)
+		applogger.Info("EtfStatus: %d, PurchaseFeeRate: %f", resp.EtfStatus, resp.PurchaseFeeRate)
 	}
 }
 
@@ -32,10 +32,10 @@ func getSwapList() {
 	currency := "hb10"
 	resp, err := client.GetSwapList(currency, 0, 10)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
 		for _, result := range resp {
-			fmt.Printf("SwapList: %+v\n", result)
+			applogger.Info("SwapList: %+v", result)
 		}
 	}
 }
@@ -50,9 +50,9 @@ func swapIn() {
 	}
 	resp, err := client.SwapIn(swapRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("isSucceed: ", resp)
+		applogger.Info("isSucceed: %b", resp)
 	}
 }
 
@@ -66,8 +66,8 @@ func swapOut() {
 	}
 	resp, err := client.SwapOut(swapRequest)
 	if err != nil {
-		fmt.Println(err)
+		applogger.Error(err.Error())
 	} else {
-		fmt.Println("isSucceed: ", resp)
+		applogger.Info("isSucceed: %b", resp)
 	}
 }
