@@ -4,16 +4,15 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
-	"hash"
 	"strings"
 )
 
 type Signer struct {
-	hash hash.Hash
+	key []byte
 }
 
 func (p *Signer) Init(key string) *Signer {
-	p.hash = hmac.New(sha256.New, []byte(key))
+	p.key = []byte(key)
 	return p
 }
 
@@ -35,8 +34,8 @@ func (p *Signer) Sign(method string, host string, path string, parameters string
 }
 
 func (p *Signer) sign(payload string) string {
-	p.hash.Reset()
-	p.hash.Write([]byte(payload))
-	result := base64.StdEncoding.EncodeToString(p.hash.Sum(nil))
+	hash := hmac.New(sha256.New, p.key)
+	hash.Write([]byte(payload))
+	result := base64.StdEncoding.EncodeToString(hash.Sum(nil))
 	return result
 }
