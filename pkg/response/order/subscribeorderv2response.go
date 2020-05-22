@@ -13,7 +13,7 @@ type SubscribeOrderV2Response struct {
 		OrderSize string `json:"orderSize"`
 		Type string `json:"type"`
 		OrderStatus string `json:"orderStatus"`
-		OrderCreateTime string `json:"orderCreateTime"`
+		OrderCreateTime int64 `json:"orderCreateTime"`
 		TradePrice string `json:"tradePrice"`
 		TradeVolume string `json:"tradeVolume"`
 		TradeId int64 `json:"tradeId"`
