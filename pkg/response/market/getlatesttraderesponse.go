@@ -15,7 +15,7 @@ type TradeTick struct {
 		Amount    decimal.Decimal `json:"amount"`
 		TradeId   int64           `json:"trade-id"`
 		Ts        int64           `json:"ts"`
-		Id        int64           `json:"id"`
+		Id        decimal.Decimal `json:"id"`
 		Price     decimal.Decimal `json:"price"`
 		Direction string          `json:"direction"`
 	}

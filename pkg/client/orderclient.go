@@ -221,7 +221,7 @@ func (p *OrderClient) GetHistoryOrders(request *getrequest.GetRequest) (*order.G
 	return &result, nil
 }
 
-// Returns orders based on a specific searching criteria.
+// Returns orders based on a specific searching criteria (within 48 hours)
 func (p *OrderClient) GetLast48hOrders(request *getrequest.GetRequest) (*order.GetHistoryOrdersResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/history", request)
 	getResp, getErr := internal.HttpGet(url)

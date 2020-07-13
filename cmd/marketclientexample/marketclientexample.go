@@ -27,7 +27,7 @@ func getCandlestick() {
 		applogger.Error(err.Error())
 	} else {
 		for _, kline := range resp {
-			applogger.Info("High=%f, Low=%f", kline.High, kline.Low)
+			applogger.Info("High=%v, Low=%v", kline.High, kline.Low)
 		}
 	}
 }
@@ -87,7 +87,7 @@ func getLatestTrade() {
 		applogger.Error(err.Error())
 	} else {
 		for _, trade := range resp.Data {
-			applogger.Info("Id=%d, Price=%f", trade.Id, trade.Price)
+			applogger.Info("Id=%v, Price=%v", trade.Id, trade.Price)
 		}
 	}
 }
@@ -102,7 +102,7 @@ func getHistoricalTrade() {
 	} else {
 		for _, tradeData := range resp {
 			for _, trade := range tradeData.Data {
-				applogger.Info("price: %f", trade.Price)
+				applogger.Info("price: %v", trade.Price)
 			}
 		}
 	}
@@ -116,6 +116,6 @@ func getLast24hCandlestick() {
 	if err != nil {
 		applogger.Error(err.Error())
 	} else {
-		applogger.Info("Close=%f, Open=%f", resp.Close, resp.Open)
+		applogger.Info("Close=%v, Open=%v", resp.Close, resp.Open)
 	}
 }

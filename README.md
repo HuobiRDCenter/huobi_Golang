@@ -196,7 +196,7 @@ For array struct, you can use for/range to iterate each element
 ```go
 // Check the status of response and print some properties
 for _, kline := range resp {
-  applogger.Info("High=%f, Low=%f", kline.High, kline.Low)
+  applogger.Info("High=%v, Low=%v", kline.High, kline.Low)
 }
 ```
 
