@@ -6,8 +6,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/margin"
 )
 
 // Responsible to operate cross margin
@@ -147,7 +147,7 @@ func (p *CrossMarginClient) Repay(orderId string, request postrequest.MarginOrde
 }
 
 // Returns margin orders based on a specific searching criteria.
-func (p *CrossMarginClient) MarginLoanOrders(optionalRequest getrequest.CrossMarginLoanOrdersOptionalRequest) ([]margin.CrossMarginLoanOrder, error) {
+func (p *CrossMarginClient) MarginLoanOrders(optionalRequest margin.CrossMarginLoanOrdersOptionalRequest) ([]margin.CrossMarginLoanOrder, error) {
 	request := new(getrequest.GetRequest).Init()
 	if optionalRequest.Size != "" {
 		request.AddParam("size", optionalRequest.Size)

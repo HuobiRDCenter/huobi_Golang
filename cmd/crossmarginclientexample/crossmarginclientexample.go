@@ -4,7 +4,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
 
@@ -87,7 +87,7 @@ func marginOrdersRepay() {
 
 //  Get the margin orders based on a specific searching criteria.
 func marginLoanOrders() {
-	optionalRequest := getrequest.CrossMarginLoanOrdersOptionalRequest{}
+	optionalRequest := margin.CrossMarginLoanOrdersOptionalRequest{}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.MarginLoanOrders(optionalRequest)
 	if err != nil {

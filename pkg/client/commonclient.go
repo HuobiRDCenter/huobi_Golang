@@ -6,7 +6,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/common"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/common"
 )
 
 // Responsible to get common information
@@ -73,7 +73,7 @@ func (p *CommonClient) GetCurrencys() ([]string, error) {
 
 // APIv2 - Currency & Chains
 // API user could query static reference information for each currency, as well as its corresponding chain(s). (Public Endpoint)
-func (p *CommonClient) GetV2ReferenceCurrencies(optionalRequest getrequest.GetV2ReferenceCurrencies) ([]common.CurrencyChain, error) {
+func (p *CommonClient) GetV2ReferenceCurrencies(optionalRequest common.GetV2ReferenceCurrencies) ([]common.CurrencyChain, error) {
 	request := new(getrequest.GetRequest).Init()
 	if optionalRequest.Currency != "" {
 		request.AddParam("currency", optionalRequest.Currency)

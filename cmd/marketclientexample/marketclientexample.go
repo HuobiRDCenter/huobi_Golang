@@ -4,7 +4,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/market"
 )
 
 func RunAllExamples() {
@@ -21,7 +21,7 @@ func RunAllExamples() {
 func getCandlestick() {
 	client := new(client.MarketClient).Init(config.Host)
 
-	optionalRequest := getrequest.GetCandlestickOptionalRequest{Period: getrequest.MIN1, Size: 10}
+	optionalRequest := market.GetCandlestickOptionalRequest{Period: market.MIN1, Size: 10}
 	resp, err := client.GetCandlestick("btcusdt", optionalRequest)
 	if err != nil {
 		applogger.Error(err.Error())
@@ -61,10 +61,10 @@ func getLast24hCandlesticks() {
 
 //  Get the current order book of the btcusdt.
 func getDepth() {
-	optionalRequest := getrequest.GetDepthOptionalRequest{10}
+	optionalRequest := market.GetDepthOptionalRequest{10}
 	client := new(client.MarketClient).Init(config.Host)
 
-	resp, err := client.GetDepth("btcusdt", getrequest.STEP0, optionalRequest)
+	resp, err := client.GetDepth("btcusdt", market.STEP0, optionalRequest)
 	if err != nil {
 		applogger.Error(err.Error())
 	} else {
@@ -95,7 +95,7 @@ func getLatestTrade() {
 //  Get the most recent trades with btcusdt price, volume, and direction.
 func getHistoricalTrade() {
 	client := new(client.MarketClient).Init(config.Host)
-	optionalRequest := getrequest.GetHistoricalTradeOptionalRequest{5}
+	optionalRequest := market.GetHistoricalTradeOptionalRequest{5}
 	resp, err := client.GetHistoricalTrade("btcusdt", optionalRequest)
 	if err != nil {
 		applogger.Error(err.Error())

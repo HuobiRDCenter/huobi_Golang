@@ -7,7 +7,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/order"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
 )
 
 // Responsible to operate on order

@@ -4,7 +4,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 	"github.com/shopspring/decimal"
 )
@@ -55,7 +55,7 @@ func getAccountBalance() {
 
 func getAccountHistory() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	getAccountHistoryOptionalRequest := getrequest.GetAccountHistoryOptionalRequest{}
+	getAccountHistoryOptionalRequest := account.GetAccountHistoryOptionalRequest{}
 	resp, err := client.GetAccountHistory(config.AccountId, getAccountHistoryOptionalRequest)
 	if err != nil {
 		applogger.Error("Get account history error: %s", err)
@@ -69,7 +69,7 @@ func getAccountHistory() {
 
 func getAccountLedger() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	getAccountLedgerOptionalRequest := getrequest.GetAccountLedgerOptionalRequest{}
+	getAccountLedgerOptionalRequest := account.GetAccountLedgerOptionalRequest{}
 	resp, err := client.GetAccountLedger(config.AccountId, getAccountLedgerOptionalRequest)
 	if err != nil {
 		applogger.Error("Get account ledger error: %s", err)

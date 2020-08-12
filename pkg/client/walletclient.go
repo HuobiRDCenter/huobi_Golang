@@ -6,8 +6,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/wallet"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/wallet"
 	"strconv"
 )
 
@@ -29,29 +29,6 @@ func (p *WalletClient) GetDepositAddress(currency string) ([]wallet.DepositAddre
 	request.AddParam("currency", currency)
 
 	url := p.privateUrlBuilder.Build("GET", "/v2/account/deposit/address", request)
-	getResp, getErr := internal.HttpGet(url)
-	if getErr != nil {
-		return nil, getErr
-	}
-
-	result := wallet.GetDepositAddressResponse{}
-	jsonErr := json.Unmarshal([]byte(getResp), &result)
-	if jsonErr != nil {
-		return nil, jsonErr
-	}
-	if result.Code == 200 && result.Data != nil {
-		return result.Data, nil
-	}
-	return nil, errors.New(getResp)
-}
-
-// Parent user query sub user deposit address of corresponding chain, for a specific crypto currency (except IOTA)
-func (p *WalletClient) GetSubUserDepositAddress(subUid int64, currency string) ([]wallet.DepositAddress, error) {
-	request := new(getrequest.GetRequest).Init()
-	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
-	request.AddParam("currency", currency)
-
-	url := p.privateUrlBuilder.Build("GET", "/v2/sub-user/deposit-address", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
 		return nil, getErr
@@ -135,7 +112,7 @@ func (p *WalletClient) CancelWithdraw(withdrawId int64) (int64, error) {
 }
 
 // Returns all existed withdraws and deposits and return their latest status.
-func (p *WalletClient) QueryDepositWithdraw(depositOrWithdraw string, optionalRequest getrequest.QueryDepositWithdrawOptionalRequest) ([]wallet.DepositWithdraw, error) {
+func (p *WalletClient) QueryDepositWithdraw(depositOrWithdraw string, optionalRequest wallet.QueryDepositWithdrawOptionalRequest) ([]wallet.DepositWithdraw, error) {
 	request := new(getrequest.GetRequest).Init()
 
 	request.AddParam("type", depositOrWithdraw)
@@ -165,48 +142,6 @@ func (p *WalletClient) QueryDepositWithdraw(depositOrWithdraw string, optionalRe
 		return nil, jsonErr
 	}
 	if result.Status == "ok" && result.Data != nil {
-		return result.Data, nil
-	}
-	return nil, errors.New(getResp)
-}
-
-// Parent user query sub user deposits history
-func (p *WalletClient) QuerySubUserDepositHistory(subUid int64, optionalRequest getrequest.QuerySubUserDepositHistoryOptionalRequest) ([]wallet.DepositHistory, error) {
-	request := new(getrequest.GetRequest).Init()
-
-	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
-
-	if optionalRequest.Currency != "" {
-		request.AddParam("currency", optionalRequest.Currency)
-	}
-	if optionalRequest.StartTime != 0 {
-		request.AddParam("startTime", strconv.FormatInt(optionalRequest.StartTime, 10))
-	}
-	if optionalRequest.EndTime != 0 {
-		request.AddParam("endTime", strconv.FormatInt(optionalRequest.EndTime, 10))
-	}
-	if optionalRequest.Sort != "" {
-		request.AddParam("sort", optionalRequest.Sort)
-	}
-	if optionalRequest.Limit != "" {
-		request.AddParam("limit", optionalRequest.Limit)
-	}
-	if optionalRequest.FromId != 0 {
-		request.AddParam("fromId", strconv.FormatInt(optionalRequest.FromId, 10))
-	}
-
-	url := p.privateUrlBuilder.Build("GET", "/v2/sub-user/query-deposit", request)
-	getResp, getErr := internal.HttpGet(url)
-	if getErr != nil {
-		return nil, getErr
-	}
-
-	result := wallet.QuerySubUserDepositHistoryResponse{}
-	jsonErr := json.Unmarshal([]byte(getResp), &result)
-	if jsonErr != nil {
-		return nil, jsonErr
-	}
-	if result.Code == 200 && result.Data != nil {
 		return result.Data, nil
 	}
 	return nil, errors.New(getResp)

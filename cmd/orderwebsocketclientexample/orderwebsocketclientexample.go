@@ -5,9 +5,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/orderwebsocketclient"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/order"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/auth"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
 )
 
 func RunAllExamples() {
@@ -66,7 +65,7 @@ func reqOrdersV1() {
 	client.SetHandler(
 		func(resp *auth.WebSocketV1AuthenticationResponse) {
 			if resp.ErrorCode == 0 {
-				req := getrequest.RequestOrdersRequest{
+				req := order.RequestOrdersRequest{
 					AccountId: 11136102,
 					Symbol:    "btcusdt",
 					States:    "submitted, created, canceled",

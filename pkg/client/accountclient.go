@@ -7,8 +7,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
 	"strconv"
 	"strings"
 )
@@ -65,7 +65,7 @@ func (p *AccountClient) GetAccountBalance(accountId string) (*account.AccountBal
 }
 
 // Returns the amount changes of specified user's account
-func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest getrequest.GetAccountHistoryOptionalRequest) ([]account.AccountHistory, error) {
+func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest account.GetAccountHistoryOptionalRequest) ([]account.AccountHistory, error) {
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("account-id", accountId)
 	if optionalRequest.Currency != "" {
@@ -107,7 +107,7 @@ func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest getr
 
 
 // Returns the account ledger of specified user's account
-func (p *AccountClient) GetAccountLedger(accountId string, optionalRequest getrequest.GetAccountLedgerOptionalRequest) ([]account.Ledger, error) {
+func (p *AccountClient) GetAccountLedger(accountId string, optionalRequest account.GetAccountLedgerOptionalRequest) ([]account.Ledger, error) {
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("accountId", accountId)
 	if optionalRequest.Currency != "" {

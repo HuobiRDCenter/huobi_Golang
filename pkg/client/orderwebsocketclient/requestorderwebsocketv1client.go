@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/order"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
 )
 
 // Responsible to handle order request from WebSocket

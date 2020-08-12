@@ -4,7 +4,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
 
@@ -50,7 +50,7 @@ func transferOut() {
 
 //  Get the loan interest rates and quota applied on the user.
 func getMarginLoanInfo() {
-	optionalRequest := getrequest.GetMarginLoanInfoOptionalRequest{Symbols: "btcusdt"}
+	optionalRequest := margin.GetMarginLoanInfoOptionalRequest{Symbols: "btcusdt"}
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.GetMarginLoanInfo(optionalRequest)
 	if err != nil {
@@ -94,7 +94,7 @@ func marginOrdersRepay() {
 //  Get the margin orders based on a specific searching criteria.
 func marginLoanOrders() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	optionalRequest := getrequest.IsolatedMarginLoanOrdersOptionalRequest{
+	optionalRequest := margin.IsolatedMarginLoanOrdersOptionalRequest{
 		StartDate: "2020-1-1",
 	}
 	resp, err := client.MarginLoanOrders("btcusdt", optionalRequest)
@@ -109,7 +109,7 @@ func marginLoanOrders() {
 
 //  Get the balance of the margin loan account.
 func marginAccountsBalance() {
-	optionalRequest := getrequest.MarginAccountsBalanceOptionalRequest{
+	optionalRequest := margin.MarginAccountsBalanceOptionalRequest{
 		Symbol: "btcusdt"}
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.MarginAccountsBalance(optionalRequest)

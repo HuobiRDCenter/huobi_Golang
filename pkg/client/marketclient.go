@@ -6,7 +6,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/market"
 	"strconv"
 )
 
@@ -22,7 +22,7 @@ func (p *MarketClient) Init(host string) *MarketClient {
 }
 
 // Retrieves all klines in a specific range.
-func (client *MarketClient) GetCandlestick(symbol string, optionalRequest getrequest.GetCandlestickOptionalRequest) ([]market.Candlestick, error) {
+func (client *MarketClient) GetCandlestick(symbol string, optionalRequest market.GetCandlestickOptionalRequest) ([]market.Candlestick, error) {
 
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("symbol", symbol)
@@ -101,7 +101,7 @@ func (client *MarketClient) GetAllSymbolsLast24hCandlesticksAskBid() ([]market.S
 }
 
 // Retrieves the current order book of a specific pair
-func (client *MarketClient) GetDepth(symbol string, step string, optionalRequest getrequest.GetDepthOptionalRequest) (*market.Depth, error) {
+func (client *MarketClient) GetDepth(symbol string, step string, optionalRequest market.GetDepthOptionalRequest) (*market.Depth, error) {
 
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("symbol", symbol)
@@ -156,7 +156,7 @@ func (client *MarketClient) GetLatestTrade(symbol string) (*market.TradeTick, er
 }
 
 // Retrieves the most recent trades with their price, volume, and direction.
-func (client *MarketClient) GetHistoricalTrade(symbol string, optionalRequest getrequest.GetHistoricalTradeOptionalRequest) ([]market.TradeTick, error) {
+func (client *MarketClient) GetHistoricalTrade(symbol string, optionalRequest market.GetHistoricalTradeOptionalRequest) ([]market.TradeTick, error) {
 
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("symbol", symbol)

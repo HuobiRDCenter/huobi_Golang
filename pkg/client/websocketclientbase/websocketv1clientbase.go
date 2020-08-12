@@ -8,7 +8,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/auth"
 	"strings"
 	"sync"
 	"time"

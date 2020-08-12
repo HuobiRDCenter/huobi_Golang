@@ -6,8 +6,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
 	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/margin"
 	"strconv"
 )
 
@@ -74,7 +74,7 @@ func (p *IsolatedMarginClient) TransferOut(request postrequest.IsolatedMarginTra
 }
 
 // Returns loan interest rates and quota applied on the user
-func (p *IsolatedMarginClient) GetMarginLoanInfo(optionalRequest getrequest.GetMarginLoanInfoOptionalRequest) ([]margin.IsolatedMarginLoanInfo, error) {
+func (p *IsolatedMarginClient) GetMarginLoanInfo(optionalRequest margin.GetMarginLoanInfoOptionalRequest) ([]margin.IsolatedMarginLoanInfo, error) {
 	request := new(getrequest.GetRequest).Init()
 	if optionalRequest.Symbols != "" {
 		request.AddParam("symbols", optionalRequest.Symbols)
@@ -150,7 +150,7 @@ func (p *IsolatedMarginClient) Repay(orderId string, request postrequest.MarginO
 }
 
 // Returns margin orders based on a specific searching criteria.
-func (p *IsolatedMarginClient) MarginLoanOrders(symbol string, optionalRequest getrequest.IsolatedMarginLoanOrdersOptionalRequest) ([]margin.IsolatedMarginLoanOrder, error) {
+func (p *IsolatedMarginClient) MarginLoanOrders(symbol string, optionalRequest margin.IsolatedMarginLoanOrdersOptionalRequest) ([]margin.IsolatedMarginLoanOrder, error) {
 	request := new(getrequest.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 	if optionalRequest.Size != "" {
@@ -194,7 +194,7 @@ func (p *IsolatedMarginClient) MarginLoanOrders(symbol string, optionalRequest g
 }
 
 // Returns the balance of the margin loan account.
-func (p *IsolatedMarginClient) MarginAccountsBalance(optionalRequest getrequest.MarginAccountsBalanceOptionalRequest) ([]margin.IsolatedMarginAccountsBalance, error) {
+func (p *IsolatedMarginClient) MarginAccountsBalance(optionalRequest margin.MarginAccountsBalanceOptionalRequest) ([]margin.IsolatedMarginAccountsBalance, error) {
 
 	request := new(getrequest.GetRequest).Init()
 	if optionalRequest.SubUid != 0 {

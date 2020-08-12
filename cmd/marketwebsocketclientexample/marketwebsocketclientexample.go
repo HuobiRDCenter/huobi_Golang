@@ -5,8 +5,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/marketwebsocketclient"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/market"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/market"
 )
 
 func RunAllExamples() {
@@ -70,9 +69,9 @@ func reqAndSubscribeDepth() {
 
 	client.SetHandler(
 		func() {
-			client.Request("btcusdt", getrequest.STEP4, "1153")
+			client.Request("btcusdt", market.STEP4, "1153")
 
-			client.Subscribe("btcusdt", getrequest.STEP4, "1153")
+			client.Subscribe("btcusdt", market.STEP4, "1153")
 		},
 		func(resp interface{}) {
 			depthResponse, ok := resp.(market.SubscribeDepthResponse)

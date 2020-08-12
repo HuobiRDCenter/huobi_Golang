@@ -5,8 +5,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/accountwebsocketclient"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/account"
-	"github.com/huobirdcenter/huobi_golang/pkg/response/auth"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/auth"
 )
 
 func RunAllExamples() {
