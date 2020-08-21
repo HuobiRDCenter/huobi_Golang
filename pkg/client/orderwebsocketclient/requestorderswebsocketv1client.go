@@ -3,8 +3,8 @@ package orderwebsocketclient
 import (
 	"encoding/json"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
 )
 
 // Responsible to handle orders request from WebSocket
@@ -29,7 +29,7 @@ func (p *RequestOrdersWebSocketV1Client) SetHandler(
 // Search past and open orders based on searching criteria.
 func (p *RequestOrdersWebSocketV1Client) Request(req order.RequestOrdersRequest) error {
 
-	reqString, _ := util.ToJson(req)
+	reqString, _ := model.ToJson(req)
 	return p.Send(reqString)
 }
 

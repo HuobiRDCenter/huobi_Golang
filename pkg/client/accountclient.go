@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
 )
 
@@ -62,7 +62,7 @@ func (p *AccountClient) GetAccountBalance(accountId string) (*account.AccountBal
 }
 
 func (p *AccountClient) TransferAccount(request account.TransferAccountRequest) (*account.TransferAccountResponse, error) {
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return nil, jsonErr
 	}
@@ -87,7 +87,7 @@ func (p *AccountClient) TransferAccount(request account.TransferAccountRequest) 
 
 // Returns the amount changes of specified user's account
 func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest account.GetAccountHistoryOptionalRequest) ([]account.AccountHistory, error) {
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("account-id", accountId)
 	if optionalRequest.Currency != "" {
 		request.AddParam("currency", optionalRequest.Currency)
@@ -128,7 +128,7 @@ func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest acco
 
 // Returns the account ledger of specified user's account
 func (p *AccountClient) GetAccountLedger(accountId string, optionalRequest account.GetAccountLedgerOptionalRequest) ([]account.Ledger, error) {
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("accountId", accountId)
 	if optionalRequest.Currency != "" {
 		request.AddParam("currency", optionalRequest.Currency)
@@ -171,7 +171,7 @@ func (p *AccountClient) GetAccountLedger(accountId string, optionalRequest accou
 
 // Transfer fund between spot account and future contract account
 func (p *AccountClient) FuturesTransfer(request account.FuturesTransferRequest) (int64, error) {
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/market"
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
 )
 
@@ -24,7 +24,7 @@ func (p *MarketClient) Init(host string) *MarketClient {
 // Retrieves all klines in a specific range.
 func (client *MarketClient) GetCandlestick(symbol string, optionalRequest market.GetCandlestickOptionalRequest) ([]market.Candlestick, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 	if optionalRequest.Period != "" {
 		request.AddParam("period", optionalRequest.Period)
@@ -54,7 +54,7 @@ func (client *MarketClient) GetCandlestick(symbol string, optionalRequest market
 // Retrieves the latest ticker with some important 24h aggregated market data.
 func (client *MarketClient) GetLast24hCandlestickAskBid(symbol string) (*market.CandlestickAskBid, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 
 	url := client.publicUrlBuilder.Build("/market/detail/merged", request)
@@ -79,7 +79,7 @@ func (client *MarketClient) GetLast24hCandlestickAskBid(symbol string) (*market.
 // Retrieve the latest tickers for all supported pairs.
 func (client *MarketClient) GetAllSymbolsLast24hCandlesticksAskBid() ([]market.SymbolCandlestick, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 
 	url := client.publicUrlBuilder.Build("/market/tickers", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -103,7 +103,7 @@ func (client *MarketClient) GetAllSymbolsLast24hCandlesticksAskBid() ([]market.S
 // Retrieves the current order book of a specific pair
 func (client *MarketClient) GetDepth(symbol string, step string, optionalRequest market.GetDepthOptionalRequest) (*market.Depth, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 	request.AddParam("type", step)
 	if optionalRequest.Size != 0 {
@@ -133,7 +133,7 @@ func (client *MarketClient) GetDepth(symbol string, step string, optionalRequest
 // Retrieves the latest trade with its price, volume, and direction.
 func (client *MarketClient) GetLatestTrade(symbol string) (*market.TradeTick, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 
 	url := client.publicUrlBuilder.Build("/market/trade", request)
@@ -158,7 +158,7 @@ func (client *MarketClient) GetLatestTrade(symbol string) (*market.TradeTick, er
 // Retrieves the most recent trades with their price, volume, and direction.
 func (client *MarketClient) GetHistoricalTrade(symbol string, optionalRequest market.GetHistoricalTradeOptionalRequest) ([]market.TradeTick, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 	if optionalRequest.Size != 0 {
 		request.AddParam("size", strconv.Itoa(optionalRequest.Size))
@@ -187,7 +187,7 @@ func (client *MarketClient) GetHistoricalTrade(symbol string, optionalRequest ma
 // Retrieves the summary of trading in the market for the last 24 hours.
 func (client *MarketClient) GetLast24hCandlestick(symbol string) (*market.Candlestick, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 
 	url := client.publicUrlBuilder.Build("/market/detail", request)

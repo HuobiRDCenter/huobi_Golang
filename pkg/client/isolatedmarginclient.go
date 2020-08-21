@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
 )
 
@@ -24,7 +24,7 @@ func (p *IsolatedMarginClient) Init(accessKey string, secretKey string, host str
 // Transfer specific asset from spot trading account to isolated margin account
 func (p *IsolatedMarginClient) TransferIn(request margin.IsolatedMarginTransferRequest) (int, error) {
 
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -50,7 +50,7 @@ func (p *IsolatedMarginClient) TransferIn(request margin.IsolatedMarginTransferR
 // Transfer specific asset from isolated margin account to spot trading account
 func (p *IsolatedMarginClient) TransferOut(request margin.IsolatedMarginTransferRequest) (int, error) {
 
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -74,7 +74,7 @@ func (p *IsolatedMarginClient) TransferOut(request margin.IsolatedMarginTransfer
 
 // Returns loan interest rates and quota applied on the user
 func (p *IsolatedMarginClient) GetMarginLoanInfo(optionalRequest margin.GetMarginLoanInfoOptionalRequest) ([]margin.IsolatedMarginLoanInfo, error) {
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	if optionalRequest.Symbols != "" {
 		request.AddParam("symbols", optionalRequest.Symbols)
 	}
@@ -99,7 +99,7 @@ func (p *IsolatedMarginClient) GetMarginLoanInfo(optionalRequest margin.GetMargi
 
 // Place an order to apply a margin loan.
 func (p *IsolatedMarginClient) Apply(request margin.IsolatedMarginOrdersRequest) (int, error) {
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -125,7 +125,7 @@ func (p *IsolatedMarginClient) Apply(request margin.IsolatedMarginOrdersRequest)
 
 // Repays margin loan with you asset in your margin account.
 func (p *IsolatedMarginClient) Repay(orderId string, request margin.MarginOrdersRepayRequest) (int, error) {
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -150,7 +150,7 @@ func (p *IsolatedMarginClient) Repay(orderId string, request margin.MarginOrders
 
 // Returns margin orders based on a specific searching criteria.
 func (p *IsolatedMarginClient) MarginLoanOrders(symbol string, optionalRequest margin.IsolatedMarginLoanOrdersOptionalRequest) ([]margin.IsolatedMarginLoanOrder, error) {
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", symbol)
 	if optionalRequest.Size != "" {
 		request.AddParam("size", optionalRequest.Size)
@@ -195,7 +195,7 @@ func (p *IsolatedMarginClient) MarginLoanOrders(symbol string, optionalRequest m
 // Returns the balance of the margin loan account.
 func (p *IsolatedMarginClient) MarginAccountsBalance(optionalRequest margin.MarginAccountsBalanceOptionalRequest) ([]margin.IsolatedMarginAccountsBalance, error) {
 
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	if optionalRequest.SubUid != 0 {
 		request.AddParam("sub-uid", strconv.Itoa(optionalRequest.SubUid))
 	}

@@ -5,10 +5,10 @@ import (
 	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/subuser"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/wallet"
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
 	"strings"
 )
@@ -26,7 +26,7 @@ func (p *SubUserClient) Init(accessKey string, secretKey string, host string) *S
 
 // Parent user query sub user deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 func (p *SubUserClient) CreateSubUser(request subuser.CreateSubUserRequest) ([]subuser.UserData, error) {
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 
 	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/creation", nil)
 	postResp, postErr := internal.HttpPost(url, string(postBody))
@@ -47,7 +47,7 @@ func (p *SubUserClient) CreateSubUser(request subuser.CreateSubUserRequest) ([]s
 
 // Lock or unlock a specific user
 func (p *SubUserClient) SubUserManagement(request subuser.SubUserManagementRequest) (*subuser.SubUserManagement, error) {
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return nil, jsonErr
 	}
@@ -72,7 +72,7 @@ func (p *SubUserClient) SubUserManagement(request subuser.SubUserManagementReque
 
 // Transfer asset between parent and sub account
 func (p *AccountClient) SubUserTransfer(request subuser.SubUserTransferRequest) (string, error) {
-	postBody, jsonErr := util.ToJson(request)
+	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return "", jsonErr
 	}
@@ -91,7 +91,7 @@ func (p *AccountClient) SubUserTransfer(request subuser.SubUserTransferRequest) 
 
 // Parent user query sub user deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 func (p *SubUserClient) GetSubUserDepositAddress(subUid int64, currency string) ([]wallet.DepositAddress, error) {
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
 	request.AddParam("currency", currency)
 
@@ -114,7 +114,7 @@ func (p *SubUserClient) GetSubUserDepositAddress(subUid int64, currency string) 
 
 // Parent user query sub user deposits history
 func (p *SubUserClient) QuerySubUserDepositHistory(subUid int64, optionalRequest subuser.QuerySubUserDepositHistoryOptionalRequest) ([]subuser.DepositHistory, error) {
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 
 	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
 

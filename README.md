@@ -76,9 +76,7 @@ This is the folder and package structure of SDK source code and the description
 
 - **pkg**: The public package of the SDK
   - **client**: The client struct that are responsible to access data
-  - **getrequest**: The get request data model
-  - **postrequest**: The post request data model
-  - **response**: The response data model
+  - **model**: The request and response data model
 - **internal** The internal package that used internally
   - **gzip**: it provide the gzip decompress functionality that unzip the websocket binary data
   - **model**: The internal data model

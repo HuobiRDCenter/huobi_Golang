@@ -1,7 +1,7 @@
 package requestbuilder
 
 import (
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"testing"
 )
 
@@ -18,7 +18,7 @@ func TestPublicUrlBuilder_Build_NoRequestParameter_Success(t *testing.T) {
 
 func TestPublicUrlBuilder_Build_HasRequestParameter_Success(t *testing.T) {
 	builder := new(PublicUrlBuilder).Init("api.huobi.pro")
-	reqParams := new(util.GetRequest).Init()
+	reqParams := new(model.GetRequest).Init()
 	reqParams.AddParam("symbol", "btcusdt")
 	reqParams.AddParam("period", "1min")
 	reqParams.AddParam("size", "1")

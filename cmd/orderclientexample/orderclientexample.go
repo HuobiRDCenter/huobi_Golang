@@ -4,8 +4,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
 )
 
 func RunAllExamples() {
@@ -115,7 +115,7 @@ func cancelOrderByClient() {
 
 func getOpenOrders() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("account-id", config.AccountId)
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetOpenOrders(request)
@@ -214,7 +214,7 @@ func getOrderById() {
 
 func getOrderByCriteria() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("clientOrderId", "cid12345")
 	resp, err := client.GetOrderByCriteria(request)
 	if err != nil {
@@ -255,7 +255,7 @@ func getMatchResultById() {
 
 func getHistoryOrders() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	request.AddParam("states", "canceled")
 	resp, err := client.GetHistoryOrders(request)
@@ -278,7 +278,7 @@ func getHistoryOrders() {
 
 func getLast48hOrders() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetLast48hOrders(request)
 	if err != nil {
@@ -300,7 +300,7 @@ func getLast48hOrders() {
 
 func getMatchResultByCriteria() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetMatchResultsByCriteria(request)
 	if err != nil {
@@ -322,7 +322,7 @@ func getMatchResultByCriteria() {
 
 func getTransactFeeRate() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(util.GetRequest).Init()
+	request := new(model.GetRequest).Init()
 	request.AddParam("symbols", "btcusdt,eosht")
 	resp, err := client.GetTransactFeeRate(request)
 	if err != nil {

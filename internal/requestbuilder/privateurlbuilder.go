@@ -2,7 +2,7 @@ package requestbuilder
 
 import (
 	"fmt"
-	"github.com/huobirdcenter/huobi_golang/pkg/util"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"net/url"
 	"time"
 )
@@ -35,16 +35,16 @@ func (p *PrivateUrlBuilder) Init(accessKey string, secretKey string, host string
 	return p
 }
 
-func (p *PrivateUrlBuilder) Build(method string, path string, request *util.GetRequest) string {
+func (p *PrivateUrlBuilder) Build(method string, path string, request *model.GetRequest) string {
 	time := time.Now().UTC()
 
 	return p.BuildWithTime(method, path, time, request)
 }
 
-func (p *PrivateUrlBuilder) BuildWithTime(method string, path string, utcDate time.Time, request *util.GetRequest) string {
+func (p *PrivateUrlBuilder) BuildWithTime(method string, path string, utcDate time.Time, request *model.GetRequest) string {
 	time := utcDate.Format("2006-01-02T15:04:05")
 
-	req := new(util.GetRequest).InitFrom(request)
+	req := new(model.GetRequest).InitFrom(request)
 	req.AddParam(p.akKey, p.akValue)
 	req.AddParam(p.smKey, p.smValue)
 	req.AddParam(p.svKey, p.svValue)
