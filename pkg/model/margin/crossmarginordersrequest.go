@@ -1,6 +1,6 @@
-package postrequest
+package margin
 
-type CrossMarginTransferRequest struct {
+type CrossMarginOrdersRequest struct {
 	Currency string `json:"currency"`
 	Amount   string `json:"amount"`
 }

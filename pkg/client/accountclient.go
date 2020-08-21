@@ -6,11 +6,9 @@ import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
-	"strings"
 )
 
 // Responsible to operate account
@@ -57,16 +55,39 @@ func (p *AccountClient) GetAccountBalance(accountId string) (*account.AccountBal
 		return nil, jsonErr
 	}
 	if result.Status == "ok" && result.Data != nil {
-
 		return result.Data, nil
 	}
 
 	return nil, errors.New(getResp)
 }
 
+func (p *AccountClient) TransferAccount(request account.TransferAccountRequest) (*account.TransferAccountResponse, error) {
+	postBody, jsonErr := util.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v1/subuser/transfer", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := account.TransferAccountResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status != "ok" {
+		return nil, errors.New(postResp)
+	}
+
+	return &result, nil
+}
+
 // Returns the amount changes of specified user's account
 func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest account.GetAccountHistoryOptionalRequest) ([]account.AccountHistory, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("account-id", accountId)
 	if optionalRequest.Currency != "" {
 		request.AddParam("currency", optionalRequest.Currency)
@@ -105,10 +126,9 @@ func (p *AccountClient) GetAccountHistory(accountId string, optionalRequest acco
 	return nil, errors.New(getResp)
 }
 
-
 // Returns the account ledger of specified user's account
 func (p *AccountClient) GetAccountLedger(accountId string, optionalRequest account.GetAccountLedgerOptionalRequest) ([]account.Ledger, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("accountId", accountId)
 	if optionalRequest.Currency != "" {
 		request.AddParam("currency", optionalRequest.Currency)
@@ -150,8 +170,8 @@ func (p *AccountClient) GetAccountLedger(accountId string, optionalRequest accou
 }
 
 // Transfer fund between spot account and future contract account
-func (p *AccountClient) FuturesTransfer(request postrequest.FuturesTransferRequest) (int64, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+func (p *AccountClient) FuturesTransfer(request account.FuturesTransferRequest) (int64, error) {
+	postBody, jsonErr := util.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -174,45 +194,6 @@ func (p *AccountClient) FuturesTransfer(request postrequest.FuturesTransferReque
 	return result.Data, nil
 }
 
-// Transfer asset between parent and sub account
-func (p *AccountClient) SubUserTransfer(request postrequest.SubUserTransferRequest) (string, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
-	if jsonErr != nil {
-		return "", jsonErr
-	}
-
-	url := p.privateUrlBuilder.Build("POST", "/v1/subuser/transfer", nil)
-	postResp, postErr := internal.HttpPost(url, postBody)
-	if postErr != nil {
-		return "", postErr
-	}
-	if strings.Contains(postResp, "data") {
-		return postResp, nil
-	} else {
-		return "", errors.New(postResp)
-	}
-}
-
-// Returns the aggregated balance from all the sub-users
-func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
-	url := p.privateUrlBuilder.Build("GET", "/v1/subuser/aggregate-balance", nil)
-	getResp, getErr := internal.HttpGet(url)
-	if getErr != nil {
-		return nil, getErr
-	}
-	result := account.GetSubUserAggregateBalanceResponse{}
-	jsonErr := json.Unmarshal([]byte(getResp), &result)
-	if jsonErr != nil {
-		return nil, jsonErr
-	}
-	if result.Status == "ok" && result.Data != nil {
-
-		return result.Data, nil
-	}
-
-	return nil, errors.New(getResp)
-}
-
 // Returns the balance of a sub-account specified by sub-uid
 func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccount, error) {
 	url := p.privateUrlBuilder.Build("GET", fmt.Sprintf("/v1/account/accounts/%d", subUid), nil)
@@ -230,31 +211,4 @@ func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccoun
 	}
 
 	return nil, errors.New(getResp)
-}
-
-// Lock or unlock a specific user
-func (p *AccountClient) SubUserManagement(request postrequest.SubUserManagementRequest) (*account.SubUserManagement, error) {
-
-	postBody, jsonErr := postrequest.ToJson(request)
-	if jsonErr != nil {
-		return nil, jsonErr
-	}
-
-	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/management", nil)
-	postResp, postErr := internal.HttpPost(url, postBody)
-	if postErr != nil {
-		return nil, postErr
-	}
-
-	result := account.SubUserManagementResponse{}
-	jsonErr = json.Unmarshal([]byte(postResp), &result)
-	if jsonErr != nil {
-		return nil, jsonErr
-	}
-	if result.Code != 200 {
-		return nil, errors.New(postResp)
-
-	}
-	return result.Data, nil
-
 }

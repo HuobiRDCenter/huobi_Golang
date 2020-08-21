@@ -1,4 +1,4 @@
-package account
+package subuser
 
 type SubUserManagementResponse struct {
 	Code int `json:"code"`

@@ -1,4 +1,4 @@
-package getrequest
+package util
 
 import (
 	"testing"

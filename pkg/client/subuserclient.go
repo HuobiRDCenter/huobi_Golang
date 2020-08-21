@@ -5,11 +5,12 @@ import (
 	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/subuser"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/wallet"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
+	"strings"
 )
 
 // Responsible to operate wallet
@@ -23,10 +24,9 @@ func (p *SubUserClient) Init(accessKey string, secretKey string, host string) *S
 	return p
 }
 
-
 // Parent user query sub user deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 func (p *SubUserClient) CreateSubUser(request subuser.CreateSubUserRequest) ([]subuser.UserData, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+	postBody, jsonErr := util.ToJson(request)
 
 	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/creation", nil)
 	postResp, postErr := internal.HttpPost(url, string(postBody))
@@ -45,9 +45,53 @@ func (p *SubUserClient) CreateSubUser(request subuser.CreateSubUserRequest) ([]s
 	return nil, errors.New(postResp)
 }
 
+// Lock or unlock a specific user
+func (p *SubUserClient) SubUserManagement(request subuser.SubUserManagementRequest) (*subuser.SubUserManagement, error) {
+	postBody, jsonErr := util.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/management", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := subuser.SubUserManagementResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code != 200 {
+		return nil, errors.New(postResp)
+
+	}
+	return result.Data, nil
+}
+
+// Transfer asset between parent and sub account
+func (p *AccountClient) SubUserTransfer(request subuser.SubUserTransferRequest) (string, error) {
+	postBody, jsonErr := util.ToJson(request)
+	if jsonErr != nil {
+		return "", jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v1/subuser/transfer", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return "", postErr
+	}
+	if strings.Contains(postResp, "data") {
+		return postResp, nil
+	} else {
+		return "", errors.New(postResp)
+	}
+}
+
 // Parent user query sub user deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 func (p *SubUserClient) GetSubUserDepositAddress(subUid int64, currency string) ([]wallet.DepositAddress, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
 	request.AddParam("currency", currency)
 
@@ -70,7 +114,7 @@ func (p *SubUserClient) GetSubUserDepositAddress(subUid int64, currency string) 
 
 // Parent user query sub user deposits history
 func (p *SubUserClient) QuerySubUserDepositHistory(subUid int64, optionalRequest subuser.QuerySubUserDepositHistoryOptionalRequest) ([]subuser.DepositHistory, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 
 	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
 
@@ -107,5 +151,25 @@ func (p *SubUserClient) QuerySubUserDepositHistory(subUid int64, optionalRequest
 	if result.Code == 200 && result.Data != nil {
 		return result.Data, nil
 	}
+	return nil, errors.New(getResp)
+}
+
+// Returns the aggregated balance from all the sub-users
+func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
+	url := p.privateUrlBuilder.Build("GET", "/v1/subuser/aggregate-balance", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetSubUserAggregateBalanceResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" && result.Data != nil {
+
+		return result.Data, nil
+	}
+
 	return nil, errors.New(getResp)
 }

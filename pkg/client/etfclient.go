@@ -5,9 +5,8 @@ import (
 	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/etf"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
 )
 
@@ -24,7 +23,7 @@ func (p *ETFClient) Init(accessKey string, secretKey string, host string) *ETFCl
 
 // Return the basic information of ETF creation and redemption, as well as ETF constituents
 func (p *ETFClient) GetSwapConfig(etfName string) (*etf.SwapConfig, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 
 	request.AddParam("etf_name", etfName)
 
@@ -46,9 +45,9 @@ func (p *ETFClient) GetSwapConfig(etfName string) (*etf.SwapConfig, error) {
 }
 
 // Swap in ETF
-func (p *ETFClient) SwapIn(request postrequest.SwapRequest) (bool, error) {
+func (p *ETFClient) SwapIn(request etf.SwapRequest) (bool, error) {
 
-	postBody, jsonErr := postrequest.ToJson(request)
+	postBody, jsonErr := util.ToJson(request)
 	if jsonErr != nil {
 		return false, jsonErr
 	}
@@ -71,9 +70,9 @@ func (p *ETFClient) SwapIn(request postrequest.SwapRequest) (bool, error) {
 }
 
 // Swap out ETF
-func (p *ETFClient) SwapOut(request postrequest.SwapRequest) (bool, error) {
+func (p *ETFClient) SwapOut(request etf.SwapRequest) (bool, error) {
 
-	postBody, jsonErr := postrequest.ToJson(request)
+	postBody, jsonErr := util.ToJson(request)
 	if jsonErr != nil {
 		return false, jsonErr
 	}
@@ -98,7 +97,7 @@ func (p *ETFClient) SwapOut(request postrequest.SwapRequest) (bool, error) {
 
 // Get past creation and redemption.(up to 100 records)
 func (p *ETFClient) GetSwapList(etfName string, offset int, limit int) ([]*etf.SwapList, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 
 	request.AddParam("etf_name", etfName)
 	request.AddParam("offset", strconv.Itoa(offset))

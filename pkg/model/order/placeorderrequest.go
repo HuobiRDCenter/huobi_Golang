@@ -1,4 +1,4 @@
-package postrequest
+package order
 
 type PlaceOrderRequest struct {
 	AccountId     string `json:"account-id"`

@@ -4,8 +4,8 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 )
 
 func RunAllExamples() {
@@ -27,7 +27,7 @@ func RunAllExamples() {
 
 func placeOrder() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := postrequest.PlaceOrderRequest{
+	request := order.PlaceOrderRequest{
 		AccountId: config.AccountId,
 		Type:      "buy-limit",
 		Source:    "spot-api",
@@ -50,7 +50,7 @@ func placeOrder() {
 
 func placeOrders() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := postrequest.PlaceOrderRequest{
+	request := order.PlaceOrderRequest{
 		AccountId: config.AccountId,
 		Type:      "buy-limit",
 		Source:    "spot-api",
@@ -59,7 +59,7 @@ func placeOrders() {
 		Amount:    "1",
 	}
 
-	var requests []postrequest.PlaceOrderRequest
+	var requests []order.PlaceOrderRequest
 	requests = append(requests, request)
 	requests = append(requests, request)
 	resp, err := client.PlaceOrders(requests)
@@ -115,7 +115,7 @@ func cancelOrderByClient() {
 
 func getOpenOrders() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("account-id", config.AccountId)
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetOpenOrders(request)
@@ -137,7 +137,7 @@ func getOpenOrders() {
 }
 
 func cancelOrdersByCriteria() {
-	request := postrequest.CancelOrdersByCriteriaRequest{
+	request := order.CancelOrdersByCriteriaRequest{
 		AccountId: config.AccountId,
 		Symbol:    "btcusdt",
 	}
@@ -160,7 +160,7 @@ func cancelOrdersByCriteria() {
 }
 
 func cancelOrdersByIds() {
-	request := postrequest.CancelOrdersByIdsRequest{
+	request := order.CancelOrdersByIdsRequest{
 		OrderIds: []string{"1", "2"},
 	}
 
@@ -214,7 +214,7 @@ func getOrderById() {
 
 func getOrderByCriteria() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("clientOrderId", "cid12345")
 	resp, err := client.GetOrderByCriteria(request)
 	if err != nil {
@@ -255,7 +255,7 @@ func getMatchResultById() {
 
 func getHistoryOrders() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	request.AddParam("states", "canceled")
 	resp, err := client.GetHistoryOrders(request)
@@ -278,7 +278,7 @@ func getHistoryOrders() {
 
 func getLast48hOrders() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetLast48hOrders(request)
 	if err != nil {
@@ -300,7 +300,7 @@ func getLast48hOrders() {
 
 func getMatchResultByCriteria() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetMatchResultsByCriteria(request)
 	if err != nil {
@@ -322,7 +322,7 @@ func getMatchResultByCriteria() {
 
 func getTransactFeeRate() {
 	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("symbols", "btcusdt,eosht")
 	resp, err := client.GetTransactFeeRate(request)
 	if err != nil {

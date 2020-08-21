@@ -1,4 +1,4 @@
-package postrequest
+package order
 
 type CancelOrdersByIdsRequest struct {
 	OrderIds       []string `json:"order-ids,omitempty"`

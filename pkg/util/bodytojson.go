@@ -1,4 +1,4 @@
-package postrequest
+package util
 
 import "encoding/json"
 

@@ -2,8 +2,7 @@ package requestbuilder
 
 import (
 	"github.com/huobirdcenter/huobi_golang/internal/model"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"time"
 )
 
@@ -48,7 +47,7 @@ func (p *WebSocketV1RequestBuilder) Build() (string, error) {
 func (p *WebSocketV1RequestBuilder) build(utcDate time.Time) (string, error) {
 	time := utcDate.Format("2006-01-02T15:04:05")
 
-	req := new(getrequest.GetRequest).Init()
+	req := new(util.GetRequest).Init()
 	req.AddParam(p.akKey, p.akValue)
 	req.AddParam(p.smKey, p.smValue)
 	req.AddParam(p.svKey, p.svValue)
@@ -61,6 +60,6 @@ func (p *WebSocketV1RequestBuilder) build(utcDate time.Time) (string, error) {
 	auth.Timestamp = time
 	auth.Signature = signature
 
-	result, err := postrequest.ToJson(auth)
+	result, err := util.ToJson(auth)
 	return result, err
 }

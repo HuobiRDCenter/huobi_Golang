@@ -1,4 +1,4 @@
-package postrequest
+package margin
 
 type IsolatedMarginOrdersRequest struct {
 	Symbol   string `json:"symbol"`

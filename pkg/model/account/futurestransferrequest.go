@@ -1,4 +1,4 @@
-package postrequest
+package account
 
 import "github.com/shopspring/decimal"
 

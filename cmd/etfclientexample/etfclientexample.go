@@ -4,7 +4,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/etf"
 )
 
 func RunAllExamples() {
@@ -44,7 +44,7 @@ func getSwapList() {
 func swapIn() {
 	client := new(client.ETFClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	currency := "hb10"
-	swapRequest := postrequest.SwapRequest{
+	swapRequest := etf.SwapRequest{
 		EtfName: currency,
 		Amount:  10,
 	}
@@ -60,7 +60,7 @@ func swapIn() {
 func swapOut() {
 	client := new(client.ETFClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	currency := "hb10"
-	swapRequest := postrequest.SwapRequest{
+	swapRequest := etf.SwapRequest{
 		EtfName: currency,
 		Amount:  10,
 	}

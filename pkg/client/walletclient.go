@@ -5,9 +5,8 @@ import (
 	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/wallet"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 	"strconv"
 )
 
@@ -24,7 +23,7 @@ func (p *WalletClient) Init(accessKey string, secretKey string, host string) *Wa
 
 // Get deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 func (p *WalletClient) GetDepositAddress(currency string) ([]wallet.DepositAddress, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 
 	request.AddParam("currency", currency)
 
@@ -47,7 +46,7 @@ func (p *WalletClient) GetDepositAddress(currency string) ([]wallet.DepositAddre
 
 // Query withdraw quota for currencies
 func (p *WalletClient) GetWithdrawQuota(currency string) (*wallet.WithdrawQuota, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 
 	request.AddParam("currency", currency)
 
@@ -69,8 +68,8 @@ func (p *WalletClient) GetWithdrawQuota(currency string) (*wallet.WithdrawQuota,
 }
 
 // Withdraw from spot trading account to an external address.
-func (p *WalletClient) CreateWithdraw(request postrequest.CreateWithdrawRequest) (int64, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+func (p *WalletClient) CreateWithdraw(request wallet.CreateWithdrawRequest) (int64, error) {
+	postBody, jsonErr := util.ToJson(request)
 
 	url := p.privateUrlBuilder.Build("POST", "/v1/dw/withdraw/api/create", nil)
 	postResp, postErr := internal.HttpPost(url, postBody)
@@ -113,7 +112,7 @@ func (p *WalletClient) CancelWithdraw(withdrawId int64) (int64, error) {
 
 // Returns all existed withdraws and deposits and return their latest status.
 func (p *WalletClient) QueryDepositWithdraw(depositOrWithdraw string, optionalRequest wallet.QueryDepositWithdrawOptionalRequest) ([]wallet.DepositWithdraw, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 
 	request.AddParam("type", depositOrWithdraw)
 

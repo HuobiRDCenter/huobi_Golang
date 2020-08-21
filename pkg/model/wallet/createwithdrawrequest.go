@@ -1,4 +1,4 @@
-package postrequest
+package wallet
 
 type CreateWithdrawRequest struct {
 	Address  string `json:"address"`

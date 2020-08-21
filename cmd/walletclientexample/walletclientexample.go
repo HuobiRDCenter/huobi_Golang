@@ -5,7 +5,6 @@ import (
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/wallet"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
 
 func RunAllExamples() {
@@ -43,7 +42,7 @@ func getWithdrawQuota() {
 
 func createWithdraw() {
 	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	createWithdrawRequest := postrequest.CreateWithdrawRequest{
+	createWithdrawRequest := wallet.CreateWithdrawRequest{
 		Address:  "xxxx",
 		Amount:   "1.0",
 		Currency: "usdt",

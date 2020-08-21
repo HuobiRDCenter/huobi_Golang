@@ -5,13 +5,14 @@ import (
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/subuser"
 	"github.com/shopspring/decimal"
 )
 
 func RunAllExamples() {
 	getAccountInfo()
 	getAccountBalance()
+	transferAccount()
 	getAccountHistory()
 	getAccountLedger()
 	transferFromFutureToSpot()
@@ -19,8 +20,6 @@ func RunAllExamples() {
 	subUserTransfer()
 	getSubUserAggregateBalance()
 	getSubUserAccount()
-	lockSubUser()
-	unlockSubUser()
 }
 
 func getAccountInfo() {
@@ -33,7 +32,26 @@ func getAccountInfo() {
 		for _, result := range resp {
 			applogger.Info("account: %+v", result)
 		}
+	}
+}
 
+func transferAccount()  {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := account.TransferAccountRequest{
+		FromUser:        125753978,
+		FromAccountType: "spot",
+		FromAccount:     11136102,
+		ToUser:          128654510,
+		ToAccountType:   "spot",
+		ToAccount:       12825690,
+		Currency:        "ht",
+		Amount:          "0.18",
+	}
+	resp, err := client.TransferAccount(request)
+	if err != nil {
+		applogger.Error("Transfer account error: %s", err)
+	} else {
+		applogger.Info("Transfer account, %v", resp.Data)
 	}
 }
 
@@ -101,7 +119,7 @@ func getSubUserAccount() {
 
 func transferFromFutureToSpot() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	futuresTransferRequest := postrequest.FuturesTransferRequest{Currency: "btc", Amount: decimal.NewFromFloat(0.001), Type: "futures-to-pro"}
+	futuresTransferRequest := account.FuturesTransferRequest{Currency: "btc", Amount: decimal.NewFromFloat(0.001), Type: "futures-to-pro"}
 	resp, err := client.FuturesTransfer(futuresTransferRequest)
 	if err != nil {
 		applogger.Error("Transfer from future to spot error: %s", err)
@@ -112,7 +130,7 @@ func transferFromFutureToSpot() {
 
 func transferFromSpotToFuture() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	futuresTransferRequest := postrequest.FuturesTransferRequest{Currency: "btc", Amount: decimal.NewFromFloat(0.001), Type: "pro-to-futures"}
+	futuresTransferRequest := account.FuturesTransferRequest{Currency: "btc", Amount: decimal.NewFromFloat(0.001), Type: "pro-to-futures"}
 	resp, err := client.FuturesTransfer(futuresTransferRequest)
 	if err != nil {
 		applogger.Error("Transfer from spot to future error: %s", err)
@@ -137,7 +155,7 @@ func getSubUserAggregateBalance() {
 func subUserTransfer() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	currency := "usdt"
-	subUserTransferRequest := postrequest.SubUserTransferRequest{
+	subUserTransferRequest := subuser.SubUserTransferRequest{
 		SubUid:   config.SubUid,
 		Currency: currency,
 		Amount:   decimal.NewFromInt(1),
@@ -149,27 +167,5 @@ func subUserTransfer() {
 	} else {
 		applogger.Info("Transfer successfully, id=%s", resp)
 
-	}
-}
-
-func lockSubUser() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	subUserManagementRequest := postrequest.SubUserManagementRequest{SubUid: config.SubUid, Action: "lock"}
-	resp, err := client.SubUserManagement(subUserManagementRequest)
-	if err != nil {
-		applogger.Error("Lock sub user error: %s", err)
-	} else {
-		applogger.Info("Lock sub user: %+v", resp)
-	}
-}
-
-func unlockSubUser() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	subUserManagementRequest := postrequest.SubUserManagementRequest{SubUid: config.SubUid, Action: "unlock"}
-	resp, err := client.SubUserManagement(subUserManagementRequest)
-	if err != nil {
-		applogger.Error("Unlock sub user error: %s", err)
-	} else {
-		applogger.Info("Unlock sub user: %+v", resp)
 	}
 }

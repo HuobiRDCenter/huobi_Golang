@@ -5,9 +5,8 @@ import (
 	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 )
 
 // Responsible to operate cross margin
@@ -22,9 +21,9 @@ func (p *CrossMarginClient) Init(accessKey string, secretKey string, host string
 }
 
 // Transfer specific asset from spot trading account to cross margin account
-func (p *CrossMarginClient) TransferIn(request postrequest.CrossMarginTransferRequest) (int, error) {
+func (p *CrossMarginClient) TransferIn(request margin.CrossMarginTransferRequest) (int, error) {
 
-	postBody, jsonErr := postrequest.ToJson(request)
+	postBody, jsonErr := util.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -48,9 +47,9 @@ func (p *CrossMarginClient) TransferIn(request postrequest.CrossMarginTransferRe
 }
 
 // Transfer specific asset from cross margin account to spot trading account
-func (p *CrossMarginClient) TransferOut(request postrequest.CrossMarginTransferRequest) (int, error) {
+func (p *CrossMarginClient) TransferOut(request margin.CrossMarginTransferRequest) (int, error) {
 
-	postBody, jsonErr := postrequest.ToJson(request)
+	postBody, jsonErr := util.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -75,7 +74,7 @@ func (p *CrossMarginClient) TransferOut(request postrequest.CrossMarginTransferR
 
 // Returns loan interest rates and quota applied on the user
 func (p *CrossMarginClient) GetMarginLoanInfo() ([]margin.CrossMarginLoanInfo, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 
 	url := p.privateUrlBuilder.Build("GET", "/v1/cross-margin/loan-info", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -97,8 +96,8 @@ func (p *CrossMarginClient) GetMarginLoanInfo() ([]margin.CrossMarginLoanInfo, e
 }
 
 // Place an order to apply a margin loan.
-func (p *CrossMarginClient) ApplyLoan(request postrequest.CrossMarginOrdersRequest) (int, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+func (p *CrossMarginClient) ApplyLoan(request margin.CrossMarginOrdersRequest) (int, error) {
+	postBody, jsonErr := util.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -122,8 +121,8 @@ func (p *CrossMarginClient) ApplyLoan(request postrequest.CrossMarginOrdersReque
 }
 
 // Repays margin loan with you asset in your margin account.
-func (p *CrossMarginClient) Repay(orderId string, request postrequest.MarginOrdersRepayRequest) (int, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+func (p *CrossMarginClient) Repay(orderId string, request margin.MarginOrdersRepayRequest) (int, error) {
+	postBody, jsonErr := util.ToJson(request)
 	if jsonErr != nil {
 		return 0, jsonErr
 	}
@@ -148,7 +147,7 @@ func (p *CrossMarginClient) Repay(orderId string, request postrequest.MarginOrde
 
 // Returns margin orders based on a specific searching criteria.
 func (p *CrossMarginClient) MarginLoanOrders(optionalRequest margin.CrossMarginLoanOrdersOptionalRequest) ([]margin.CrossMarginLoanOrder, error) {
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	if optionalRequest.Size != "" {
 		request.AddParam("size", optionalRequest.Size)
 	}
@@ -196,7 +195,7 @@ func (p *CrossMarginClient) MarginLoanOrders(optionalRequest margin.CrossMarginL
 // Returns the balance of the margin loan account.
 func (p *CrossMarginClient) MarginAccountsBalance(SubUid string) (*margin.CrossMarginAccountsBalance, error) {
 
-	request := new(getrequest.GetRequest).Init()
+	request := new(util.GetRequest).Init()
 	request.AddParam("sub-uid", SubUid)
 
 	url := p.privateUrlBuilder.Build("GET", "/v1/cross-margin/accounts/balance", request)

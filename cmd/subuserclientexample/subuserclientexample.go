@@ -9,6 +9,8 @@ import (
 
 func RunAllExamples() {
 	createSubUser()
+	lockSubUser()
+	unlockSubUser()
 	getSubUserDepositAddress()
 	querySubUserDepositHistory()
 }
@@ -31,6 +33,28 @@ func createSubUser() {
 		for _, result := range resp {
 			applogger.Info("sub user: %+v", result)
 		}
+	}
+}
+
+func lockSubUser() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	subUserManagementRequest := subuser.SubUserManagementRequest{SubUid: config.SubUid, Action: "lock"}
+	resp, err := client.SubUserManagement(subUserManagementRequest)
+	if err != nil {
+		applogger.Error("Lock sub user error: %s", err)
+	} else {
+		applogger.Info("Lock sub user: %+v", resp)
+	}
+}
+
+func unlockSubUser() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	subUserManagementRequest := subuser.SubUserManagementRequest{SubUid: config.SubUid, Action: "unlock"}
+	resp, err := client.SubUserManagement(subUserManagementRequest)
+	if err != nil {
+		applogger.Error("Unlock sub user error: %s", err)
+	} else {
+		applogger.Info("Unlock sub user: %+v", resp)
 	}
 }
 

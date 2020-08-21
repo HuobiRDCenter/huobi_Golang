@@ -1,4 +1,4 @@
-package postrequest
+package subuser
 
 type SubUserManagementRequest struct {
 	SubUid int64  `json:"subUid"`

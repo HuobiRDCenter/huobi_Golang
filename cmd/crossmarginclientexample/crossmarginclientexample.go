@@ -5,7 +5,6 @@ import (
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
 
 func RunAllExamples() {
@@ -20,7 +19,7 @@ func RunAllExamples() {
 
 //  Transfer specific asset from spot trading account to cross margin account.
 func transferIn() {
-	request := postrequest.CrossMarginTransferRequest{
+	request := margin.CrossMarginTransferRequest{
 		Currency: "usdt",
 		Amount:   "1.0"}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
@@ -34,7 +33,7 @@ func transferIn() {
 
 //  Transfer specific asset from cross margin account to spot trading account.
 func transferOut() {
-	request := postrequest.CrossMarginTransferRequest{
+	request := margin.CrossMarginTransferRequest{
 		Currency: "usdt",
 		Amount:   "1.0"}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
@@ -61,7 +60,7 @@ func getMarginLoanInfo() {
 
 //  Place an order to apply a margin loan.
 func marginOrders() {
-	request := postrequest.CrossMarginOrdersRequest{Currency: "usdt",
+	request := margin.CrossMarginOrdersRequest{Currency: "usdt",
 		Amount: "1.0"}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.ApplyLoan(request)
@@ -75,7 +74,7 @@ func marginOrders() {
 //  Repays margin loan with you asset in your margin account.
 func marginOrdersRepay() {
 	orderId := "12345"
-	request := postrequest.MarginOrdersRepayRequest{Amount: "1.0"}
+	request := margin.MarginOrdersRepayRequest{Amount: "1.0"}
 	client := new(client.CrossMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	resp, err := client.Repay(orderId, request)
 	if err != nil {

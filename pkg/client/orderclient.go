@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
-	"github.com/huobirdcenter/huobi_golang/pkg/getrequest"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
+	"github.com/huobirdcenter/huobi_golang/pkg/util"
 )
 
 // Responsible to operate on order
@@ -22,8 +21,8 @@ func (p *OrderClient) Init(accessKey string, secretKey string, host string) *Ord
 }
 
 // Place a new order and send to the exchange to be matched.
-func (p *OrderClient) PlaceOrder(request *postrequest.PlaceOrderRequest) (*order.PlaceOrderResponse, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+func (p *OrderClient) PlaceOrder(request *order.PlaceOrderRequest) (*order.PlaceOrderResponse, error) {
+	postBody, jsonErr := util.ToJson(request)
 
 	url := p.privateUrlBuilder.Build("POST", "/v1/order/orders/place", nil)
 	postResp, postErr := internal.HttpPost(url, postBody)
@@ -41,9 +40,9 @@ func (p *OrderClient) PlaceOrder(request *postrequest.PlaceOrderRequest) (*order
 }
 
 // Place multipler orders (at most 10 orders)
-func (p *OrderClient) PlaceOrders(request []postrequest.PlaceOrderRequest) (*order.PlaceOrdersResponse, error) {
+func (p *OrderClient) PlaceOrders(request []order.PlaceOrderRequest) (*order.PlaceOrdersResponse, error) {
 
-	postBody, jsonErr := postrequest.ToJson(request)
+	postBody, jsonErr := util.ToJson(request)
 
 	url := p.privateUrlBuilder.Build("POST", "/v1/order/batch-orders", nil)
 	postResp, postErr := internal.HttpPost(url, string(postBody))
@@ -97,7 +96,7 @@ func (p *OrderClient) CancelOrderByClientOrderId(clientOrderId string) (*order.C
 }
 
 // Returns all open orders which have not been filled completely.
-func (p *OrderClient) GetOpenOrders(request *getrequest.GetRequest) (*order.GetOpenOrdersResponse, error) {
+func (p *OrderClient) GetOpenOrders(request *util.GetRequest) (*order.GetOpenOrdersResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/openOrders", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
@@ -114,8 +113,8 @@ func (p *OrderClient) GetOpenOrders(request *getrequest.GetRequest) (*order.GetO
 }
 
 // Submit cancellation for multiple orders at once with given criteria.
-func (p *OrderClient) CancelOrdersByCriteria(request *postrequest.CancelOrdersByCriteriaRequest) (*order.CancelOrdersByCriteriaResponse, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+func (p *OrderClient) CancelOrdersByCriteria(request *order.CancelOrdersByCriteriaRequest) (*order.CancelOrdersByCriteriaResponse, error) {
+	postBody, jsonErr := util.ToJson(request)
 
 	url := p.privateUrlBuilder.Build("POST", "/v1/order/orders/batchCancelOpenOrders", nil)
 	postResp, postErr := internal.HttpPost(url, string(postBody))
@@ -133,8 +132,8 @@ func (p *OrderClient) CancelOrdersByCriteria(request *postrequest.CancelOrdersBy
 }
 
 // Submit cancellation for multiple orders at once with given ids
-func (p *OrderClient) CancelOrdersByIds(request *postrequest.CancelOrdersByIdsRequest) (*order.CancelOrdersByIdsResponse, error) {
-	postBody, jsonErr := postrequest.ToJson(request)
+func (p *OrderClient) CancelOrdersByIds(request *order.CancelOrdersByIdsRequest) (*order.CancelOrdersByIdsResponse, error) {
+	postBody, jsonErr := util.ToJson(request)
 
 	url := p.privateUrlBuilder.Build("POST", "/v1/order/orders/batchcancel", nil)
 	postResp, postErr := internal.HttpPost(url, string(postBody))
@@ -170,7 +169,7 @@ func (p *OrderClient) GetOrderById(orderId string) (*order.GetOrderResponse, err
 }
 
 // Returns the detail of one order by client order id
-func (p *OrderClient) GetOrderByCriteria(request *getrequest.GetRequest) (*order.GetOrderResponse, error) {
+func (p *OrderClient) GetOrderByCriteria(request *util.GetRequest) (*order.GetOrderResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/orders/getClientOrder", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
@@ -205,7 +204,7 @@ func (p *OrderClient) GetMatchResultsById(orderId string) (*order.GetMatchResult
 }
 
 // Returns orders based on a specific searching criteria.
-func (p *OrderClient) GetHistoryOrders(request *getrequest.GetRequest) (*order.GetHistoryOrdersResponse, error) {
+func (p *OrderClient) GetHistoryOrders(request *util.GetRequest) (*order.GetHistoryOrdersResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/orders", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
@@ -222,7 +221,7 @@ func (p *OrderClient) GetHistoryOrders(request *getrequest.GetRequest) (*order.G
 }
 
 // Returns orders based on a specific searching criteria (within 48 hours)
-func (p *OrderClient) GetLast48hOrders(request *getrequest.GetRequest) (*order.GetHistoryOrdersResponse, error) {
+func (p *OrderClient) GetLast48hOrders(request *util.GetRequest) (*order.GetHistoryOrdersResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/history", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
@@ -239,7 +238,7 @@ func (p *OrderClient) GetLast48hOrders(request *getrequest.GetRequest) (*order.G
 }
 
 // Returns the match results of past and open orders based on specific search criteria.
-func (p *OrderClient) GetMatchResultsByCriteria(request *getrequest.GetRequest) (*order.GetMatchResultsResponse, error) {
+func (p *OrderClient) GetMatchResultsByCriteria(request *util.GetRequest) (*order.GetMatchResultsResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/order/matchresults", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
@@ -256,7 +255,7 @@ func (p *OrderClient) GetMatchResultsByCriteria(request *getrequest.GetRequest) 
 }
 
 // Returns the current transaction fee rate applied to the user.
-func (p *OrderClient) GetTransactFeeRate(request *getrequest.GetRequest) (*order.GetTransactFeeRateResponse, error) {
+func (p *OrderClient) GetTransactFeeRate(request *util.GetRequest) (*order.GetTransactFeeRateResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v2/reference/transact-fee-rate", request)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {

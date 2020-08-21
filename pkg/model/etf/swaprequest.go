@@ -1,4 +1,4 @@
-package postrequest
+package etf
 
 type SwapRequest struct {
 	EtfName string `json:"etf_name"`

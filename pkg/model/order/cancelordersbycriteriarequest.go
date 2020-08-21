@@ -1,4 +1,4 @@
-package postrequest
+package order
 
 type CancelOrdersByCriteriaRequest struct {
 	AccountId string `json:"account-id"`

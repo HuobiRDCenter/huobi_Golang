@@ -5,7 +5,6 @@ import (
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
-	"github.com/huobirdcenter/huobi_golang/pkg/postrequest"
 )
 
 func RunAllExamples() {
@@ -20,7 +19,7 @@ func RunAllExamples() {
 
 // Transfer specific asset from spot trading account to isolated margin account.
 func transferIn() {
-	request := postrequest.IsolatedMarginTransferRequest{
+	request := margin.IsolatedMarginTransferRequest{
 		Currency: "usdt",
 		Amount:   "1.0",
 		Symbol:   "btcusdt"}
@@ -35,7 +34,7 @@ func transferIn() {
 
 //  Transfer specific asset from isolated margin account to spot trading account.
 func transferOut() {
-	request := postrequest.IsolatedMarginTransferRequest{
+	request := margin.IsolatedMarginTransferRequest{
 		Currency: "usdt",
 		Amount:   "1.0",
 		Symbol:   "btcusdt"}
@@ -65,7 +64,7 @@ func getMarginLoanInfo() {
 //  Place an order to apply a margin loan.
 func marginOrders() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := postrequest.IsolatedMarginOrdersRequest{
+	request := margin.IsolatedMarginOrdersRequest{
 		Currency: "eos",
 		Amount:   "0.001",
 		Symbol:   "eosht",
@@ -82,7 +81,7 @@ func marginOrders() {
 func marginOrdersRepay() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	orderId := "12345"
-	request := postrequest.MarginOrdersRepayRequest{Amount: "1.0"}
+	request := margin.MarginOrdersRepayRequest{Amount: "1.0"}
 	resp, err := client.Repay(orderId, request)
 	if err != nil {
 		applogger.Error(err.Error())
