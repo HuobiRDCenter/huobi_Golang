@@ -3,6 +3,7 @@ package client
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
@@ -65,13 +66,63 @@ func (p *SubUserClient) SubUserManagement(request subuser.SubUserManagementReque
 	}
 	if result.Code != 200 {
 		return nil, errors.New(postResp)
-
 	}
 	return result.Data, nil
 }
 
+
+// Set Tradable Market for Sub Users
+func (p *SubUserClient) SetSubUserTradableMarket(request subuser.SetSubUserTradableMarketRequest) ([]subuser.TradableMarket, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/tradable-market", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := subuser.SetSubUserTradableMarketResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code != 200 {
+		return nil, errors.New(postResp)
+	}
+
+	return result.Data, nil
+}
+
+// Set Asset Transfer Permission for Sub Users
+func (p *SubUserClient) SetSubUserTransferability(request subuser.SetSubUserTransferabilityRequest) ([]subuser.Transferability, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/transferability", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := subuser.SetSubUserTransferabilityResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code != 200 {
+		return nil, errors.New(postResp)
+	}
+
+	return result.Data, nil
+}
+
 // Transfer asset between parent and sub account
-func (p *AccountClient) SubUserTransfer(request subuser.SubUserTransferRequest) (string, error) {
+func (p *SubUserClient) SubUserTransfer(request subuser.SubUserTransferRequest) (string, error) {
 	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
 		return "", jsonErr
@@ -155,7 +206,7 @@ func (p *SubUserClient) QuerySubUserDepositHistory(subUid int64, optionalRequest
 }
 
 // Returns the aggregated balance from all the sub-users
-func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
+func (p *SubUserClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/subuser/aggregate-balance", nil)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
@@ -168,6 +219,25 @@ func (p *AccountClient) GetSubUserAggregateBalance() ([]account.Balance, error) 
 	}
 	if result.Status == "ok" && result.Data != nil {
 
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// Returns the balance of a sub-account specified by sub-uid
+func (p *SubUserClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccount, error) {
+	url := p.privateUrlBuilder.Build("GET", fmt.Sprintf("/v1/account/accounts/%d", subUid), nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetSubUserAccountResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" && result.Data != nil {
 		return result.Data, nil
 	}
 

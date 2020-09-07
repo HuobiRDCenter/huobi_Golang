@@ -3,7 +3,6 @@ package client
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
@@ -67,7 +66,7 @@ func (p *AccountClient) TransferAccount(request account.TransferAccountRequest) 
 		return nil, jsonErr
 	}
 
-	url := p.privateUrlBuilder.Build("POST", "/v1/subuser/transfer", nil)
+	url := p.privateUrlBuilder.Build("POST", "/v1/account/transfer", nil)
 	postResp, postErr := internal.HttpPost(url, postBody)
 	if postErr != nil {
 		return nil, postErr
@@ -192,23 +191,4 @@ func (p *AccountClient) FuturesTransfer(request account.FuturesTransferRequest) 
 
 	}
 	return result.Data, nil
-}
-
-// Returns the balance of a sub-account specified by sub-uid
-func (p *AccountClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccount, error) {
-	url := p.privateUrlBuilder.Build("GET", fmt.Sprintf("/v1/account/accounts/%d", subUid), nil)
-	getResp, getErr := internal.HttpGet(url)
-	if getErr != nil {
-		return nil, getErr
-	}
-	result := account.GetSubUserAccountResponse{}
-	jsonErr := json.Unmarshal([]byte(getResp), &result)
-	if jsonErr != nil {
-		return nil, jsonErr
-	}
-	if result.Status == "ok" && result.Data != nil {
-		return result.Data, nil
-	}
-
-	return nil, errors.New(getResp)
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
-	"github.com/huobirdcenter/huobi_golang/pkg/model/subuser"
 	"github.com/shopspring/decimal"
 )
 
@@ -17,9 +16,6 @@ func RunAllExamples() {
 	getAccountLedger()
 	transferFromFutureToSpot()
 	transferFromSpotToFuture()
-	subUserTransfer()
-	getSubUserAggregateBalance()
-	getSubUserAccount()
 }
 
 func getAccountInfo() {
@@ -99,24 +95,6 @@ func getAccountLedger() {
 	}
 }
 
-func getSubUserAccount() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	resp, err := client.GetSubUserAccount(config.SubUid)
-	if err != nil {
-		applogger.Error("Get sub user account error: %s", err)
-	} else {
-		applogger.Info("Get sub user account, count=%d", len(resp))
-		for _, account := range resp {
-			applogger.Info("account id: %d, type: %s, currency count=%d", account.Id, account.Type, len(account.List))
-			if account.List != nil {
-				for _, currency := range account.List {
-					applogger.Info("currency: %+v", currency)
-				}
-			}
-		}
-	}
-}
-
 func transferFromFutureToSpot() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	futuresTransferRequest := account.FuturesTransferRequest{Currency: "btc", Amount: decimal.NewFromFloat(0.001), Type: "futures-to-pro"}
@@ -136,36 +114,5 @@ func transferFromSpotToFuture() {
 		applogger.Error("Transfer from spot to future error: %s", err)
 	} else {
 		applogger.Info("Transfer from spot to future success: id=%d", resp)
-	}
-}
-
-func getSubUserAggregateBalance() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	resp, err := client.GetSubUserAggregateBalance()
-	if err != nil {
-		applogger.Error("Get sub user aggregated balance error: %s", err)
-	} else {
-		applogger.Info("Get sub user aggregated balance, count=%d", len(resp))
-		for _, result := range resp {
-			applogger.Info("balance: %+v", result)
-		}
-	}
-}
-
-func subUserTransfer() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	currency := "usdt"
-	subUserTransferRequest := subuser.SubUserTransferRequest{
-		SubUid:   config.SubUid,
-		Currency: currency,
-		Amount:   decimal.NewFromInt(1),
-		Type:     "master-transfer-in",
-	}
-	resp, err := client.SubUserTransfer(subUserTransferRequest)
-	if err != nil {
-		applogger.Error("Transfer error: %s", err)
-	} else {
-		applogger.Info("Transfer successfully, id=%s", resp)
-
 	}
 }
