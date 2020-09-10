@@ -12,7 +12,7 @@ type WebSocketV1AuthenticationResponse struct {
 }
 
 func (p *WebSocketV1AuthenticationResponse) IsAuth() bool {
-	return p.Op == "auth" && p.ErrorCode == 0
+	return p.Op == "auth"
 }
 
 func ParseWSV1AuthResp(message string) *WebSocketV1AuthenticationResponse {
