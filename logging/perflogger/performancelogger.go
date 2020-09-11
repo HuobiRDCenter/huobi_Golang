@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+// The global PerformanceLogger instance
+var performanceLogger *PerformanceLogger
+// The global switch for Performance logging
+var logEnabled = false
+
 type PerformanceLogger struct {
 	logger *log.Logger
 	enable bool
@@ -16,20 +21,17 @@ type PerformanceLogger struct {
 	start  time.Time
 }
 
-var performanceLogger *PerformanceLogger
-
-var logEnabled = false
-
+// Enable performance logger and initialize the global instance
+// This method should be called once
 func Enable(enable bool) {
 	logEnabled = enable
-}
-
-// Get unique PerformanceLogger instance
-func GetInstance() *PerformanceLogger {
-	if performanceLogger == nil {
+	if logEnabled && performanceLogger == nil {
 		performanceLogger = new(PerformanceLogger).init()
 	}
+}
 
+// Get the global PerformanceLogger instance
+func GetInstance() *PerformanceLogger {
 	return performanceLogger
 }
 
