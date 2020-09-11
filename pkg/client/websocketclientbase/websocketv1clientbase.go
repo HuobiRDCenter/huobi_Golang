@@ -9,7 +9,6 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/auth"
-	"strings"
 	"sync"
 	"time"
 )
@@ -235,7 +234,7 @@ func (p *WebSocketV1ClientBase) readLoop() {
 						if p.authenticationResponseHandler != nil {
 							p.authenticationResponseHandler(authResp)
 						}
-					} else if strings.Contains(message, "balance") {
+					} else {
 						// If it contains expected string, then invoke message handler and response handler
 						result, err := p.messageHandler(message)
 						if err != nil {
