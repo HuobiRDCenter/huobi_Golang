@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/huobirdcenter/huobi_golang/cmd/accountclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/accountwebsocketclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/algoorderclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/commonclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/crossmarginclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/etfclientexample"
@@ -25,6 +26,7 @@ func runAll() {
 	commonclientexample.RunAllExamples()
 	accountclientexample.RunAllExamples()
 	orderclientexample.RunAllExamples()
+	algoorderclientexample.RunAllExamples()
 	marketclientexample.RunAllExamples()
 	isolatedmarginclientexample.RunAllExamples()
 	crossmarginclientexample.RunAllExamples()
