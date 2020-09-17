@@ -9,6 +9,7 @@ import (
 
 func RunAllExamples() {
 	getSystemStatus()
+	getMarketStatus()
 	getSymbols()
 	getCurrencys()
 	getV2ReferenceCurrencies()
@@ -22,6 +23,16 @@ func getSystemStatus() {
 		applogger.Error("Get system status error: %s", err)
 	} else {
 		applogger.Info("Get system status %s", resp)
+	}
+}
+
+func getMarketStatus() {
+	client := new(client.CommonClient).Init(config.Host)
+	resp, err := client.GetMarketStatus()
+	if err != nil {
+		applogger.Error("Get market status error: %s", err)
+	} else {
+		applogger.Info("Get market status, status: %d", resp.MarketStatus)
 	}
 }
 

@@ -15,6 +15,7 @@ type GetMatchResultsResponse struct {
 		Type              string `json:"type"`
 		FilledAmount      string `json:"filled-amount"`
 		FilledFees        string `json:"filled-fees"`
+		FeeCurrency		  string `json:"fee-currency"`
 		Source            string `json:"source"`
 		Role              string `json:"role"`
 		FilledPoints      string `json:"filled-points"`

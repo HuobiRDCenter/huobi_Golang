@@ -15,7 +15,8 @@ const (
 	TimerIntervalSecond = 5
 	ReconnectWaitSecond = 60
 
-	path = "/ws"
+	wsPath = "/ws"
+	feedPath = "/feed"
 )
 
 // It will be invoked after websocket connected
@@ -30,6 +31,7 @@ type ResponseHandler func(response interface{})
 // The base class that responsible to get data from websocket
 type WebSocketClientBase struct {
 	host              string
+	path              string
 	conn              *websocket.Conn
 	connectedHandler  ConnectedHandler
 	messageHandler    MessageHandler
@@ -44,10 +46,18 @@ type WebSocketClientBase struct {
 // Initializer
 func (p *WebSocketClientBase) Init(host string) *WebSocketClientBase {
 	p.host = host
+	p.path = wsPath
 	p.stopReadChannel = make(chan int, 1)
 	p.stopTickerChannel = make(chan int, 1)
 	p.sendMutex = &sync.Mutex{}
 
+	return p
+}
+
+// Initializer with path
+func (p *WebSocketClientBase) InitWithFeedPath(host string) *WebSocketClientBase {
+	p.Init(host)
+	p.path = feedPath
 	return p
 }
 
@@ -93,7 +103,7 @@ func (p *WebSocketClientBase) Close() {
 // connect to server
 func (p *WebSocketClientBase) connectWebSocket() {
 	var err error
-	url := fmt.Sprintf("wss://%s%s", p.host, path)
+	url := fmt.Sprintf("wss://%s%s", p.host, p.path)
 	applogger.Debug("WebSocket connecting...")
 	p.conn, _, err = websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {

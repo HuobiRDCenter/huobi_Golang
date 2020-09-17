@@ -11,8 +11,9 @@ import (
 func RunAllExamples() {
 	reqAndSubscribeCandlestick()
 	reqAndSubscribeDepth()
-	reqAndSubscribeMarketByPrice()
+	reqAndSubscribe150LevelMarketByPrice()
 	subscribeFullMarketByPrice()
+	reqAndSubscribeMarketByPriceTick()
 	subscribeBBO()
 	reqAndSubscribeTrade()
 	reqAndSubscribeLast24hCandlestick()
@@ -130,7 +131,7 @@ func reqAndSubscribeDepth() {
 	applogger.Info("Client closed")
 }
 
-func reqAndSubscribeMarketByPrice() {
+func reqAndSubscribe150LevelMarketByPrice() {
 
 	client := new(marketwebsocketclient.MarketByPriceWebSocketClient).Init(config.Host)
 
@@ -198,7 +199,6 @@ func reqAndSubscribeMarketByPrice() {
 	applogger.Info("Client closed")
 }
 
-
 func subscribeFullMarketByPrice() {
 
 	client := new(marketwebsocketclient.MarketByPriceWebSocketClient).Init(config.Host)
@@ -245,6 +245,73 @@ func subscribeFullMarketByPrice() {
 	applogger.Info("Client closed")
 }
 
+func reqAndSubscribeMarketByPriceTick() {
+
+	client := new(marketwebsocketclient.MarketByPriceTickWebSocketClient).Init(config.Host)
+
+	client.SetHandler(
+		func() {
+			client.Request("btcusdt", 5,"1437")
+
+			client.Subscribe("btcusdt", 5,"1437")
+		},
+		func(resp interface{}) {
+			depthResponse, ok := resp.(market.SubscribeMarketByPriceResponse)
+			if ok {
+				if &depthResponse != nil {
+					if depthResponse.Tick != nil {
+						t := depthResponse.Tick
+						applogger.Info("WebSocket received MBP update: prevSeqNum=%d, seqNum=%d", t.PrevSeqNum, t.SeqNum)
+						if t.Asks != nil {
+							applogger.Info("Ask, count=%d", len(t.Asks))
+							for i := len(t.Asks) - 1; i >= 0; i-- {
+								applogger.Info("%v - %v" +
+									"", t.Asks[i][0], t.Asks[i][1])
+							}
+						}
+						if t.Bids != nil {
+							applogger.Info("Bid, count=%d", len(t.Bids))
+							for i := 0; i < len(t.Bids); i++ {
+								applogger.Info("%v - %v", t.Bids[i][0], t.Bids[i][1])
+							}
+						}
+					}
+
+					if depthResponse.Data != nil {
+						d := depthResponse.Data
+						applogger.Info("WebSocket received MBP data, seqNum=%d", d.SeqNum)
+						if d.Asks != nil {
+							a := d.Asks
+							applogger.Info("Ask, count=%d", len(a))
+							for i := len(a) - 1; i >= 0; i-- {
+								applogger.Info("%v - %v", a[i][0], a[i][1])
+							}
+						}
+						if d.Bids != nil {
+							b := depthResponse.Data.Bids
+							applogger.Info("Bid, count=%d", len(b))
+							for i := 0; i < len(b); i++ {
+								applogger.Info("%v - %v", b[i][0], b[i][1])
+							}
+						}
+					}
+				}
+			} else {
+				applogger.Warn("Unknown response: %v", resp)
+			}
+
+		})
+
+	client.Connect(true)
+
+	fmt.Println("Press ENTER to unsubscribe and stop...")
+	fmt.Scanln()
+
+	client.UnSubscribe("btcusdt", 5,"1437")
+
+	client.Close()
+	applogger.Info("Client closed")
+}
 
 func subscribeBBO() {
 

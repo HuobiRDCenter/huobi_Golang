@@ -30,6 +30,25 @@ func (p *CommonClient) GetSystemStatus() (string, error) {
 	return getResp, nil
 }
 
+// Returns current market status
+func (p *CommonClient) GetMarketStatus() (*common.MarketStatus, error) {
+	url := p.publicUrlBuilder.Build("/v2/market-status", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := common.GetMarketStatusResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 && &result.Data != nil {
+		return &result.Data, nil
+	}
+	return nil, errors.New(getResp)
+}
+
 // Get all Supported Trading Symbol
 // This endpoint returns all Huobi's supported trading symbol.
 func (p *CommonClient) GetSymbols() ([]common.Symbol, error) {

@@ -3,24 +3,22 @@ package algoorder
 type GetOpenOrdersResponse struct {
 	Code    int          `json:"code"`
 	Message string       `json:"message"`
-	Data    []OpenOrders `json:"data"`
+	Data    []struct {
+		AccountId     int    `json:"accountId"`
+		Source        string `json:"source"`
+		ClientOrderId string `json:"clientOrderId"`
+		Symbol        string `json:"symbol"`
+		OrderPrice    string `json:"orderPrice"`
+		OrderSize     string `json:"orderSize"`
+		OrderValue    string `json:"orderValue"`
+		OrderSide     string `json:"orderSide"`
+		TimeInForce   string `json:"timeInForce"`
+		OrderType     string `json:"orderType"`
+		StopPrice     string `json:"stopPrice"`
+		TrailingRate  string `json:"trailingRate"`
+		OrderOrigTime int64  `json:"orderOrigTime"`
+		LastActTime   int64  `json:"lastActTime"`
+		OrderStatus   string `json:"orderStatus"`
+	}
 	NextId  int64        `json:"nextId"`
-}
-
-type OpenOrders struct {
-	AccountId     int    `json:"accountId"`
-	Source        string `json:"source"`
-	ClientOrderId string `json:"clientOrderId"`
-	Symbol        string `json:"symbol"`
-	OrderPrice    string `json:"orderPrice"`
-	OrderSize     string `json:"orderSize"`
-	OrderValue    string `json:"orderValue"`
-	OrderSide     string `json:"orderSide"`
-	TimeInForce   string `json:"timeInForce"`
-	OrderType     string `json:"orderType"`
-	StopPrice     string `json:"stopPrice"`
-	TrailingRate  string `json:"trailingRate"`
-	OrderOrigTime int64  `json:"orderOrigTime"`
-	LastActTime   int64  `json:"lastActTime"`
-	OrderStatus   string `json:"orderStatus"`
 }

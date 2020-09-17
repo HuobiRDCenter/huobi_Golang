@@ -67,6 +67,26 @@ func (p *WalletClient) GetWithdrawQuota(currency string) (*wallet.WithdrawQuota,
 	return nil, errors.New(getResp)
 }
 
+
+//  Parent user to query withdraw address available for API key
+func (p *WalletClient) GetWithdrawAddress(request *model.GetRequest) (*wallet.GetWithdrawAddressResponse, error) {
+	url := p.privateUrlBuilder.Build("GET", "/v2/account/withdraw/address", request)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := wallet.GetWithdrawAddressResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+	return nil, errors.New(getResp)
+}
+
 // Withdraw from spot trading account to an external address.
 func (p *WalletClient) CreateWithdraw(request wallet.CreateWithdrawRequest) (int64, error) {
 	postBody, jsonErr := model.ToJson(request)

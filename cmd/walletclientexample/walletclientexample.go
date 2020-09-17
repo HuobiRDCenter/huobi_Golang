@@ -4,12 +4,14 @@ import (
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/wallet"
 )
 
 func RunAllExamples() {
 	getDepositAddress()
 	getWithdrawQuota()
+	getWithdrawAddress()
 	createWithdraw()
 	cancelWithdraw()
 	queryDepositWithdraw()
@@ -37,6 +39,24 @@ func getWithdrawQuota() {
 		applogger.Error("Get withdraw quota error: %s", err)
 	} else {
 		applogger.Info("Currency: %s, Chain: %s, MaxWithdrawAmt: %s", resp.Currency, resp.Chains[0].Chain, resp.Chains[0].MaxWithdrawAmt)
+	}
+}
+
+func getWithdrawAddress() {
+	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := new(model.GetRequest).Init()
+	request.AddParam("currency", "btc")
+
+	resp, err := client.GetWithdrawAddress(request)
+	if err != nil {
+		applogger.Error("Get withdraw address error: %s", err)
+	} else {
+		if resp.Data != nil {
+			applogger.Info("Get withdraw address, count=%d", len(resp.Data))
+			for _, addr := range resp.Data {
+				applogger.Info("Get withdraw address, Currency: %s, Chain: %s, Address: %s, AddressTag: %s", addr.Currency, addr.Chain, addr.Address, addr.AddressTag)
+			}
+		}
 	}
 }
 
