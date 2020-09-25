@@ -12,6 +12,7 @@ type SubscribeOrderV2Response struct {
 		OrderSide       string `json:"orderSide"`
 		OrderPrice      string `json:"orderPrice"`
 		OrderSize       string `json:"orderSize"`
+		OrderValue      string `json:"orderValue"`
 		Type            string `json:"type"`
 		OrderStatus     string `json:"orderStatus"`
 		OrderCreateTime int64  `json:"orderCreateTime"`
