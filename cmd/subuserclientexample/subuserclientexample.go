@@ -67,7 +67,7 @@ func unlockSubUser() {
 func setSubUserTradbleMarket() {
 	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := subuser.SetSubUserTradableMarketRequest{
-		SubUids: config.SubUid,
+		SubUids: config.SubUids,
 		AccountType: "isolated-margin",
 		Activation: "deactivated",
 	}
@@ -75,11 +75,13 @@ func setSubUserTradbleMarket() {
 	if err != nil {
 		applogger.Error("Deactivate sub user error: %s", err)
 	} else {
-		applogger.Info("Deactivate sub user success: %+v", resp)
+		for _, result := range resp {
+			applogger.Info("Deactivate sub user success: %+v", result)
+		}
 	}
 
 	request = subuser.SetSubUserTradableMarketRequest{
-		SubUids: config.SubUid,
+		SubUids: config.SubUids,
 		AccountType: "isolated-margin",
 		Activation: "activated",
 	}
@@ -87,7 +89,9 @@ func setSubUserTradbleMarket() {
 	if err != nil {
 		applogger.Error("Activate sub user error: %s", err)
 	} else {
-		applogger.Info("Activate sub user: %+v", resp)
+		for _, result := range resp {
+			applogger.Info("Activate sub user success: %+v", result)
+		}
 	}
 }
 
@@ -95,7 +99,7 @@ func setSubUserTradbleMarket() {
 func setSubUserTransferability() {
 	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := subuser.SetSubUserTransferabilityRequest{
-		SubUids: config.SubUid,
+		SubUids: config.SubUids,
 		AccountType: "spot",
 		Transferrable: false,
 	}
@@ -103,11 +107,13 @@ func setSubUserTransferability() {
 	if err != nil {
 		applogger.Error("Deactivate sub user error: %s", err)
 	} else {
-		applogger.Info("Deactivate sub user success: %+v", resp)
+		for _, result := range resp {
+			applogger.Info("Deactivate sub user success: %+v", result)
+		}
 	}
 
 	request = subuser.SetSubUserTransferabilityRequest{
-		SubUids: config.SubUid,
+		SubUids: config.SubUids,
 		AccountType: "spot",
 		Transferrable: true,
 	}
@@ -115,7 +121,9 @@ func setSubUserTransferability() {
 	if err != nil {
 		applogger.Error("Activate sub user error: %s", err)
 	} else {
-		applogger.Info("Activate sub user: %+v", resp)
+		for _, result := range resp {
+			applogger.Info("Activate sub user: %+v", result)
+		}
 	}
 }
 

@@ -11,11 +11,14 @@ import (
 func RunAllExamples() {
 	getAccountInfo()
 	getAccountBalance()
+	getAccountAssetValuation()
 	transferAccount()
 	getAccountHistory()
 	getAccountLedger()
 	transferFromFutureToSpot()
 	transferFromSpotToFuture()
+	getPointBalance()
+	transferPoint()
 }
 
 func getAccountInfo() {
@@ -28,6 +31,32 @@ func getAccountInfo() {
 		for _, result := range resp {
 			applogger.Info("account: %+v", result)
 		}
+	}
+}
+
+func getAccountBalance() {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	resp, err := client.GetAccountBalance(config.AccountId)
+	if err != nil {
+		applogger.Error("Get account balance error: %s", err)
+	} else {
+		applogger.Info("Get account balance: id=%d, type=%s, state=%s, count=%d",
+			resp.Id, resp.Type, resp.State, len(resp.List))
+		if resp.List != nil {
+			for _, result := range resp.List {
+				applogger.Info("Account balance: %+v", result)
+			}
+		}
+	}
+}
+
+func getAccountAssetValuation() {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	resp, err := client.GetAccountAssetValuation("spot", "USD", 0)
+	if err != nil {
+		applogger.Error("Get account asset valuation error: %s", err)
+	} else {
+		applogger.Info("Get account asset valuation, balance: %s, timestamp: %d", resp.Data.Balance, resp.Data.Timestamp)
 	}
 }
 
@@ -48,22 +77,6 @@ func transferAccount()  {
 		applogger.Error("Transfer account error: %s", err)
 	} else {
 		applogger.Info("Transfer account, %v", resp.Data)
-	}
-}
-
-func getAccountBalance() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	resp, err := client.GetAccountBalance(config.AccountId)
-	if err != nil {
-		applogger.Error("Get account balance error: %s", err)
-	} else {
-		applogger.Info("Get account balance: id=%d, type=%s, state=%s, count=%d",
-			resp.Id, resp.Type, resp.State, len(resp.List))
-		if resp.List != nil {
-			for _, result := range resp.List {
-				applogger.Info("Account balance: %+v", result)
-			}
-		}
 	}
 }
 
@@ -114,5 +127,32 @@ func transferFromSpotToFuture() {
 		applogger.Error("Transfer from spot to future error: %s", err)
 	} else {
 		applogger.Info("Transfer from spot to future success: id=%d", resp)
+	}
+}
+
+func getPointBalance() {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	resp, err := client.GetPointBalance(config.SubUids)
+	if err != nil {
+		applogger.Error("Get point balance error: %s", err)
+	} else {
+		applogger.Info("Get point balance: id=%s, balance=%s, state=%s, count=%d",
+			resp.Data.AccountId, resp.Data.AccountBalance, resp.Data.AccountStatus, len(resp.Data.GroupIds))
+		if resp.Data.GroupIds != nil {
+			for _, result := range resp.Data.GroupIds {
+				applogger.Info("Account balance: %+v", result)
+			}
+		}
+	}
+}
+
+func transferPoint() {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := account.TransferPointRequest{FromUid: "125753978", ToUid:"128654685", GroupId: 0, Amount:"0"}
+	resp, err := client.TransferPoint(request)
+	if err != nil {
+		applogger.Error("Transfer points error: %s", err)
+	} else {
+		applogger.Info("Transfer point success: id=%s, time=%d", resp.Data.TransactId, resp.Data.TransactTime)
 	}
 }

@@ -44,7 +44,7 @@ func getSymbols() {
 	} else {
 		applogger.Info("Get symbols, count=%d", len(resp))
 		for _, result := range resp {
-			applogger.Info("symbol=%s, BaseCurrency=%s, QuoteCurrency=%s", result.Symbol, result.BaseCurrency, result.QuoteCurrency)
+			applogger.Info("symbol: %s, %+v", result.Symbol, result)
 		}
 	}
 }

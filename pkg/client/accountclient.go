@@ -60,6 +60,34 @@ func (p *AccountClient) GetAccountBalance(accountId string) (*account.AccountBal
 	return nil, errors.New(getResp)
 }
 
+// Returns the valuation of the total assets of the account in btc or fiat currency.
+func (p *AccountClient) GetAccountAssetValuation(accountType string, valuationCurrency string, subUid int64) (*account.GetAccountAssetValuationResponse, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("accountType", accountType)
+	if valuationCurrency != "" {
+		request.AddParam("valuationCurrency", valuationCurrency)
+	}
+	if subUid != 0 {
+		request.AddParam("subUid", strconv.FormatInt(subUid, 10))
+	}
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/account/asset-valuation", request)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetAccountAssetValuationResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
 func (p *AccountClient) TransferAccount(request account.TransferAccountRequest) (*account.TransferAccountResponse, error) {
 	postBody, jsonErr := model.ToJson(request)
 	if jsonErr != nil {
@@ -191,4 +219,52 @@ func (p *AccountClient) FuturesTransfer(request account.FuturesTransferRequest) 
 
 	}
 	return result.Data, nil
+}
+
+
+// Returns the point balance of specified user's account
+func (p *AccountClient) GetPointBalance(subUid string) (*account.GetPointBalanceResponse, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("subUid", subUid)
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/point/account", request)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetPointBalanceResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// Transfer points between spot account and future contract account
+func (p *AccountClient) TransferPoint(request account.TransferPointRequest) (*account.TransferPointResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/point/transfer", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := account.TransferPointResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
 }
