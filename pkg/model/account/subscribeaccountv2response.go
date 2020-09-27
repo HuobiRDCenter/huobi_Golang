@@ -8,6 +8,7 @@ type SubscribeAccountV2Response struct {
 		Currency    string `json:"currency"`
 		AccountId   int    `json:"accountId"`
 		Balance     string `json:"balance"`
+		Available   string `json:"available"`
 		ChangeType  string `json:"changeType"`
 		AccountType string `json:"accountType"`
 		ChangeTime  int64  `json:"changeTime"`
