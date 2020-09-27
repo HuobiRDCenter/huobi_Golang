@@ -2,7 +2,7 @@ package requestbuilder
 
 import (
 	"fmt"
-	"github.com/huobirdcenter/huobi_golang/pkg/model"
+	"github.com/newgoo/huobi_golang/pkg/model"
 	"net/url"
 	"time"
 )

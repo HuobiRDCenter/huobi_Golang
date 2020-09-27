@@ -39,7 +39,7 @@ The SDK is compiled by Go 1.13.7, you can import this SDK in your Golang project
 ```go
 import (
   "fmt"
-  "github.com/huobirdcenter/huobi_golang/pkg/client"
+  "github.com/newgoo/huobi_golang/pkg/client"
 )
 
 // Get the timestamp from Huobi server and print on console

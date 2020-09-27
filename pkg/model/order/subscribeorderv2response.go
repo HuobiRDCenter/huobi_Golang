@@ -1,6 +1,6 @@
 package order
 
-import "github.com/huobirdcenter/huobi_golang/pkg/model/base"
+import "github.com/newgoo/huobi_golang/pkg/model/base"
 
 type SubscribeOrderV2Response struct {
 	base.WebSocketV2ResponseBase
