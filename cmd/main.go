@@ -12,6 +12,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/cmd/marketwebsocketclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/orderclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/orderwebsocketclientexample"
+	"github.com/huobirdcenter/huobi_golang/cmd/stablecoinclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/subuserclientexample"
 	"github.com/huobirdcenter/huobi_golang/cmd/walletclientexample"
 	"github.com/huobirdcenter/huobi_golang/logging/perflogger"
@@ -32,6 +33,7 @@ func runAll() {
 	crossmarginclientexample.RunAllExamples()
 	walletclientexample.RunAllExamples()
 	subuserclientexample.RunAllExamples()
+	stablecoinclientexample.RunAllExamples()
 	etfclientexample.RunAllExamples()
 	marketwebsocketclientexample.RunAllExamples()
 	accountwebsocketclientexample.RunAllExamples()

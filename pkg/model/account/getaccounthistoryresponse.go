@@ -3,7 +3,9 @@ package account
 type GetAccountHistoryResponse struct {
 	Status string           `json:"status"`
 	Data   []AccountHistory `json:"data"`
+	NextId int64            `json:"next-id"`
 }
+
 type AccountHistory struct {
 	AccountId    int64  `json:"account-id"`
 	Currency     string `json:"currency"`
