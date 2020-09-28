@@ -8,7 +8,7 @@ import (
 
 var sugaredLogger *zap.SugaredLogger
 
-func init() {
+func init()  {
 	encoderCfg := zapcore.EncoderConfig {
 		TimeKey:		"time",
 		MessageKey:     "msg",
@@ -18,6 +18,20 @@ func init() {
 	}
 
 	core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), os.Stdout, zap.DebugLevel)
+	sugaredLogger = zap.New(core).Sugar()
+}
+
+
+func UpdateLog(level zapcore.LevelEnabler)  {
+	encoderCfg := zapcore.EncoderConfig {
+		TimeKey:		"time",
+		MessageKey:     "msg",
+		LevelKey:       "level",
+		EncodeLevel:    zapcore.CapitalColorLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+	}
+
+	core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), os.Stdout, level)
 	sugaredLogger = zap.New(core).Sugar()
 }
 
