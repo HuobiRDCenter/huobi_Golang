@@ -2,7 +2,7 @@ package auth
 
 import (
 	"encoding/json"
-	"github.com/newgoo/huobi_golang/pkg/model/base"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/base"
 )
 
 type WebSocketV2AuthenticationResponse struct {

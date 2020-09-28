@@ -2,11 +2,11 @@ package orderwebsocketclientexample
 
 import (
 	"fmt"
-	"github.com/newgoo/huobi_golang/config"
-	"github.com/newgoo/huobi_golang/logging/applogger"
-	"github.com/newgoo/huobi_golang/pkg/client/orderwebsocketclient"
-	"github.com/newgoo/huobi_golang/pkg/model/auth"
-	"github.com/newgoo/huobi_golang/pkg/model/order"
+	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
+	"github.com/huobirdcenter/huobi_golang/pkg/client/orderwebsocketclient"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/auth"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
 )
 
 func RunAllExamples() {

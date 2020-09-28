@@ -1,10 +1,10 @@
 package crossmarginclientexample
 
 import (
-	"github.com/newgoo/huobi_golang/config"
-	"github.com/newgoo/huobi_golang/logging/applogger"
-	"github.com/newgoo/huobi_golang/pkg/client"
-	"github.com/newgoo/huobi_golang/pkg/model/margin"
+	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
+	"github.com/huobirdcenter/huobi_golang/pkg/client"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
 )
 
 func RunAllExamples() {

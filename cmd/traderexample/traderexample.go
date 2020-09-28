@@ -2,10 +2,10 @@ package traderexample
 
 import (
 	"fmt"
-	"github.com/newgoo/huobi_golang/config"
-	"github.com/newgoo/huobi_golang/logging/applogger"
-	"github.com/newgoo/huobi_golang/pkg/client/marketwebsocketclient"
-	"github.com/newgoo/huobi_golang/pkg/model/market"
+	"github.com/huobirdcenter/huobi_golang/config"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
+	"github.com/huobirdcenter/huobi_golang/pkg/client/marketwebsocketclient"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/market"
 )
 
 func RunAllExamples() {

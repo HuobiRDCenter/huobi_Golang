@@ -1,7 +1,7 @@
 package requestbuilder
 
 import (
-	"github.com/newgoo/huobi_golang/pkg/model"
+	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"testing"
 )
 

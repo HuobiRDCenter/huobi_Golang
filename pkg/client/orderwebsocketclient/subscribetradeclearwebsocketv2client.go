@@ -3,9 +3,9 @@ package orderwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/newgoo/huobi_golang/logging/applogger"
-	"github.com/newgoo/huobi_golang/pkg/client/websocketclientbase"
-	"github.com/newgoo/huobi_golang/pkg/model/order"
+	"github.com/huobirdcenter/huobi_golang/logging/applogger"
+	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
+	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
 )
 
 // Responsible to handle trade clear from WebSocket

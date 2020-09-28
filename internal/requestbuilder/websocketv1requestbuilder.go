@@ -1,8 +1,8 @@
 package requestbuilder
 
 import (
-	"github.com/newgoo/huobi_golang/internal/model"
-	model2 "github.com/newgoo/huobi_golang/pkg/model"
+	"github.com/huobirdcenter/huobi_golang/internal/model"
+	model2 "github.com/huobirdcenter/huobi_golang/pkg/model"
 	"time"
 )
 
