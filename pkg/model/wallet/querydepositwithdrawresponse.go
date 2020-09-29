@@ -7,7 +7,7 @@ type QueryDepositWithdrawResponse struct {
 	Data   []DepositWithdraw `json:"data"`
 }
 type DepositWithdraw struct {
-	Id         int64           `json:"status"`
+	Id         int64           `json:"id"`
 	Type       string          `json:"type"`
 	Currency   string          `json:"currency"`
 	TxHash     string          `json:"tx-hash"`
