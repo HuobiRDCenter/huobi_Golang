@@ -7,6 +7,7 @@ import (
 )
 
 var sugaredLogger *zap.SugaredLogger
+var atomicLevel zap.AtomicLevel
 
 func init() {
 	encoderCfg := zapcore.EncoderConfig {
@@ -17,8 +18,16 @@ func init() {
 		EncodeTime:     zapcore.ISO8601TimeEncoder,
 	}
 
-	core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), os.Stdout, zap.DebugLevel)
+	// define default level as debug level
+	atomicLevel = zap.NewAtomicLevel()
+	atomicLevel.SetLevel(zapcore.DebugLevel)
+
+	core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), os.Stdout, atomicLevel)
 	sugaredLogger = zap.New(core).Sugar()
+}
+
+func SetLevel(level zapcore.Level) {
+	atomicLevel.SetLevel(level)
 }
 
 func Fatal(template string, args ...interface{}) {
