@@ -7,6 +7,7 @@ type SubscribeOrderV2Response struct {
 	Data *struct {
 		EventType       string `json:"eventType"`
 		Symbol          string `json:"symbol"`
+		AccountId       int64  `json:"accountId"`
 		OrderId         int64  `json:"orderId"`
 		ClientOrderId   string `json:"clientOrderId"`
 		OrderSide       string `json:"orderSide"`

@@ -7,6 +7,7 @@ import (
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
+	"strconv"
 )
 
 // Responsible to operate cross margin
@@ -216,3 +217,75 @@ func (p *CrossMarginClient) MarginAccountsBalance(SubUid string) (*margin.CrossM
 
 	return nil, errors.New(getResp)
 }
+
+// Repays general margin loan with you asset in your margin account.
+func (p *CrossMarginClient) GeneralRepay(request margin.CrossMarginGeneralReplayLoanOptionalRequest) ([]margin.CrossMarginGeneraReplaylLoan, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/account/repayment", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := margin.CrossMarginGeneralReplyLoanResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code != 200 {
+		return nil, errors.New(postResp)
+
+	}
+	return result.Data, nil
+}
+
+// Returns general margin orders based on a specific searching criteria.
+func (p *CrossMarginClient) GeneralMarginLoanOrders(optionalRequest margin.CrossMarginGeneralReplayLoanRecordsOptionalRequest) ([]margin.CrossMarginGeneraReplaylLoanRecord, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.RepayId != "" {
+		request.AddParam("repayId", optionalRequest.RepayId)
+	}
+	if optionalRequest.AccountId != "" {
+		request.AddParam("accountId", optionalRequest.AccountId)
+	}
+	if optionalRequest.Currency != "" {
+		request.AddParam("currency", optionalRequest.Currency)
+	}
+	if optionalRequest.StartDate != 0 {
+		request.AddParam("startDate", strconv.FormatInt(optionalRequest.StartDate,10))
+	}
+	if optionalRequest.EndDate != 0 {
+		request.AddParam("endDate", strconv.FormatInt(optionalRequest.EndDate,10))
+	}
+	if optionalRequest.Sort != "" {
+		request.AddParam("sort", optionalRequest.Sort)
+	}
+	if optionalRequest.Limit != 0 {
+		request.AddParam("limit", strconv.Itoa(optionalRequest.Limit))
+	}
+	if optionalRequest.FromId != 0 {
+		request.AddParam("fromId", strconv.FormatInt(optionalRequest.FromId,10))
+	}
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/account/repayment", request)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := margin.CrossMarginGeneralReplyLoanRecordsResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
