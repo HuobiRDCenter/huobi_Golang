@@ -238,7 +238,7 @@ resp, err := client.GetCurrencys()
 
 ```go
 client := new(client.MarketClient).Init(config.Host)
-optionalRequest := getrequest.GetCandlestickOptionalRequest{Period: getrequest.MIN1, Size: 10}
+optionalRequest := market.GetCandlestickOptionalRequest{Period: market.MIN1, Size: 10}
 resp, err := client.GetCandlestick("btcusdt", optionalRequest)
 ```
 
@@ -267,7 +267,7 @@ resp, err := client.GetLast24hCandlestickAskBid("btcusdt")
 
 ```go
 client := new(client.MarketClient).Init(config.Host)
-optionalRequest := getrequest.GetHistoricalTradeOptionalRequest{5}
+optionalRequest := market.GetHistoricalTradeOptionalRequest{5}
 resp, err := client.GetHistoricalTrade("btcusdt", optionalRequest)
 ```
 
@@ -315,7 +315,7 @@ resp, err := client.CancelWithdraw(12345)
 ```go
 client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
 depositType := "deposit"
-queryDepositWithdrawOptionalRequest := getrequest.QueryDepositWithdrawOptionalRequest{Currency: "usdt"}
+queryDepositWithdrawOptionalRequest := wallet.QueryDepositWithdrawOptionalRequest{Currency: "usdt"}
 
 resp, err := client.QueryDepositWithdraw(depositType, queryDepositWithdrawOptionalRequest)
 ```
@@ -368,7 +368,7 @@ client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, confi
 
 ```go
 client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
-request := new(getrequest.GetRequest).Init()
+request := new(model.GetRequest).Init()
 request.AddParam("symbol", "btcusdt")
 request.AddParam("states", "canceled")
 resp, err := client.GetHistoryOrders(request)
@@ -404,7 +404,7 @@ resp, err := client.MarginOrdersRepay(orderId, request)
 
 ```go
 client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-optionalRequest := getrequest.IsolatedMarginLoanOrdersOptionalRequest{
+optionalRequest := margin.IsolatedMarginLoanOrdersOptionalRequest{
   StartDate: "2020-1-1",
 }  
 
