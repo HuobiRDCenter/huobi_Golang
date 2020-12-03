@@ -5,4 +5,5 @@ type CancelOrderByIdResponse struct {
 	Data         string `json:"data"`
 	ErrorCode    string `json:"err-code"`
 	ErrorMessage string `json:"err-msg"`
+	OrderState   string `json:"order-state"`
 }
