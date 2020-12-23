@@ -19,6 +19,7 @@ func RunAllExamples() {
 	querySubUserDepositHistory()
 	getSubUserAggregateBalance()
 	getSubUserAccount()
+	getUid()
 }
 
 
@@ -201,5 +202,15 @@ func getSubUserAccount() {
 				}
 			}
 		}
+	}
+}
+
+func getUid() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	resp, err := client.GetUid()
+	if err != nil {
+		applogger.Error("Get uid error: %s", err)
+	} else {
+		applogger.Info("Get uid: %d", resp)
 	}
 }

@@ -243,3 +243,20 @@ func (p *SubUserClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccoun
 
 	return nil, errors.New(getResp)
 }
+
+func (p *SubUserClient) GetUid() (int64, error) {
+	url := p.privateUrlBuilder.Build("GET", "/v2/user/uid", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return 0, getErr
+	}
+	result := account.GetUidResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return 0, jsonErr
+	}
+	if result.Code == 200 && result.Data != 0 {
+		return result.Data, nil
+	}
+	return 0, errors.New(getResp)
+}
