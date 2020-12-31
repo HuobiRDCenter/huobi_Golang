@@ -20,5 +20,6 @@ type GetMatchResultsResponse struct {
 		Role              string `json:"role"`
 		FilledPoints      string `json:"filled-points"`
 		FeeDeductCurrency string `json:"fee-deduct-currency"`
+		FeeDeductState    string `json:"fee-deduct-state"`
 	}
 }
