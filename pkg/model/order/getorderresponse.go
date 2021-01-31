@@ -12,6 +12,8 @@ type GetOrderResponse struct {
 		Symbol           string `json:"symbol"`
 		Price            string `json:"price"`
 		CreatedAt        int64  `json:"created-at"`
+		FinishedAt       int64  `json:"finished-at"`
+		CanceledAt       int64  `json:"canceled-at"`
 		Type             string `json:"type"`
 		FilledAmount     string `json:"field-amount"`
 		FilledCashAmount string `json:"field-cash-amount"`
