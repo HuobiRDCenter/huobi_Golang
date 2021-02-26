@@ -206,7 +206,7 @@ func (p *SubUserClient) QuerySubUserDepositHistory(subUid int64, optionalRequest
 }
 
 // Returns the aggregated balance from all the sub-users
-func (p *SubUserClient) GetSubUserAggregateBalance() ([]account.Balance, error) {
+func (p *SubUserClient) GetSubUserAggregateBalance() ([]account.AccountBalance, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v1/subuser/aggregate-balance", nil)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {

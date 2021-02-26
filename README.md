@@ -118,21 +118,16 @@ All the client is listed in below table. Each client is very small and simple, i
 | --------------- | --------------------------------- | ------- | ------------ |
 | Common          | CommonClient                      | Public  | Rest         |
 | Market          | MarketClient                      | Public  | Rest         |
-|                 | CandlestickWebSocketClient        | Public  | WebSocket v1 |
-|                 | DepthWebSocketClient              | Public  | WebSocket v1 |
-|                 | MarketByPriceWebSocketClient      | Public  | WebSocket v1 |
-|                 | BestBidOfferWebSocketClient       | Public  | WebSocket v1 |
-|                 | TradeWebSocketClient              | Public  | WebSocket v1 |
-|                 | Last24hCandlestickWebSocketClient | Public  | WebSocket v1 |
+|                 | CandlestickWebSocketClient        | Public  | WebSocket    |
+|                 | DepthWebSocketClient              | Public  | WebSocket    |
+|                 | MarketByPriceWebSocketClient      | Public  | WebSocket    |
+|                 | BestBidOfferWebSocketClient       | Public  | WebSocket    |
+|                 | TradeWebSocketClient              | Public  | WebSocket    |
+|                 | Last24hCandlestickWebSocketClient | Public  | WebSocket    |
 | Account         | AccountClient                     | Private | Rest         |
-|                 | RequestAccountWebSocketV1Client   | Private | WebSocket v1 |
-|                 | SubscribeAccountWebSocketV1Client | Private | WebSocket v1 |
 |                 | SubscribeAccountWebSocketV2Client | Private | WebSocket v2 |
 | Wallet          | WalletClient                      | Private | Rest         |
 | Order           | OrderClient                       | Private | Rest         |
-|                 | RequestOrdersWebSocketV1Client    | Private | WebSocket v1 |
-|                 | RequestOrderWebSocketV1Client     | Private | WebSocket v1 |
-|                 | SubscribeOrderWebSocketV1Client   | Private | WebSocket v1 |
 |                 | SubscribeOrderWebSocketV2Client   | Private | WebSocket v2 |
 | Isolated Margin | IsolatedMarginClient              | Private | Rest         |
 | Cross Margin    | CrossMarginClient                 | Private | Rest         |
