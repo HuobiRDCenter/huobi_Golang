@@ -71,8 +71,13 @@ func (p *WebSocketClientBase) SetHandler(connHandler ConnectedHandler, msgHandle
 // Connect to websocket server
 // if autoConnect is true, then the connection can be re-connect if no data received after the pre-defined timeout
 func (p *WebSocketClientBase) Connect(autoConnect bool) {
+	// initialize last received time as now
+	p.lastReceivedTime = time.Now()
+
+	// connect to websocket
 	p.connectWebSocket()
 
+	// start ticker to manage connection
 	if autoConnect {
 		p.startTicker()
 	}
@@ -112,6 +117,7 @@ func (p *WebSocketClientBase) connectWebSocket() {
 	}
 	applogger.Info("WebSocket connected")
 
+	// start loop to read and handle message
 	p.startReadLoop()
 
 	if p.connectedHandler != nil {
@@ -125,7 +131,8 @@ func (p *WebSocketClientBase) disconnectWebSocket() {
 		return
 	}
 
-	p.stopReadLoop()
+	// start a new goroutine to send stop signal
+	go p.stopReadLoop()
 
 	applogger.Debug("WebSocket disconnecting...")
 	err := p.conn.Close()
@@ -140,7 +147,6 @@ func (p *WebSocketClientBase) disconnectWebSocket() {
 // initialize a ticker and start a goroutine tickerLoop()
 func (p *WebSocketClientBase) startTicker() {
 	p.ticker = time.NewTicker(TimerIntervalSecond * time.Second)
-	p.lastReceivedTime = time.Now()
 
 	go p.tickerLoop()
 }
