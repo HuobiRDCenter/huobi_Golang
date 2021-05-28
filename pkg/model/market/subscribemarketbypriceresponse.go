@@ -1,12 +1,17 @@
 package market
 
 import (
-	"github.com/huobirdcenter/huobi_golang/pkg/model/base"
 	"github.com/shopspring/decimal"
+
+	"github.com/huobirdcenter/huobi_golang/pkg/model/base"
 )
 
 type SubscribeMarketByPriceResponse struct {
 	base.WebSocketResponseBase
+
+	// for full req
+	Rep string `json:"rep"`
+
 	Tick *MarketByPrice
 	Data *MarketByPrice
 }
