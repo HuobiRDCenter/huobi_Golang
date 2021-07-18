@@ -2,19 +2,17 @@ package internal
 
 import (
 	"io/ioutil"
-	"net/http"
 	"strings"
 
+	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/perflogger"
 )
-
-var DefaultClient = &http.Client{}
 
 func HttpGet(url string) (string, error) {
 	logger := perflogger.GetInstance()
 	logger.Start()
 
-	resp, err := DefaultClient.Get(url)
+	resp, err := config.DefaultClient.Get(url)
 	if err != nil {
 		return "", err
 	}
@@ -30,7 +28,7 @@ func HttpPost(url string, body string) (string, error) {
 	logger := perflogger.GetInstance()
 	logger.Start()
 
-	resp, err := DefaultClient.Post(url, "application/json", strings.NewReader(body))
+	resp, err := config.DefaultClient.Post(url, "application/json", strings.NewReader(body))
 	if err != nil {
 		return "", err
 	}
