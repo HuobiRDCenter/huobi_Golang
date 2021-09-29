@@ -6,7 +6,7 @@ import (
 )
 
 type SubscribeCandlestickResponse struct {
-	base base.WebSocketResponseBase
+	base.WebSocketResponseBase
 	Tick *Tick
 	Data []Tick
 }
