@@ -7,4 +7,5 @@ type GetAccountHistoryOptionalRequest struct {
 	EndTime       int64
 	Sort          string
 	Size          int
+	FromId        int64
 }

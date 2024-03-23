@@ -67,8 +67,7 @@ func (p *WalletClient) GetWithdrawQuota(currency string) (*wallet.WithdrawQuota,
 	return nil, errors.New(getResp)
 }
 
-
-//  Parent user to query withdraw address available for API key
+// Parent user to query withdraw address available for API key
 func (p *WalletClient) GetWithdrawAddress(request *model.GetRequest) (*wallet.GetWithdrawAddressResponse, error) {
 	url := p.privateUrlBuilder.Build("GET", "/v2/account/withdraw/address", request)
 	getResp, getErr := internal.HttpGet(url)
@@ -163,5 +162,28 @@ func (p *WalletClient) QueryDepositWithdraw(depositOrWithdraw string, optionalRe
 	if result.Status == "ok" && result.Data != nil {
 		return result.Data, nil
 	}
+	return nil, errors.New(getResp)
+}
+
+// 通过clientOrderId查询提币订单
+func (p *WalletClient) GetWithdraw(clientOrderId string) (*wallet.GetWithdrawResponse, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("clientOrderId", clientOrderId)
+
+	url := p.privateUrlBuilder.Build("GET", "/v1/query/withdraw/client-order-id", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := wallet.GetWithdrawResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Status == "ok" {
+		return &result, nil
+	}
+
 	return nil, errors.New(getResp)
 }

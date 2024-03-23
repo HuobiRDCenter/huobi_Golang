@@ -142,3 +142,180 @@ func (p *CommonClient) GetTimestamp() (int, error) {
 	}
 	return 0, errors.New(getResp)
 }
+
+// 获取所有交易对(V2)
+func (p *CommonClient) GetSymbolsV2(optionalRequest common.GetSymbolsV2) ([]common.SymbolV2, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.Ts != "" {
+		request.AddParam("ts", optionalRequest.Ts)
+	}
+
+	url := p.publicUrlBuilder.Build("/v2/settings/common/symbols", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := common.GetSymbolsV2Response{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Status == "ok" && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 获取所有币种(V2)
+func (p *CommonClient) GetCurrenciesV2(optionalRequest common.GetCurrenciesV2) ([]common.CurrenciesV2, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.Ts != "" {
+		request.AddParam("ts", optionalRequest.Ts)
+	}
+
+	url := p.publicUrlBuilder.Build("/v2/settings/common/currencies", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := common.GetCurrenciesV2Response{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Status == "ok" && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 获取币种配置
+func (p *CommonClient) GetCurrencysV1(optionalRequest common.GetCurrencysV1) ([]common.CurrencysV1, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.Ts != "" {
+		request.AddParam("ts", optionalRequest.Ts)
+	}
+
+	url := p.publicUrlBuilder.Build("/v1/settings/common/currencys", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := common.GetCurrencysV1Response{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Status == "ok" && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 获取交易对配置
+func (p *CommonClient) GetSymbolsV1(optionalRequest common.GetSymbolsV1) ([]common.SymbolsV1, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.Ts != "" {
+		request.AddParam("ts", optionalRequest.Ts)
+	}
+
+	url := p.publicUrlBuilder.Build("/v1/settings/common/symbols", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := common.GetSymbolsV1Response{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Status == "ok" && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 获取市场交易对配置
+func (p *CommonClient) GetMarketSymbols(optionalRequest common.GetMarketSymbols) ([]common.MarketSymbols, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.Symbols != "" {
+		request.AddParam("symbols", optionalRequest.Symbols)
+	}
+	if optionalRequest.Ts != "" {
+		request.AddParam("ts", optionalRequest.Ts)
+	}
+
+	url := p.publicUrlBuilder.Build("/v1/settings/common/market-symbols", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := common.GetMarketSymbolsResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Status == "ok" && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 查询链信息
+func (p *CommonClient) GetChains(optionalRequest common.GetChains) ([]common.ChainsV1, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.ShowDesc != "" {
+		request.AddParam("show-desc", optionalRequest.ShowDesc)
+	}
+	if optionalRequest.Currency != "" {
+		request.AddParam("currency", optionalRequest.Currency)
+	}
+	if optionalRequest.Ts != "" {
+		request.AddParam("ts", optionalRequest.Ts)
+	}
+
+	url := p.publicUrlBuilder.Build("/v1/settings/common/chains", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := common.GetChainsResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Status == "ok" && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}

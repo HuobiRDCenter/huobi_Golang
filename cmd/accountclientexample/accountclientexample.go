@@ -19,6 +19,8 @@ func RunAllExamples() {
 	transferFromSpotToFuture()
 	getPointBalance()
 	transferPoint()
+	getValuation()
+	transfer()
 }
 
 func getAccountInfo() {
@@ -60,7 +62,7 @@ func getAccountAssetValuation() {
 	}
 }
 
-func transferAccount()  {
+func transferAccount() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := account.TransferAccountRequest{
 		FromUser:        125753978,
@@ -148,11 +150,33 @@ func getPointBalance() {
 
 func transferPoint() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := account.TransferPointRequest{FromUid: "125753978", ToUid:"128654685", GroupId: 0, Amount:"0"}
+	request := account.TransferPointRequest{FromUid: "125753978", ToUid: "128654685", GroupId: 0, Amount: "0"}
 	resp, err := client.TransferPoint(request)
 	if err != nil {
 		applogger.Error("Transfer points error: %s", err)
 	} else {
 		applogger.Info("Transfer point success: id=%s, time=%d", resp.Data.TransactId, resp.Data.TransactTime)
+	}
+}
+
+func getValuation() {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	optionalRequest := account.GetValuation{ValuationCurrency: "BTC"}
+	resp, err := client.GetValuation("spot", optionalRequest)
+	if err != nil {
+		applogger.Error("Get Valuation error: %s", err)
+	} else {
+		applogger.Info("Valuation, %v", resp.Data)
+	}
+}
+
+func transfer() {
+	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := account.TransferRequest{From: "spot", To: "linear-swap", Currency: "usdt", Amount: 100, MarginAccount: "USDT"}
+	resp, err := client.Transfer(request)
+	if err != nil {
+		applogger.Error("transfer error: %s", err)
+	} else {
+		applogger.Info("transfer, %v", resp.Data)
 	}
 }

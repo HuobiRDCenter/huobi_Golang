@@ -15,6 +15,7 @@ func RunAllExamples() {
 	createWithdraw()
 	cancelWithdraw()
 	queryDepositWithdraw()
+	getWithdraw()
 }
 
 func getDepositAddress() {
@@ -97,5 +98,15 @@ func queryDepositWithdraw() {
 		for _, result := range resp {
 			applogger.Info("resp: %+v", result)
 		}
+	}
+}
+
+func getWithdraw() {
+	client := new(client.WalletClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	resp, err := client.GetWithdraw("1113")
+	if err != nil {
+		applogger.Error("getWithdraw error: %s", err)
+	} else {
+		applogger.Info("getWithdraw, %v", resp.Data)
 	}
 }

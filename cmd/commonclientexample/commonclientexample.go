@@ -14,6 +14,12 @@ func RunAllExamples() {
 	getCurrencys()
 	getV2ReferenceCurrencies()
 	getTimestamp()
+	getSymbolsV2()
+	getCurrenciesV2()
+	getCurrencysV1()
+	getSymbolsV1()
+	getMarketSymbols()
+	getChains()
 }
 
 func getSystemStatus() {
@@ -91,5 +97,71 @@ func getTimestamp() {
 		applogger.Error("Get timestamp error: %s", err)
 	} else {
 		applogger.Info("Get timestamp: %d", resp)
+	}
+}
+
+func getSymbolsV2() {
+	client := new(client.CommonClient).Init(config.Host)
+	optionalRequest := common.GetSymbolsV2{}
+	resp, err := client.GetSymbolsV2(optionalRequest)
+	if err != nil {
+		applogger.Error("getSymbolsV2 error: %s", err)
+	} else {
+		applogger.Info("getSymbolsV2, %v", resp)
+	}
+}
+
+func getCurrenciesV2() {
+	client := new(client.CommonClient).Init(config.Host)
+	optionalRequest := common.GetCurrenciesV2{}
+	resp, err := client.GetCurrenciesV2(optionalRequest)
+	if err != nil {
+		applogger.Error("getCurrenciesV2 error: %s", err)
+	} else {
+		applogger.Info("getCurrenciesV2, %v", resp)
+	}
+}
+
+func getCurrencysV1() {
+	client := new(client.CommonClient).Init(config.Host)
+	optionalRequest := common.GetCurrencysV1{}
+	resp, err := client.GetCurrencysV1(optionalRequest)
+	if err != nil {
+		applogger.Error("getSymbolsV2 error: %s", err)
+	} else {
+		applogger.Info("getSymbolsV2, %v", resp)
+	}
+}
+
+func getSymbolsV1() {
+	client := new(client.CommonClient).Init(config.Host)
+	optionalRequest := common.GetSymbolsV1{}
+	resp, err := client.GetSymbolsV1(optionalRequest)
+	if err != nil {
+		applogger.Error("GetSymbolsV1 error: %s", err)
+	} else {
+		applogger.Info("GetSymbolsV1, %v", resp)
+	}
+}
+
+func getMarketSymbols() {
+	client := new(client.CommonClient).Init(config.Host)
+	optionalRequest := common.GetMarketSymbols{}
+	resp, err := client.GetMarketSymbols(optionalRequest)
+	if err != nil {
+		applogger.Error("GetMarketSymbols error: %s", err)
+	} else {
+		applogger.Info("GetMarketSymbols, %v", resp)
+	}
+}
+
+func getChains() {
+	client := new(client.CommonClient).Init(config.Host)
+	optionalRequest := common.GetChains{}
+	resp, err := client.GetChains(optionalRequest)
+	if err != nil {
+		applogger.Error("GetChains error: %s", err)
+	} else {
+		applogger.Info("GetChains, %v", resp)
 	}
 }

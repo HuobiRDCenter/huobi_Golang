@@ -70,7 +70,6 @@ func (p *SubUserClient) SubUserManagement(request subuser.SubUserManagementReque
 	return result.Data, nil
 }
 
-
 // Set Tradable Market for Sub Users
 func (p *SubUserClient) SetSubUserTradableMarket(request subuser.SetSubUserTradableMarketRequest) ([]subuser.TradableMarket, error) {
 	postBody, jsonErr := model.ToJson(request)
@@ -259,4 +258,207 @@ func (p *SubUserClient) GetUid() (int64, error) {
 		return result.Data, nil
 	}
 	return 0, errors.New(getResp)
+}
+
+// 设置子用户手续费抵扣模式
+func (p *SubUserClient) DeductMode(request subuser.DeductModeRequest) (*subuser.DeductModeResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/deduct-mode", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := subuser.DeductModeResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
+}
+
+// 母子用户APIkey信息查询
+func (p *SubUserClient) GetApiKey(uid int64, optionalRequest subuser.GetApiKey) ([]subuser.ApiKey, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("uid", strconv.FormatInt(uid, 10))
+	if optionalRequest.AccessKey != "" {
+		request.AddParam("accessKey", optionalRequest.AccessKey)
+	}
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/user/api-key", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := subuser.GetApiKeyResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Code == 200 && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 获取子用户列表
+func (p *SubUserClient) GetUserList(optionalRequest subuser.GetUserList) ([]subuser.UserList, error) {
+	request := new(model.GetRequest).Init()
+	if optionalRequest.FromId != 0 {
+		request.AddParam("fromId", strconv.FormatInt(optionalRequest.FromId, 10))
+	}
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/sub-user/user-list", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := subuser.GetUserListResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Code == 200 && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 获取特定子用户的用户状态
+func (p *SubUserClient) GetUserState(subUid int64) (*subuser.GetUserStateResponse, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/sub-user/user-state", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := subuser.GetUserStateResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 获取特定子用户的账户列表
+func (p *SubUserClient) GetAccountList(subUid int64) (*subuser.GetAccountListResponse, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("subUid", strconv.FormatInt(subUid, 10))
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/sub-user/account-list", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := subuser.GetAccountListResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 子用户APIkey创建
+func (p *SubUserClient) ApiKeyGeneration(request subuser.ApiKeyGenerationRequest) (*subuser.ApiKeyGenerationResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/api-key-generation", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := subuser.ApiKeyGenerationResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
+}
+
+// 修改子用户APIkey
+func (p *SubUserClient) ApiKeyModification(request subuser.ApiKeyModificationRequest) (*subuser.ApiKeyModificationResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/api-key-modification", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := subuser.ApiKeyModificationResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
+}
+
+// 删除子用户APIkey
+func (p *SubUserClient) ApiKeyDeletion(request subuser.ApiKeyDeletionRequest) (*subuser.ApiKeyDeletionResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/sub-user/api-key-deletion", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := subuser.ApiKeyDeletionResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
 }

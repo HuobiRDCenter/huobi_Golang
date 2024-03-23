@@ -20,8 +20,15 @@ func RunAllExamples() {
 	getSubUserAggregateBalance()
 	getSubUserAccount()
 	getUid()
+	deductMode()
+	getApiKey()
+	getUserList()
+	getUserState()
+	getAccountList()
+	apiKeyGeneration()
+	apiKeyModification()
+	apiKeyDeletion()
 }
-
 
 func createSubUser() {
 	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
@@ -68,9 +75,9 @@ func unlockSubUser() {
 func setSubUserTradbleMarket() {
 	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := subuser.SetSubUserTradableMarketRequest{
-		SubUids: config.SubUids,
+		SubUids:     config.SubUids,
 		AccountType: "isolated-margin",
-		Activation: "deactivated",
+		Activation:  "deactivated",
 	}
 	resp, err := client.SetSubUserTradableMarket(request)
 	if err != nil {
@@ -82,9 +89,9 @@ func setSubUserTradbleMarket() {
 	}
 
 	request = subuser.SetSubUserTradableMarketRequest{
-		SubUids: config.SubUids,
+		SubUids:     config.SubUids,
 		AccountType: "isolated-margin",
-		Activation: "activated",
+		Activation:  "activated",
 	}
 	resp, err = client.SetSubUserTradableMarket(request)
 	if err != nil {
@@ -96,12 +103,11 @@ func setSubUserTradbleMarket() {
 	}
 }
 
-
 func setSubUserTransferability() {
 	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	request := subuser.SetSubUserTransferabilityRequest{
-		SubUids: config.SubUids,
-		AccountType: "spot",
+		SubUids:       config.SubUids,
+		AccountType:   "spot",
 		Transferrable: false,
 	}
 	resp, err := client.SetSubUserTransferability(request)
@@ -114,8 +120,8 @@ func setSubUserTransferability() {
 	}
 
 	request = subuser.SetSubUserTransferabilityRequest{
-		SubUids: config.SubUids,
-		AccountType: "spot",
+		SubUids:       config.SubUids,
+		AccountType:   "spot",
 		Transferrable: true,
 	}
 	resp, err = client.SetSubUserTransferability(request)
@@ -212,5 +218,91 @@ func getUid() {
 		applogger.Error("Get uid error: %s", err)
 	} else {
 		applogger.Info("Get uid: %d", resp)
+	}
+}
+
+func deductMode() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := subuser.DeductModeRequest{SubUids: 178211, DeductMode: "master"}
+	resp, err := client.DeductMode(request)
+	if err != nil {
+		applogger.Error("deductMode error: %s", err)
+	} else {
+		applogger.Info("deductMode, %v", resp.Data)
+	}
+}
+
+func getApiKey() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := subuser.GetApiKey{AccessKey: config.AccessKey}
+	resp, err := client.GetApiKey(config.SubUid, request)
+	if err != nil {
+		applogger.Error("GetApiKey error: %s", err)
+	} else {
+		applogger.Info("GetApiKey, %v", resp)
+	}
+}
+
+func getUserList() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := subuser.GetUserList{}
+	resp, err := client.GetUserList(request)
+	if err != nil {
+		applogger.Error("GetUserList error: %s", err)
+	} else {
+		applogger.Info("GetUserList, %v", resp)
+	}
+}
+
+func getUserState() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	resp, err := client.GetUserState(config.SubUid)
+	if err != nil {
+		applogger.Error("GetUserState error: %s", err)
+	} else {
+		applogger.Info("GetUserState, %v", resp)
+	}
+}
+
+func getAccountList() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	resp, err := client.GetAccountList(config.SubUid)
+	if err != nil {
+		applogger.Error("GetAccountList error: %s", err)
+	} else {
+		applogger.Info("GetAccountList, %v", resp)
+	}
+}
+
+func apiKeyGeneration() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := subuser.ApiKeyGenerationRequest{OtpToken: "178211", SubUid: config.SubUid, Note: "178211", Permission: "178211", IPAddresses: "178211"}
+	resp, err := client.ApiKeyGeneration(request)
+	if err != nil {
+		applogger.Error("ApiKeyGeneration error: %s", err)
+	} else {
+		applogger.Info("ApiKeyGeneration, %v", resp)
+	}
+}
+
+func apiKeyModification() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := subuser.ApiKeyModificationRequest{SubUid: 178211, AccessKey: "178211", Note: "178211", Permission: "178211", IPAddresses: "178211"}
+	resp, err := client.ApiKeyModification(request)
+	if err != nil {
+		applogger.Error("ApiKeyModification error: %s", err)
+	} else {
+		applogger.Info("ApiKeyModification, %v", resp)
+	}
+}
+
+func apiKeyDeletion() {
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := subuser.ApiKeyDeletionRequest{SubUid: 178211, AccessKey: "178211"}
+	resp, err := client.ApiKeyDeletion(request)
+	if err != nil {
+		applogger.Error("ApiKeyDeletion error: %s", err)
+	} else {
+		applogger.Info("ApiKeyDeletion, %v", resp)
 	}
 }

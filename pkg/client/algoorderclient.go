@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
@@ -103,4 +104,29 @@ func (p *AlgoOrderClient) GetSpecificOrder(request *model.GetRequest) (*algoorde
 	}
 
 	return &result, nil
+}
+
+// 自动撤销订单
+func (p *AlgoOrderClient) CancelAllAfter(request algoorder.CancelAllAfterRequest) (*algoorder.CancelAllAfterResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/algo-orders/cancel-all-after", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := algoorder.CancelAllAfterResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
 }

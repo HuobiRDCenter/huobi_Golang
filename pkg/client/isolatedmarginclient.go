@@ -220,3 +220,29 @@ func (p *IsolatedMarginClient) MarginAccountsBalance(optionalRequest margin.Marg
 
 	return nil, errors.New(getResp)
 }
+
+// 获取杠杆持仓限额（全仓）
+func (p *IsolatedMarginClient) GetMarginLimit(currency string) ([]margin.MarginLimit, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("currency", currency)
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/margin/limit", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	result := margin.GetMarginLimitResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	if result.Status == "ok" && result.Data != nil {
+		return result.Data, nil
+	}
+
+	return nil, errors.New(getResp)
+}

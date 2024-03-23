@@ -23,6 +23,7 @@ func RunAllExamples() {
 	getLast48hOrders()
 	getMatchResultByCriteria()
 	getTransactFeeRate()
+	autoPlace()
 }
 
 func placeOrder() {
@@ -340,5 +341,16 @@ func getTransactFeeRate() {
 		default:
 			applogger.Error("Get fee error: %s", resp.Message)
 		}
+	}
+}
+
+func autoPlace() {
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := order.AutoPlaceRequest{Symbol: "btcusdt", AccountID: "31253990", Amount: "0", MarketAmount: "10", Type: "buy-market", TradePurpose: "2", Source: "super-margin-web"}
+	resp, err := client.AutoPlace(request)
+	if err != nil {
+		applogger.Error("autoPlace error: %s", err)
+	} else {
+		applogger.Info("autoPlace, %v", resp.Data)
 	}
 }

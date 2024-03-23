@@ -9,12 +9,13 @@ type GetCandlestickResponse struct {
 	Data   []Candlestick `json:"data"`
 }
 type Candlestick struct {
-	Amount decimal.Decimal `json:"amount"`
-	Open   decimal.Decimal `json:"open"`
-	Close  decimal.Decimal `json:"close"`
-	High   decimal.Decimal `json:"high"`
-	Id     int64           `json:"id"`
-	Count  int64           `json:"count"`
-	Low    decimal.Decimal `json:"low"`
-	Vol    decimal.Decimal `json:"vol"`
+	Amount  decimal.Decimal `json:"amount"`
+	Open    decimal.Decimal `json:"open"`
+	Close   decimal.Decimal `json:"close"`
+	High    decimal.Decimal `json:"high"`
+	Id      int64           `json:"id"`
+	Count   int64           `json:"count"`
+	Low     decimal.Decimal `json:"low"`
+	Vol     decimal.Decimal `json:"vol"`
+	Version int             `json:"version"`
 }

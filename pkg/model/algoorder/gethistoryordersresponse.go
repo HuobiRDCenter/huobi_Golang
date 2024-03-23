@@ -1,12 +1,13 @@
 package algoorder
 
 type GetHistoryOrdersResponse struct {
-	Code    int             `json:"code"`
-	Message string          `json:"message"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 	Data    []struct {
 		AccountId       int    `json:"accountId"`
 		Source          string `json:"source"`
 		ClientOrderId   string `json:"clientOrderId"`
+		OrderId         string `json:"orderId"`
 		Symbol          string `json:"symbol"`
 		OrderPrice      string `json:"orderPrice"`
 		OrderSize       string `json:"orderSize"`
@@ -23,5 +24,5 @@ type GetHistoryOrdersResponse struct {
 		ErrCode         int    `json:"errCode"`
 		ErrMessage      string `json:"errMessage"`
 	}
-	NextId  int64           `json:"nextId"`
+	NextId int64 `json:"nextId"`
 }

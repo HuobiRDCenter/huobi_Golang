@@ -17,6 +17,7 @@ func RunAllExamples() {
 	subscribeBBO()
 	reqAndSubscribeTrade()
 	reqAndSubscribeLast24hCandlestick()
+	reqAndSubscribeTicker()
 }
 
 func reqAndSubscribeCandlestick() {
@@ -151,7 +152,7 @@ func reqAndSubscribe150LevelMarketByPrice() {
 						if t.Asks != nil {
 							applogger.Info("Ask, count=%d", len(t.Asks))
 							for i := len(t.Asks) - 1; i >= 0; i-- {
-								applogger.Info("%v - %v" +
+								applogger.Info("%v - %v"+
 									"", t.Asks[i][0], t.Asks[i][1])
 							}
 						}
@@ -251,9 +252,9 @@ func reqAndSubscribeMarketByPriceTick() {
 
 	client.SetHandler(
 		func() {
-			client.Request("btcusdt", 5,"1437")
+			client.Request("btcusdt", 5, "1437")
 
-			client.Subscribe("btcusdt", 5,"1437")
+			client.Subscribe("btcusdt", 5, "1437")
 		},
 		func(resp interface{}) {
 			depthResponse, ok := resp.(market.SubscribeMarketByPriceResponse)
@@ -265,7 +266,7 @@ func reqAndSubscribeMarketByPriceTick() {
 						if t.Asks != nil {
 							applogger.Info("Ask, count=%d", len(t.Asks))
 							for i := len(t.Asks) - 1; i >= 0; i-- {
-								applogger.Info("%v - %v" +
+								applogger.Info("%v - %v"+
 									"", t.Asks[i][0], t.Asks[i][1])
 							}
 						}
@@ -307,7 +308,7 @@ func reqAndSubscribeMarketByPriceTick() {
 	fmt.Println("Press ENTER to unsubscribe and stop...")
 	fmt.Scanln()
 
-	client.UnSubscribe("btcusdt", 5,"1437")
+	client.UnSubscribe("btcusdt", 5, "1437")
 
 	client.Close()
 	applogger.Info("Client closed")
@@ -415,6 +416,52 @@ func reqAndSubscribeLast24hCandlestick() {
 						t := candlestickResponse.Data
 						applogger.Info("WebSocket received candlestick data, id: %d, count: %v, volume: %v [%v-%v-%v-%v]",
 							t.Id, t.Count, t.Vol, t.Open, t.Close, t.Low, t.High)
+					}
+				}
+			} else {
+				applogger.Warn("Unknown response: %v", resp)
+			}
+		})
+
+	// Connect to the server and wait for the handler to handle the response
+	client.Connect(true)
+
+	fmt.Println("Press ENTER to unsubscribe and stop...")
+	fmt.Scanln()
+
+	client.UnSubscribe("btcusdt", "1608")
+
+	client.Close()
+	applogger.Info("Client closed")
+}
+
+func reqAndSubscribeTicker() {
+	// Initialize a new instance
+	client := new(marketwebsocketclient.TickerWebSocketClient).Init(config.Host)
+
+	// Set the callback handlers
+	client.SetHandler(
+		// Connected handler
+		func() {
+			client.Request("btcusdt", "1608")
+
+			client.Subscribe("btcusdt", "1608")
+		},
+		// Response handler
+		func(resp interface{}) {
+			tickerResponse, ok := resp.(market.SubscribeTickerResponse)
+			if ok {
+				if &tickerResponse != nil {
+					if tickerResponse.Tick != nil {
+						t := tickerResponse.Tick
+						applogger.Info("WebSocket received candlestick update, count: %v, volume: %v [%v-%v-%v-%v-%v-%v-%v-%v]",
+							t.Count, t.Vol, t.Open, t.Close, t.Low, t.High, t.Ask, t.Bid, t.Amount, t.BidSize)
+					}
+
+					if tickerResponse.Data != nil {
+						t := tickerResponse.Data
+						applogger.Info("WebSocket received candlestick update, count: %v, volume: %v [%v-%v-%v-%v-%v-%v-%v-%v]",
+							t.Count, t.Vol, t.Open, t.Close, t.Low, t.High, t.Ask, t.Bid, t.Amount, t.BidSize)
 					}
 				}
 			} else {

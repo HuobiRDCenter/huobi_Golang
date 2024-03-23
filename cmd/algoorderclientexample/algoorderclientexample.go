@@ -14,6 +14,7 @@ func RunAllExamples() {
 	getSpecificOrder()
 	cancelOder()
 	getHistoryOrders()
+	cancelAllAfter()
 }
 
 func placeOrder() {
@@ -129,5 +130,16 @@ func getSpecificOrder() {
 		} else {
 			applogger.Error("Get order error, code: %s, message: %s", resp.Code, resp.Message)
 		}
+	}
+}
+
+func cancelAllAfter() {
+	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	request := algoorder.CancelAllAfterRequest{Timeout: 10}
+	resp, err := client.CancelAllAfter(request)
+	if err != nil {
+		applogger.Error("cancelAllAfter error: %s", err)
+	} else {
+		applogger.Info("cancelAllAfter, %v", resp.Data)
 	}
 }

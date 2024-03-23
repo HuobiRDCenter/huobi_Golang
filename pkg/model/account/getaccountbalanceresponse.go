@@ -6,14 +6,17 @@ type GetAccountBalanceResponse struct {
 }
 
 type AccountBalance struct {
-	Id    int       `json:"id"`
-	Type  string    `json:"type"`
-	State string    `json:"state"`
+	Id    int               `json:"id"`
+	Type  string            `json:"type"`
+	State string            `json:"state"`
 	List  []CurrencyBalance `json:"list"`
 }
 
 type CurrencyBalance struct {
-	Currency string `json:"currency"`
-	Type     string `json:"type"`
-	Balance  string `json:"balance"`
+	Currency  string `json:"currency"`
+	Type      string `json:"type"`
+	Balance   string `json:"balance"`
+	Debt      string `json:"debt"`
+	Available string `json:"available"`
+	SeqNum    string `json:"seq-num"`
 }

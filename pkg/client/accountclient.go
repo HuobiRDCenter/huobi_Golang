@@ -221,7 +221,6 @@ func (p *AccountClient) FuturesTransfer(request account.FuturesTransferRequest) 
 	return result.Data, nil
 }
 
-
 // Returns the point balance of specified user's account
 func (p *AccountClient) GetPointBalance(subUid string) (*account.GetPointBalanceResponse, error) {
 	request := new(model.GetRequest).Init()
@@ -258,6 +257,57 @@ func (p *AccountClient) TransferPoint(request account.TransferPointRequest) (*ac
 	}
 
 	result := account.TransferPointResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
+}
+
+// 获取平台资产总估值
+func (p *AccountClient) GetValuation(accountType string, optionalRequest account.GetValuation) (*account.GetValuationResponse, error) {
+	request := new(model.GetRequest).Init()
+	request.AddParam("accountType", accountType)
+	if optionalRequest.ValuationCurrency != "" {
+		request.AddParam("valuationCurrency", optionalRequest.ValuationCurrency)
+	}
+
+	url := p.privateUrlBuilder.Build("GET", "/v2/account/valuation", request)
+
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetValuationResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 【通用】现货-合约账户和OTC账户间进行资金的划转
+func (p *AccountClient) Transfer(request account.TransferRequest) (*account.TransferResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v2/account/transfer", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := account.TransferResponse{}
 	jsonErr = json.Unmarshal([]byte(postResp), &result)
 	if jsonErr != nil {
 		return nil, jsonErr

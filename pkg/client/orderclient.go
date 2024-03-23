@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
@@ -269,4 +270,29 @@ func (p *OrderClient) GetTransactFeeRate(request *model.GetRequest) (*order.GetT
 	}
 
 	return &result, nil
+}
+
+// 杠杆下单
+func (p *OrderClient) AutoPlace(request order.AutoPlaceRequest) (*order.AutoPlaceResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v1/order/auto/place", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := order.AutoPlaceResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
 }
