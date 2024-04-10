@@ -127,7 +127,7 @@ func marginAccountsBalance() {
 
 func getMarginLimit() {
 	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	resp, err := client.GetMarginLimit("spot")
+	resp, err := client.GetMarginLimit("")
 	if err != nil {
 		applogger.Error("getMarginLimit error: %s", err)
 	} else {

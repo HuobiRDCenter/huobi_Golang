@@ -8,7 +8,7 @@ type GetAccountListResponse struct {
 
 type AccountList struct {
 	Uid        int64         `json:"uid"`
-	DeductMode bool          `json:"deductMode"`
+	DeductMode string        `json:"deductMode"`
 	List       []AccountInfo `json:"list,omitempty"`
 }
 
@@ -20,7 +20,7 @@ type AccountInfo struct {
 }
 
 type AccountID struct {
-	AccountID     string `json:"accountId"`
+	AccountID     int64  `json:"accountId"`
 	SubType       string `json:"subType,omitempty"`
 	AccountStatus string `json:"accountStatus,omitempty"`
 }

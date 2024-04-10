@@ -40,7 +40,7 @@ type SymbolV2 struct {
 	Wr                string          `json:"wr"`
 	D                 int             `json:"d"`
 	Elr               string          `json:"elr"`
-	P                 P               `json:"p"`
+	P                 []P             `json:"p"`
 	Castate           string          `json:"castate"`
 	Ca1oa             int64           `json:"ca1oa"`
 	Ca2oa             int64           `json:"ca2oa"`

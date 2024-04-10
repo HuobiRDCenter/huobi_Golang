@@ -162,7 +162,7 @@ func transferPoint() {
 func getValuation() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
 	optionalRequest := account.GetValuation{ValuationCurrency: "BTC"}
-	resp, err := client.GetValuation("spot", optionalRequest)
+	resp, err := client.GetValuation("1", optionalRequest)
 	if err != nil {
 		applogger.Error("Get Valuation error: %s", err)
 	} else {
@@ -172,7 +172,7 @@ func getValuation() {
 
 func transfer() {
 	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
-	request := account.TransferRequest{From: "spot", To: "linear-swap", Currency: "usdt", Amount: 100, MarginAccount: "USDT"}
+	request := account.TransferRequest{From: "spot", To: "linear-swap", Currency: "usdt", Amount: 100.0, MarginAccount: "USDT"}
 	resp, err := client.Transfer(request)
 	if err != nil {
 		applogger.Error("transfer error: %s", err)

@@ -9,6 +9,6 @@ type DeductModeResponse struct {
 type DeductMode struct {
 	SubUid     string `json:"subUid"`
 	DeductMode string `json:"deductMode"`
-	ErrCode    string `json:"errCode,omitempty"`
+	ErrCode    int64  `json:"errCode,omitempty"`
 	ErrMessage string `json:"errMessage,omitempty"`
 }

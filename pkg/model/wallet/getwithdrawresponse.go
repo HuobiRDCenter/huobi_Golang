@@ -29,4 +29,5 @@ type Data struct {
 	UpdatedAt         int64           `json:"updated-at"`
 	UserID            int64           `json:"user-id"`
 	WalletConfirm     int             `json:"wallet-confirm"`
+	SubType           string          `json:"sub-type"`
 }

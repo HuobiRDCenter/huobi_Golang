@@ -23,7 +23,7 @@ type CurrencysV1 struct {
 	Dma   string   `json:"dma"`
 	Wma   string   `json:"wma"`
 	Sp    string   `json:"sp"`
-	W     string   `json:"w"`
+	W     int64    `json:"w"`
 	Qc    bool     `json:"qc"`
 	State string   `json:"state"`
 	V     bool     `json:"v"`
@@ -43,5 +43,5 @@ type CurrencysV1 struct {
 	Tags  string   `json:"tags"`
 	Fn    string   `json:"fn"`
 	Bc    string   `json:"bc"`
-	Iqc   string   `json:"iqc"`
+	Iqc   bool     `json:"iqc"`
 }
