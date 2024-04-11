@@ -1,36 +1,36 @@
-# Huobi Golang SDK
+# Huobi Golang SDK For Spot v3
 
-This is Huobi Go SDK,  you can install to your Golang project and use this SDK to query all market data, trading and manage your account.
+This is Huobi Golang SDK v3, you can import to your project and use this SDK to query all market data, trading and manage your account. The SDK supports RESTful API invoking, and subscribing the market, account and order update from the WebSocket connection.
 
-The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
+If you already use SDK v1 or v2, it is strongly suggested migrate to v3 as we refactor the implementation to make it simpler and easy to maintain. The SDK v3 is completely consistent with the API documentation of the new HTX open platform. Compared to SDK versions v1 and v2, due to changes in parameters of many interfaces, in order to match the latest interface parameter situation, v3 version has made adjustments to parameters of more than 80 interfaces to ensure that requests can be correctly initiated and accurate response data can be obtained. Meanwhile, the v3 version has added over 130 new interfaces available for use, greatly expanding the number of available interfaces. We will stop the maintenance of v2 in the near future.
 
 ## Table of Contents
 
 - [Quick Start](#Quick-Start)
 - [Usage](#Usage)
-  - [Folder structure](#Folder-Structure)
-  - [Run examples](#Run-examples)
-  - [Client](#Client)
-  - [Response](#Response)
-  - [Init function](#Init-function)
-  - [Logging](#logging)
+    - [Folder structure](#Folder-Structure)
+    - [Run examples](#Run-examples)
+    - [Client](#Client)
+    - [Response](#Response)
+    - [Init function](#Init-function)
+    - [Logging](#logging)
 - [Request examples](#Request-examples)
-  - [Common data](#Common-data)
-  - [Market data](#Market-data)
-  - [Account](#account)
-  - [Wallet](#wallet)
-  - [Trading](#trading)
-  - [Margin Loan](#margin-loan)
+    - [Common data](#Common-data)
+    - [Market data](#Market-data)
+    - [Account](#account)
+    - [Wallet](#wallet)
+    - [Trading](#trading)
+    - [Margin Loan](#margin-loan)
 - [Subscription examples](#Subscription-examples)
-  - [Subscribe candlestick update](#subscribe-candlestick-update)
-  - [Subscribe account update](#subscribe-account-update)
-  - [Subscribe order update](#subscribe-order-update)
-  - [Subscribe trade update](#subscribe-trade-update)
+    - [Subscribe candlestick update](#subscribe-candlestick-update)
+    - [Subscribe account update](#subscribe-account-update)
+    - [Subscribe order update](#subscribe-order-update)
+    - [Subscribe trade update](#subscribe-trade-update)
 - [Unsubscribe](#unsubscribe)
 
 ## Quick Start
 
-The SDK is compiled by Go 1.13.7, you can import this SDK in your Golang project:
+You can import this SDK in your Golang project:
 
 * Import **/pkg/client** package
 * Create one of the clients (under package **/pkg/client**) instance by **Init** method
@@ -75,12 +75,12 @@ After above section, this SDK should be already download to your local machine, 
 This is the folder and package structure of SDK source code and the description
 
 - **pkg**: The public package of the SDK
-  - **client**: The client struct that are responsible to access data
-  - **model**: The request and response data model
+    - **client**: The client struct that are responsible to access data
+    - **model**: The request and response data model
 - **internal** The internal package that used internally
-  - **gzip**: it provide the gzip decompress functionality that unzip the websocket binary data
-  - **model**: The internal data model
-  - **requestbuilder**: Responsible to build the request with the signature
+    - **gzip**: it provide the gzip decompress functionality that unzip the websocket binary data
+    - **model**: The internal data model
+    - **requestbuilder**: Responsible to build the request with the signature
 - **logging**: It provides the logging function
 - **config**: It stores the common configuration, such as host, access key.
 - **cmd**: The main package is defined here, it provides the examples how to use **client** package and **response** package to access API and read response.
@@ -92,9 +92,9 @@ As the example indicates, there are two important namespaces: **client** and **r
 This SDK provides examples that under **/cmd** folder, if you want to run the examples to access private data, you need below additional steps:
 
 1. Create an **API Key** first from Huobi official website
-2. Create **key.go** into your **config** folder (package). The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
+2. Create **key.go** into your **config** folder (package). The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file.
 
-3. Assign your secret key to string *SecretKey*:
+3. Assign your secret key to string *SecretKey* and Assign your access key to string *AccessKey*
 
 ```go
 // key.go file
@@ -102,6 +102,9 @@ package config
 
 // replace with your API SecretKey
 var SecretKey = "xxxx-xxxx-xxxx-xxxx"
+
+// replace with your API AccessKey
+var AccessKey = "xxxx-xxxx-xxxx-xxxx"
 ```
 
 If you don't need to access private data, you can ignore the secret key.
@@ -110,28 +113,34 @@ Regarding the difference between public data and private data you can find detai
 
 ### Client
 
-In this SDK, the client is the struct to access the Huobi API. In order to isolate the private data with public data, and isolated different kind of data, the client category is designated to match the API category. 
+In this SDK, the client is the struct to access the Huobi API. In order to isolate the private data with public data, and isolated different kind of data, the client category is designated to match the API category.
 
 All the client is listed in below table. Each client is very small and simple, it is only responsible to operate its related data, you can pick up multiple clients to create your own application based on your business.
 
-| Data Category   | Client                            | Privacy | Access Type  |
-| --------------- | --------------------------------- | ------- | ------------ |
-| Common          | CommonClient                      | Public  | Rest         |
-| Market          | MarketClient                      | Public  | Rest         |
-|                 | CandlestickWebSocketClient        | Public  | WebSocket    |
-|                 | DepthWebSocketClient              | Public  | WebSocket    |
-|                 | MarketByPriceWebSocketClient      | Public  | WebSocket    |
-|                 | BestBidOfferWebSocketClient       | Public  | WebSocket    |
-|                 | TradeWebSocketClient              | Public  | WebSocket    |
-|                 | Last24hCandlestickWebSocketClient | Public  | WebSocket    |
-| Account         | AccountClient                     | Private | Rest         |
-|                 | SubscribeAccountWebSocketV2Client | Private | WebSocket v2 |
-| Wallet          | WalletClient                      | Private | Rest         |
-| Order           | OrderClient                       | Private | Rest         |
-|                 | SubscribeOrderWebSocketV2Client   | Private | WebSocket v2 |
-| Isolated Margin | IsolatedMarginClient              | Private | Rest         |
-| Cross Margin    | CrossMarginClient                 | Private | Rest         |
-| ETF             | ETFClient                         | Private | Rest         |
+| Data Category   | Client                               | Privacy | Access Type  |
+| --------------- | ------------------------------------ | ------- | ------------ |
+| Common          | CommonClient                         | Public  | Rest         |
+| Market          | MarketClient                         | Public  | Rest         |
+|                 | CandlestickWebSocketClient           | Public  | WebSocket    |
+|                 | DepthWebSocketClient                 | Public  | WebSocket    |
+|                 | MarketByPriceWebSocketClient         | Public  | WebSocket    |
+|                 | MarketByPriceTickWebSocketClient     | Publlic | WebSocket    |
+|                 | BestBidOfferWebSocketClient          | Public  | WebSocket    |
+|                 | TradeWebSocketClient                 | Public  | WebSocket    |
+|                 | TickerWebSocketClient                | Public  | WebSocket    |
+|                 | Last24hCandlestickWebSocketClient    | Public  | WebSocket    |
+| Account         | AccountClient                        | Private | Rest         |
+|                 | SubscribeAccountWebSocketV2Client    | Private | WebSocket v2 |
+| Wallet          | WalletClient                         | Private | Rest         |
+| Order           | OrderClient                          | Private | Rest         |
+|                 | SubscribeOrderWebSocketV2Client      | Private | WebSocket v2 |
+|                 | SubscribeTradeClearWebSocketV2Client | Private | WebSocket v2 |
+| Isolated Margin | IsolatedMarginClient                 | Private | Rest         |
+| Cross Margin    | CrossMarginClient                    | Private | Rest         |
+| ETF             | ETFClient                            | Private | Rest         |
+| AlgoOrder       | AlgoOrderClient                      | Private | Rest         |
+| StableCoin      | StableCoinClient                     | Private | Rest         |
+| SubUser         | SubUserClient                        | Private | Rest         |
 
 #### Public vs. Private
 
@@ -153,8 +162,8 @@ client := new(marketwebsocketclient.CandlestickWebSocketClient).Init(config.Host
 // Create an AccountClient instance with APIKey
 client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host)
 
-// Create a RequestOrdersWebSocketV1Client instance with API Key
-client := new(orderwebsocketclient.RequestOrderWebSocketV1Client).Init(config.AccessKey, config.SecretKey, config.Host)
+// Create a SubscribeAccountWebSocketV2Client instance with API Key
+client := new(accountwebsocketclient.SubscribeAccountWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host)
 ```
 
 The API key is used for authentication. If the authentication cannot pass, the invoking of private interface will fail.
