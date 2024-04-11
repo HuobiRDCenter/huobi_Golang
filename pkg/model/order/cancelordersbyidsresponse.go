@@ -11,7 +11,7 @@ type CancelOrdersByIdsResponse struct {
 			ClientOrderId string `json:"client-order-id"`
 			ErrorCode     string `json:"err-code"`
 			ErrorMessage  string `json:"err-msg"`
-			OrderState    string `json:"order-state"`
+			OrderState    int    `json:"order-state"`
 		}
 	}
 }
