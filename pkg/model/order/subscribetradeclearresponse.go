@@ -29,5 +29,5 @@ type SubscribeTradeClearResponse struct {
 		Operator        string `json:"operator"`
 		OrderCreateTime int64  `json:"orderCreateTime"`
 		OrderStatus     string `json:"orderStatus"`
-	}
+	} `json:"data"`
 }

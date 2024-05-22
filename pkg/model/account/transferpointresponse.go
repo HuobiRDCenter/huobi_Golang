@@ -7,5 +7,5 @@ type TransferPointResponse struct {
 	Data    *struct {
 		TransactId   string `json:"transactId"`
 		TransactTime int64  `json:"transactTime"`
-	}
+	} `json:"data"`
 }

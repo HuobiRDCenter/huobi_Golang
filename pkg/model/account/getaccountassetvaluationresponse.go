@@ -6,5 +6,5 @@ type GetAccountAssetValuationResponse struct {
 	Data    *struct {
 		Balance   string `json:"balance"`
 		Timestamp int64  `json:"timestamp"`
-	}
+	} `json:"data"`
 }

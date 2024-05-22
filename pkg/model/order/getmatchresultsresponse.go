@@ -15,11 +15,11 @@ type GetMatchResultsResponse struct {
 		Type              string `json:"type"`
 		FilledAmount      string `json:"filled-amount"`
 		FilledFees        string `json:"filled-fees"`
-		FeeCurrency		  string `json:"fee-currency"`
+		FeeCurrency       string `json:"fee-currency"`
 		Source            string `json:"source"`
 		Role              string `json:"role"`
 		FilledPoints      string `json:"filled-points"`
 		FeeDeductCurrency string `json:"fee-deduct-currency"`
 		FeeDeductState    string `json:"fee-deduct-state"`
-	}
+	} `json:"data"`
 }

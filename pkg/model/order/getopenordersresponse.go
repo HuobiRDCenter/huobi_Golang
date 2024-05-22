@@ -3,10 +3,10 @@ package order
 import "github.com/shopspring/decimal"
 
 type GetOpenOrdersResponse struct {
-	Status       string `json:"status"`
-	ErrorCode    string `json:"err-code"`
-	ErrorMessage string `json:"err-msg"`
-	Data         []OpenOrder
+	Status       string      `json:"status"`
+	ErrorCode    string      `json:"err-code"`
+	ErrorMessage string      `json:"err-msg"`
+	Data         []OpenOrder `json:"data"`
 }
 
 type OpenOrder struct {

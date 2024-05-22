@@ -9,5 +9,5 @@ type GetTransactFeeRateResponse struct {
 		TakerFeeRate    string `json:"takerFeeRate"`
 		ActualMakerRate string `json:"actualMakerRate"`
 		ActualTakerRate string `json:"actualTakerRate"`
-	}
+	} `json:"data"`
 }

@@ -318,3 +318,66 @@ func (p *AccountClient) Transfer(request account.TransferRequest) (*account.Tran
 
 	return nil, errors.New(postResp)
 }
+
+// 用户抵扣信息查询
+func (p *AccountClient) GetUserInfo() (*account.GetUserInfoResponse, error) {
+	url := p.privateUrlBuilder.Build("GET", "/v1/account/switch/user/info", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetUserInfoResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 可抵扣币种查询信息
+func (p *AccountClient) GetOverviewInfo() (*account.GetOverviewInfoResponse, error) {
+	url := p.privateUrlBuilder.Build("GET", "/v1/account/overview/info", nil)
+	getResp, getErr := internal.HttpGet(url)
+	if getErr != nil {
+		return nil, getErr
+	}
+	result := account.GetOverviewInfoResponse{}
+	jsonErr := json.Unmarshal([]byte(getResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(getResp)
+}
+
+// 设置现货/杠杆抵扣手续费方式
+func (p *AccountClient) FeeSwitch(request account.FeeSwitchRequest) (*account.FeeSwitchResponse, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v1/account/fee/switch", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	result := account.FeeSwitchResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	if result.Code == 200 {
+		return &result, nil
+	}
+
+	return nil, errors.New(postResp)
+}

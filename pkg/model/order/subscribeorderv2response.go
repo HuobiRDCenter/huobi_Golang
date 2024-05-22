@@ -26,5 +26,5 @@ type SubscribeOrderV2Response struct {
 		LastActTime     int64  `json:"lastActTime"`
 		ErrorCode       int    `json:"errCode"`
 		ErrorMessage    string `json:"errMessage"`
-	}
+	} `json:"data"`
 }

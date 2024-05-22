@@ -25,5 +25,5 @@ type GetHistoryOrdersResponse struct {
 		Batch            string `json:"batch"`
 		StopPrice        string `json:"stop-price"`
 		Operator         string `json:"operator"`
-	}
+	} `json:"data"`
 }

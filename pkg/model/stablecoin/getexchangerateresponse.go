@@ -10,7 +10,7 @@ type GetExchangeRateResponse struct {
 		ExchangeFee    string `json:"exchangeFee"`
 		QuoteId        string `json:"quoteId"`
 		Expiration     string `json:"expiration"`
-	}
+	} `json:"data"`
 	ErrorCode    string `json:"err-code"`
 	ErrorMessage string `json:"err-msg"`
 }

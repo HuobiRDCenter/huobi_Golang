@@ -1,9 +1,9 @@
-package algoorder
+package account
 
-type PlaceOrderResponse struct {
+type FeeSwitchResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
+	Success bool   `json:"success"`
 	Data    *struct {
-		ClientOrderId string `json:"clientOrderId"`
 	} `json:"data"`
 }

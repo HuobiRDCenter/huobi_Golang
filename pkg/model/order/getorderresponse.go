@@ -21,5 +21,5 @@ type GetOrderResponse struct {
 		FinishedAt       string `json:"finished-at"`
 		StopPrice        string `json:"stop-price"`
 		Operator         string `json:"operator"`
-	}
+	} `json:"data"`
 }

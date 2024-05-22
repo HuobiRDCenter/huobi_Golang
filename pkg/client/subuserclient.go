@@ -462,3 +462,28 @@ func (p *SubUserClient) ApiKeyDeletion(request subuser.ApiKeyDeletionRequest) (*
 
 	return nil, errors.New(postResp)
 }
+
+// 用户主动授信
+func (p *SubUserClient) ActiveCredit(request subuser.ActiveCreditRequest) (bool, error) {
+	postBody, jsonErr := model.ToJson(request)
+	if jsonErr != nil {
+		return false, jsonErr
+	}
+
+	url := p.privateUrlBuilder.Build("POST", "/v1/trust/user/active/credit", nil)
+	postResp, postErr := internal.HttpPost(url, postBody)
+	if postErr != nil {
+		return false, postErr
+	}
+
+	result := subuser.ActiveCreditResponse{}
+	jsonErr = json.Unmarshal([]byte(postResp), &result)
+	if jsonErr != nil {
+		return false, jsonErr
+	}
+	if result.Status == "ok" {
+		return true, nil
+	}
+
+	return false, errors.New(postResp)
+}

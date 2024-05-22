@@ -23,5 +23,5 @@ type GetSpecificOrderResponse struct {
 		OrderStatus     string `json:"orderStatus"`
 		ErrCode         int    `json:"errCode"`
 		ErrMessage      string `json:"errMessage"`
-	}
+	} `json:"data"`
 }

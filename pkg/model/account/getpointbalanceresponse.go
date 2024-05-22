@@ -13,5 +13,5 @@ type GetPointBalanceResponse struct {
 			ExpiryDate   int64  `json:"expiryDate"`
 			RemainAmount string `json:"remainAmt"`
 		}
-	}
+	} `json:"data"`
 }

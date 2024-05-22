@@ -13,5 +13,5 @@ type IsolatedMarginLoanInfo struct {
 		MaxLoanAmt   string `json:"max-loan-amt"`
 		LoanableAmt  string `json:"loanable-amt"`
 		ActualRate   string `json:"actual-rate"`
-	}
+	} `json:"currencies"`
 }

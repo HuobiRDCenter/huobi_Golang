@@ -8,5 +8,5 @@ type CancelOrdersByCriteriaResponse struct {
 		SuccessCount int `json:"success-count"`
 		FailedCount  int `json:"failed-count"`
 		NextId       int `json:"next-id"`
-	}
+	} `json:"data"`
 }

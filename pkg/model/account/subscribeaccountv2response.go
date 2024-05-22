@@ -12,5 +12,5 @@ type SubscribeAccountV2Response struct {
 		ChangeType  string `json:"changeType"`
 		AccountType string `json:"accountType"`
 		ChangeTime  int64  `json:"changeTime"`
-	}
+	} `json:"data"`
 }
