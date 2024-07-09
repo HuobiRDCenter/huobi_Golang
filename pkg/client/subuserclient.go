@@ -225,13 +225,13 @@ func (p *SubUserClient) GetSubUserAggregateBalance() ([]account.AccountBalance, 
 }
 
 // Returns the balance of a sub-account specified by sub-uid
-func (p *SubUserClient) GetSubUserAccount(subUid int64) ([]account.SubUserAccount, error) {
+func (p *SubUserClient) GetSubUserAccount(subUid int64) ([]account.AccountBalance, error) {
 	url := p.privateUrlBuilder.Build("GET", fmt.Sprintf("/v1/account/accounts/%d", subUid), nil)
 	getResp, getErr := internal.HttpGet(url)
 	if getErr != nil {
 		return nil, getErr
 	}
-	result := account.GetSubUserAccountResponse{}
+	result := account.GetAccountBalanceResponse{}
 	jsonErr := json.Unmarshal([]byte(getResp), &result)
 	if jsonErr != nil {
 		return nil, jsonErr
