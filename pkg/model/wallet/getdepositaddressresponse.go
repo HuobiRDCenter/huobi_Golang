@@ -6,6 +6,7 @@ type GetDepositAddressResponse struct {
 	Data    []DepositAddress `json:"data"`
 }
 type DepositAddress struct {
+	UserId     int64  `json:"userId"`
 	Currency   string `json:"currency"`
 	Address    string `json:"address"`
 	AddressTag string `json:"addressTag"`
