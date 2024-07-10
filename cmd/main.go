@@ -19,20 +19,7 @@ import (
 )
 
 func main() {
-	//subUserClient := new(client.SubUserClient).Init("eba1b128-67692151-edc99346-mjlpdje3ld", "2a54d214-5addbd2d-d715ef58-a349f", "api.huobi.pro")
-	//id, err := subUserClient.GetUid()
-	//if err != nil {
-	//	fmt.Printf("get uid error:%s", err)
-	//}
-	//balance, err := subUserClient.GetSubUserAggregateBalance()
-	//if err != nil {
-	//	fmt.Printf("get balance error:%s", err)
-	//}
-	//fmt.Printf("balence:%s", balance)
-	//getResp := "{\n  \"code\": 200,\n  \"data\": 63628520\n}"
-	//result := account.GetUidResponse{}
-	//jsonErr := json.Unmarshal([]byte(getResp), &result)
-	//runAll()
+	runAll()
 }
 
 // Run all examples
