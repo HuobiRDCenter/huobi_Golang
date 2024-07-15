@@ -20,6 +20,7 @@ type GetHistoryOrdersResponse struct {
 		FilledCashAmount string `json:"field-cash-amount"`
 		FilledFees       string `json:"field-fees"`
 		Source           string `json:"source"`
+		CanceledSource   string `json:"canceled-source"`
 		State            string `json:"state"`
 		Exchange         string `json:"exchange"`
 		Batch            string `json:"batch"`

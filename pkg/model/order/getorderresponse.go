@@ -17,6 +17,7 @@ type GetOrderResponse struct {
 		FilledCashAmount string `json:"field-cash-amount"`
 		FilledFees       string `json:"field-fees"`
 		Source           string `json:"source"`
+		CanceledSource   string `json:"canceled-source"`
 		State            string `json:"state"`
 		FinishedAt       string `json:"finished-at"`
 		StopPrice        string `json:"stop-price"`
