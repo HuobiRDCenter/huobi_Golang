@@ -24,7 +24,7 @@ func RunAllExamples() {
 }
 
 func getAccountInfo() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	resp, err := client.GetAccountInfo()
 	if err != nil {
 		applogger.Error("Get account error: %s", err)
@@ -37,7 +37,7 @@ func getAccountInfo() {
 }
 
 func getAccountBalance() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	resp, err := client.GetAccountBalance(config.AccountId)
 	if err != nil {
 		applogger.Error("Get account balance error: %s", err)
@@ -53,7 +53,7 @@ func getAccountBalance() {
 }
 
 func getAccountAssetValuation() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	resp, err := client.GetAccountAssetValuation("spot", "USD", 0)
 	if err != nil {
 		applogger.Error("Get account asset valuation error: %s", err)
@@ -63,7 +63,7 @@ func getAccountAssetValuation() {
 }
 
 func transferAccount() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	request := account.TransferAccountRequest{
 		FromUser:        125753978,
 		FromAccountType: "spot",
@@ -83,7 +83,7 @@ func transferAccount() {
 }
 
 func getAccountHistory() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	getAccountHistoryOptionalRequest := account.GetAccountHistoryOptionalRequest{}
 	resp, err := client.GetAccountHistory(config.AccountId, getAccountHistoryOptionalRequest)
 	if err != nil {
@@ -97,7 +97,7 @@ func getAccountHistory() {
 }
 
 func getAccountLedger() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	getAccountLedgerOptionalRequest := account.GetAccountLedgerOptionalRequest{}
 	resp, err := client.GetAccountLedger(config.AccountId, getAccountLedgerOptionalRequest)
 	if err != nil {
@@ -111,7 +111,7 @@ func getAccountLedger() {
 }
 
 func transferFromFutureToSpot() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	futuresTransferRequest := account.FuturesTransferRequest{Currency: "btc", Amount: decimal.NewFromFloat(0.001), Type: "futures-to-pro"}
 	resp, err := client.FuturesTransfer(futuresTransferRequest)
 	if err != nil {
@@ -122,7 +122,7 @@ func transferFromFutureToSpot() {
 }
 
 func transferFromSpotToFuture() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	futuresTransferRequest := account.FuturesTransferRequest{Currency: "btc", Amount: decimal.NewFromFloat(0.001), Type: "pro-to-futures"}
 	resp, err := client.FuturesTransfer(futuresTransferRequest)
 	if err != nil {
@@ -133,7 +133,7 @@ func transferFromSpotToFuture() {
 }
 
 func getPointBalance() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	resp, err := client.GetPointBalance(config.SubUids)
 	if err != nil {
 		applogger.Error("Get point balance error: %s", err)
@@ -149,7 +149,7 @@ func getPointBalance() {
 }
 
 func transferPoint() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	request := account.TransferPointRequest{FromUid: "125753978", ToUid: "128654685", GroupId: 0, Amount: "0"}
 	resp, err := client.TransferPoint(request)
 	if err != nil {
@@ -160,7 +160,7 @@ func transferPoint() {
 }
 
 func getValuation() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	optionalRequest := account.GetValuation{ValuationCurrency: "BTC"}
 	resp, err := client.GetValuation("1", optionalRequest)
 	if err != nil {
@@ -171,7 +171,7 @@ func getValuation() {
 }
 
 func transfer() {
-	client := new(client.AccountClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
+	client := new(client.AccountClient).Init(config.PublicKey, config.PrivateKey, config.Host, config.Sign)
 	request := account.TransferRequest{From: "spot", To: "linear-swap", Currency: "usdt", Amount: 100.0, MarginAccount: "USDT"}
 	resp, err := client.Transfer(request)
 	if err != nil {

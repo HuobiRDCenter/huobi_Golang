@@ -8,7 +8,10 @@ import (
 func TestSigner_Sign_FourString_Success(t *testing.T) {
 	signer := new(Signer).Init("secret")
 
-	result := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
+	result, err := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
 	expected := "HUP3n78npIuTzVKyjEOrPictRKEUTRoYs7Ld5y38hmA="
 	if result != expected {
@@ -19,8 +22,15 @@ func TestSigner_Sign_FourString_Success(t *testing.T) {
 func TestSigner_Sign_RunTwice_GetSameResult(t *testing.T) {
 	signer := new(Signer).Init("secret")
 
-	result1 := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
-	result2 := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
+	result1, err1 := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
+	if err1 != nil {
+		t.Fatalf("unexpected error: %v", err1)
+	}
+
+	result2, err2 := signer.Sign("GET", "api.huobi.pro", "/v1/account/history", "account-id=1&currency=btcusdt")
+	if err2 != nil {
+		t.Fatalf("unexpected error: %v", err2)
+	}
 
 	if result1 != result2 {
 		t.Errorf("expected: %s, actual: %s", result1, result2)
@@ -28,9 +38,12 @@ func TestSigner_Sign_RunTwice_GetSameResult(t *testing.T) {
 }
 
 func TestSigner_Sign_OneEmptyString_ReturnEmpty(t *testing.T) {
-	signer := new(Signer).Init("secret")
+	signer := new(Signer)
 
-	result := signer.Sign("GET", "api.huobi.pro", "", "account-id=1&currency=btcusdt")
+	result, err := signer.Sign("GET", "api.huobi.pro", "", "account-id=1&currency=btcusdt")
+	if err != nil {
+		t.Errorf("expected an error for empty path, but got none")
+	}
 
 	expected := ""
 	if result != expected {

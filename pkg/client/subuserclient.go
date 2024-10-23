@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/subuser"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/wallet"
-	"strconv"
-	"strings"
 )
 
 // Responsible to operate wallet
@@ -20,8 +21,8 @@ type SubUserClient struct {
 }
 
 // Initializer
-func (p *SubUserClient) Init(accessKey string, secretKey string, host string) *SubUserClient {
-	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+func (p *SubUserClient) Init(accessKey string, secretKey string, host string, s string) *SubUserClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host, s)
 	return p
 }
 

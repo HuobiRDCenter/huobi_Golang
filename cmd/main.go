@@ -43,7 +43,6 @@ func runAll() {
 // Run performance test
 func runPerfTest() {
 	perflogger.Enable(true)
-
 	commonclientexample.RunAllExamples()
 	accountclientexample.RunAllExamples()
 	orderclientexample.RunAllExamples()

@@ -2,13 +2,14 @@ package requestbuilder
 
 import (
 	"encoding/json"
-	"github.com/huobirdcenter/huobi_golang/internal/model"
 	"testing"
 	"time"
+
+	"github.com/huobirdcenter/huobi_golang/internal/model"
 )
 
 func TestWebSocketV1RequestBuilder_build_Time_Success(t *testing.T) {
-	builder := new(WebSocketV1RequestBuilder).Init("access", "secret", "api.huobi.pro", "/ws/v1")
+	builder := new(WebSocketV1RequestBuilder).Init("access", "secret", "api.huobi.pro", "/ws/v1", "256")
 	utcDate := time.Date(2019, 11, 21, 10, 0, 0, 0, time.UTC)
 
 	str, err := builder.build(utcDate)

@@ -3,11 +3,12 @@ package client
 import (
 	"encoding/json"
 	"errors"
+	"strconv"
+
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
-	"strconv"
 )
 
 // Responsible to operate isolated margin
@@ -16,8 +17,8 @@ type IsolatedMarginClient struct {
 }
 
 // Initializer
-func (p *IsolatedMarginClient) Init(accessKey string, secretKey string, host string) *IsolatedMarginClient {
-	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+func (p *IsolatedMarginClient) Init(accessKey string, secretKey string, host string, s string) *IsolatedMarginClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host, s)
 	return p
 }
 
