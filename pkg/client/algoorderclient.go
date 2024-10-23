@@ -3,6 +3,7 @@ package client
 import (
 	"encoding/json"
 	"errors"
+
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
@@ -15,8 +16,8 @@ type AlgoOrderClient struct {
 }
 
 // Initializer
-func (p *AlgoOrderClient) Init(accessKey string, secretKey string, host string) *AlgoOrderClient {
-	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+func (p *AlgoOrderClient) Init(accessKey string, secretKey string, host string, s string) *AlgoOrderClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host, s)
 	return p
 }
 

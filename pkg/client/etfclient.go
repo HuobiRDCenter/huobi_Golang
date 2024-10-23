@@ -3,11 +3,12 @@ package client
 import (
 	"encoding/json"
 	"errors"
+	"strconv"
+
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/etf"
-	"strconv"
 )
 
 // Responsible to operate ETF
@@ -16,8 +17,8 @@ type ETFClient struct {
 }
 
 // Initializer
-func (p *ETFClient) Init(accessKey string, secretKey string, host string) *ETFClient {
-	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+func (p *ETFClient) Init(accessKey string, secretKey string, host string, s string) *ETFClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host, s)
 	return p
 }
 

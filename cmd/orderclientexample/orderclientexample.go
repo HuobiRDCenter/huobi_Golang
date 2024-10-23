@@ -27,7 +27,7 @@ func RunAllExamples() {
 }
 
 func placeOrder() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := order.PlaceOrderRequest{
 		AccountId: config.AccountId,
 		Type:      "buy-limit",
@@ -50,7 +50,7 @@ func placeOrder() {
 }
 
 func placeOrders() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := order.PlaceOrderRequest{
 		AccountId: config.AccountId,
 		Type:      "buy-limit",
@@ -85,7 +85,7 @@ func placeOrders() {
 }
 
 func cancelOrderById() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.CancelOrderById("1")
 	if err != nil {
 		applogger.Error(err.Error())
@@ -100,7 +100,7 @@ func cancelOrderById() {
 }
 
 func cancelOrderByClient() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.CancelOrderByClientOrderId("1")
 	if err != nil {
 		applogger.Error(err.Error())
@@ -115,7 +115,7 @@ func cancelOrderByClient() {
 }
 
 func getOpenOrders() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("account-id", config.AccountId)
 	request.AddParam("symbol", "btcusdt")
@@ -143,7 +143,7 @@ func cancelOrdersByCriteria() {
 		Symbol:    "btcusdt",
 	}
 
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.CancelOrdersByCriteria(&request)
 	if err != nil {
 		applogger.Error(err.Error())
@@ -165,7 +165,7 @@ func cancelOrdersByIds() {
 		OrderIds: []string{"1", "2"},
 	}
 
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.CancelOrdersByIds(&request)
 	if err != nil {
 		applogger.Error(err.Error())
@@ -195,7 +195,7 @@ func cancelOrdersByIds() {
 }
 
 func getOrderById() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetOrderById("1")
 	if err != nil {
 		applogger.Error(err.Error())
@@ -214,7 +214,7 @@ func getOrderById() {
 }
 
 func getOrderByCriteria() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("clientOrderId", "cid12345")
 	resp, err := client.GetOrderByCriteria(request)
@@ -235,7 +235,7 @@ func getOrderByCriteria() {
 }
 
 func getMatchResultById() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetMatchResultsById("63403286375")
 	if err != nil {
 		applogger.Error(err.Error())
@@ -255,7 +255,7 @@ func getMatchResultById() {
 }
 
 func getHistoryOrders() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	request.AddParam("states", "canceled")
@@ -278,7 +278,7 @@ func getHistoryOrders() {
 }
 
 func getLast48hOrders() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetLast48hOrders(request)
@@ -300,7 +300,7 @@ func getLast48hOrders() {
 }
 
 func getMatchResultByCriteria() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", "btcusdt")
 	resp, err := client.GetMatchResultsByCriteria(request)
@@ -322,7 +322,7 @@ func getMatchResultByCriteria() {
 }
 
 func getTransactFeeRate() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("symbols", "btcusdt,eosht")
 	resp, err := client.GetTransactFeeRate(request)
@@ -345,7 +345,7 @@ func getTransactFeeRate() {
 }
 
 func autoPlace() {
-	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.OrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := order.AutoPlaceRequest{Symbol: "btcusdt", AccountID: "31253990", Amount: "0", MarketAmount: "10", Type: "buy-market", TradePurpose: "2", Source: "super-margin-web"}
 	resp, err := client.AutoPlace(request)
 	if err != nil {

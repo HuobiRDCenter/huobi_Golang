@@ -31,7 +31,7 @@ func RunAllExamples() {
 }
 
 func createSubUser() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.CreateSubUserRequest{
 		UserList: []subuser.Users{
 			subuser.Users{"subuser1412", "sub-user-1-note"},
@@ -51,7 +51,7 @@ func createSubUser() {
 }
 
 func lockSubUser() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	subUserManagementRequest := subuser.SubUserManagementRequest{SubUid: config.SubUid, Action: "lock"}
 	resp, err := client.SubUserManagement(subUserManagementRequest)
 	if err != nil {
@@ -62,7 +62,7 @@ func lockSubUser() {
 }
 
 func unlockSubUser() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	subUserManagementRequest := subuser.SubUserManagementRequest{SubUid: config.SubUid, Action: "unlock"}
 	resp, err := client.SubUserManagement(subUserManagementRequest)
 	if err != nil {
@@ -73,7 +73,7 @@ func unlockSubUser() {
 }
 
 func setSubUserTradbleMarket() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.SetSubUserTradableMarketRequest{
 		SubUids:     config.SubUids,
 		AccountType: "isolated-margin",
@@ -104,7 +104,7 @@ func setSubUserTradbleMarket() {
 }
 
 func setSubUserTransferability() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.SetSubUserTransferabilityRequest{
 		SubUids:       config.SubUids,
 		AccountType:   "spot",
@@ -135,7 +135,7 @@ func setSubUserTransferability() {
 }
 
 func subUserTransfer() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	currency := "usdt"
 	subUserTransferRequest := subuser.SubUserTransferRequest{
 		SubUid:   config.SubUid,
@@ -153,7 +153,7 @@ func subUserTransfer() {
 }
 
 func getSubUserDepositAddress() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	currency := "usdt"
 	resp, err := client.GetSubUserDepositAddress(config.SubUid, currency)
 	if err != nil {
@@ -167,7 +167,7 @@ func getSubUserDepositAddress() {
 }
 
 func querySubUserDepositHistory() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	optionalRequest := subuser.QuerySubUserDepositHistoryOptionalRequest{Currency: "usdt"}
 	resp, err := client.QuerySubUserDepositHistory(config.SubUid, optionalRequest)
 	if err != nil {
@@ -181,7 +181,7 @@ func querySubUserDepositHistory() {
 }
 
 func getSubUserAggregateBalance() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetSubUserAggregateBalance()
 	if err != nil {
 		applogger.Error("Get sub user aggregated balance error: %s", err)
@@ -194,7 +194,7 @@ func getSubUserAggregateBalance() {
 }
 
 func getSubUserAccount() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetSubUserAccount(config.SubUid)
 	if err != nil {
 		applogger.Error("Get sub user account error: %s", err)
@@ -212,7 +212,7 @@ func getSubUserAccount() {
 }
 
 func getUid() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetUid()
 	if err != nil {
 		applogger.Error("Get uid error: %s", err)
@@ -222,7 +222,7 @@ func getUid() {
 }
 
 func deductMode() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.DeductModeRequest{SubUids: 178211, DeductMode: "master"}
 	resp, err := client.DeductMode(request)
 	if err != nil {
@@ -233,7 +233,7 @@ func deductMode() {
 }
 
 func getApiKey() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.GetApiKey{AccessKey: config.AccessKey}
 	resp, err := client.GetApiKey(config.SubUid, request)
 	if err != nil {
@@ -244,7 +244,7 @@ func getApiKey() {
 }
 
 func getUserList() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.GetUserList{}
 	resp, err := client.GetUserList(request)
 	if err != nil {
@@ -255,7 +255,7 @@ func getUserList() {
 }
 
 func getUserState() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetUserState(config.SubUid)
 	if err != nil {
 		applogger.Error("GetUserState error: %s", err)
@@ -265,7 +265,7 @@ func getUserState() {
 }
 
 func getAccountList() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetAccountList(config.SubUid)
 	if err != nil {
 		applogger.Error("GetAccountList error: %s", err)
@@ -275,7 +275,7 @@ func getAccountList() {
 }
 
 func apiKeyGeneration() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.ApiKeyGenerationRequest{OtpToken: "178211", SubUid: config.SubUid, Note: "178211", Permission: "178211", IPAddresses: "178211"}
 	resp, err := client.ApiKeyGeneration(request)
 	if err != nil {
@@ -286,7 +286,7 @@ func apiKeyGeneration() {
 }
 
 func apiKeyModification() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.ApiKeyModificationRequest{SubUid: 178211, AccessKey: "178211", Note: "178211", Permission: "178211", IPAddresses: "178211"}
 	resp, err := client.ApiKeyModification(request)
 	if err != nil {
@@ -297,7 +297,7 @@ func apiKeyModification() {
 }
 
 func apiKeyDeletion() {
-	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.SubUserClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := subuser.ApiKeyDeletionRequest{SubUid: 178211, AccessKey: "178211"}
 	resp, err := client.ApiKeyDeletion(request)
 	if err != nil {

@@ -3,6 +3,7 @@ package orderwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/order"
@@ -15,8 +16,8 @@ type SubscribeOrderWebSocketV2Client struct {
 }
 
 // Initializer
-func (p *SubscribeOrderWebSocketV2Client) Init(accessKey string, secretKey string, host string) *SubscribeOrderWebSocketV2Client {
-	p.WebSocketV2ClientBase.Init(accessKey, secretKey, host)
+func (p *SubscribeOrderWebSocketV2Client) Init(accessKey string, secretKey string, host string, sign string) *SubscribeOrderWebSocketV2Client {
+	p.WebSocketV2ClientBase.Init(accessKey, secretKey, host, sign)
 	return p
 }
 

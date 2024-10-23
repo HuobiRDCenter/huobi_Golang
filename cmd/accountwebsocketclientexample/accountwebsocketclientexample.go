@@ -2,6 +2,7 @@ package accountwebsocketclientexample
 
 import (
 	"fmt"
+
 	"github.com/huobirdcenter/huobi_golang/config"
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/accountwebsocketclient"
@@ -15,7 +16,7 @@ func RunAllExamples() {
 
 func subAccountUpdateV2() {
 	// Initialize a new instance
-	client := new(accountwebsocketclient.SubscribeAccountWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(accountwebsocketclient.SubscribeAccountWebSocketV2Client).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 
 	// Set the callback handlers
 	client.SetHandler(

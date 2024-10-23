@@ -3,6 +3,7 @@ package accountwebsocketclient
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/client/websocketclientbase"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
@@ -15,8 +16,8 @@ type SubscribeAccountWebSocketV2Client struct {
 }
 
 // Initializer
-func (p *SubscribeAccountWebSocketV2Client) Init(accessKey string, secretKey string, host string) *SubscribeAccountWebSocketV2Client {
-	p.WebSocketV2ClientBase.Init(accessKey, secretKey, host)
+func (p *SubscribeAccountWebSocketV2Client) Init(accessKey string, secretKey string, host string, sign string) *SubscribeAccountWebSocketV2Client {
+	p.WebSocketV2ClientBase.Init(accessKey, secretKey, host, sign)
 	return p
 }
 

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
@@ -16,8 +17,8 @@ type OrderClient struct {
 }
 
 // Initializer
-func (p *OrderClient) Init(accessKey string, secretKey string, host string) *OrderClient {
-	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+func (p *OrderClient) Init(accessKey string, secretKey string, host string, sign string) *OrderClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host, sign)
 	return p
 }
 

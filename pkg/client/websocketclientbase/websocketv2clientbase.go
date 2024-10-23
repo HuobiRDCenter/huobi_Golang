@@ -2,6 +2,9 @@ package websocketclientbase
 
 import (
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/gorilla/websocket"
 	"github.com/huobirdcenter/huobi_golang/internal/gzip"
 	"github.com/huobirdcenter/huobi_golang/internal/model"
@@ -9,8 +12,6 @@ import (
 	"github.com/huobirdcenter/huobi_golang/logging/applogger"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/auth"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/base"
-	"sync"
-	"time"
 )
 
 const (
@@ -39,11 +40,11 @@ type WebSocketV2ClientBase struct {
 }
 
 // Initializer
-func (p *WebSocketV2ClientBase) Init(accessKey string, secretKey string, host string) *WebSocketV2ClientBase {
+func (p *WebSocketV2ClientBase) Init(accessKey string, secretKey string, host string, sign string) *WebSocketV2ClientBase {
 	p.host = host
 	p.stopReadChannel = make(chan int, 1)
 	p.stopTickerChannel = make(chan int, 1)
-	p.requestBuilder = new(requestbuilder.WebSocketV2RequestBuilder).Init(accessKey, secretKey, host, websocketV2Path)
+	p.requestBuilder = new(requestbuilder.WebSocketV2RequestBuilder).Init(accessKey, secretKey, host, websocketV2Path, sign)
 	p.sendMutex = &sync.Mutex{}
 	return p
 }

@@ -3,11 +3,12 @@ package client
 import (
 	"encoding/json"
 	"errors"
+	"strconv"
+
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/margin"
-	"strconv"
 )
 
 // Responsible to operate cross margin
@@ -16,8 +17,8 @@ type CrossMarginClient struct {
 }
 
 // Initializer
-func (p *CrossMarginClient) Init(accessKey string, secretKey string, host string) *CrossMarginClient {
-	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+func (p *CrossMarginClient) Init(accessKey string, secretKey string, host string, s string) *CrossMarginClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host, s)
 	return p
 }
 
@@ -256,10 +257,10 @@ func (p *CrossMarginClient) GeneralMarginLoanOrders(optionalRequest margin.Cross
 		request.AddParam("currency", optionalRequest.Currency)
 	}
 	if optionalRequest.StartDate != 0 {
-		request.AddParam("startDate", strconv.FormatInt(optionalRequest.StartDate,10))
+		request.AddParam("startDate", strconv.FormatInt(optionalRequest.StartDate, 10))
 	}
 	if optionalRequest.EndDate != 0 {
-		request.AddParam("endDate", strconv.FormatInt(optionalRequest.EndDate,10))
+		request.AddParam("endDate", strconv.FormatInt(optionalRequest.EndDate, 10))
 	}
 	if optionalRequest.Sort != "" {
 		request.AddParam("sort", optionalRequest.Sort)
@@ -268,7 +269,7 @@ func (p *CrossMarginClient) GeneralMarginLoanOrders(optionalRequest margin.Cross
 		request.AddParam("limit", strconv.Itoa(optionalRequest.Limit))
 	}
 	if optionalRequest.FromId != 0 {
-		request.AddParam("fromId", strconv.FormatInt(optionalRequest.FromId,10))
+		request.AddParam("fromId", strconv.FormatInt(optionalRequest.FromId, 10))
 	}
 
 	url := p.privateUrlBuilder.Build("GET", "/v2/account/repayment", request)
@@ -288,4 +289,3 @@ func (p *CrossMarginClient) GeneralMarginLoanOrders(optionalRequest margin.Cross
 
 	return nil, errors.New(getResp)
 }
-

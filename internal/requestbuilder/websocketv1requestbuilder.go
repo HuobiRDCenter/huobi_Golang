@@ -1,9 +1,10 @@
 package requestbuilder
 
 import (
+	"time"
+
 	"github.com/huobirdcenter/huobi_golang/internal/model"
 	model2 "github.com/huobirdcenter/huobi_golang/pkg/model"
-	"time"
 )
 
 type WebSocketV1RequestBuilder struct {
@@ -18,11 +19,12 @@ type WebSocketV1RequestBuilder struct {
 
 	host string
 	path string
+	sign string
 
-	signer *Signer
+	signer SignerInterface
 }
 
-func (p *WebSocketV1RequestBuilder) Init(accessKey string, secretKey string, host string, path string) *WebSocketV1RequestBuilder {
+func (p *WebSocketV1RequestBuilder) Init(accessKey string, secretKey string, host string, path string, sign string) *WebSocketV1RequestBuilder {
 	p.akKey = "AccessKeyId"
 	p.akValue = accessKey
 	p.smKey = "SignatureMethod"
@@ -33,8 +35,21 @@ func (p *WebSocketV1RequestBuilder) Init(accessKey string, secretKey string, hos
 
 	p.host = host
 	p.path = path
+	p.sign = sign
 
-	p.signer = new(Signer).Init(secretKey)
+	if sign == "256" {
+		p.signer = new(Signer).Init(secretKey) // Signer 实现了接口
+	} else {
+		// 使用 Ed25519 签名
+		edSigner := new(Ed25519Signer)
+		var err error
+		edSigner, err = edSigner.Init(secretKey)
+		if err != nil {
+			// 处理错误
+			return nil // 假设这是在一个返回 error 的函数中
+		}
+		p.signer = edSigner // Ed25519Signer 也实现了接口
+	}
 
 	return p
 }
@@ -53,7 +68,7 @@ func (p *WebSocketV1RequestBuilder) build(utcDate time.Time) (string, error) {
 	req.AddParam(p.svKey, p.svValue)
 	req.AddParam(p.tKey, time)
 
-	signature := p.signer.Sign("GET", p.host, p.path, req.BuildParams())
+	signature, err := p.signer.Sign("GET", p.host, p.path, req.BuildParams())
 
 	auth := new(model.WebSocketV1AuthenticationRequest).Init()
 	auth.AccessKeyId = p.akValue
