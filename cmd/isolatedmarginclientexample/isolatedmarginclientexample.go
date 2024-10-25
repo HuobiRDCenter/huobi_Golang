@@ -24,7 +24,7 @@ func transferIn() {
 		Currency: "usdt",
 		Amount:   "1.0",
 		Symbol:   "btcusdt"}
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.TransferIn(request)
 	if err != nil {
 		applogger.Error(err.Error())
@@ -39,7 +39,7 @@ func transferOut() {
 		Currency: "usdt",
 		Amount:   "1.0",
 		Symbol:   "btcusdt"}
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.TransferOut(request)
 	if err != nil {
 		applogger.Error(err.Error())
@@ -51,7 +51,7 @@ func transferOut() {
 // Get the loan interest rates and quota applied on the user.
 func getMarginLoanInfo() {
 	optionalRequest := margin.GetMarginLoanInfoOptionalRequest{Symbols: "btcusdt"}
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetMarginLoanInfo(optionalRequest)
 	if err != nil {
 		applogger.Error(err.Error())
@@ -64,7 +64,7 @@ func getMarginLoanInfo() {
 
 // Place an order to apply a margin loan.
 func marginOrders() {
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := margin.IsolatedMarginOrdersRequest{
 		Currency: "eos",
 		Amount:   "0.001",
@@ -80,7 +80,7 @@ func marginOrders() {
 
 // Repay margin loan with you asset in your margin account.
 func marginOrdersRepay() {
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	orderId := "12345"
 	request := margin.MarginOrdersRepayRequest{Amount: "1.0"}
 	resp, err := client.Repay(orderId, request)
@@ -93,7 +93,7 @@ func marginOrdersRepay() {
 
 // Get the margin orders based on a specific searching criteria.
 func marginLoanOrders() {
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	optionalRequest := margin.IsolatedMarginLoanOrdersOptionalRequest{
 		StartDate: "2020-1-1",
 	}
@@ -111,7 +111,7 @@ func marginLoanOrders() {
 func marginAccountsBalance() {
 	optionalRequest := margin.MarginAccountsBalanceOptionalRequest{
 		Symbol: "btcusdt"}
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.MarginAccountsBalance(optionalRequest)
 	if err != nil {
 		applogger.Error(err.Error())
@@ -126,7 +126,7 @@ func marginAccountsBalance() {
 }
 
 func getMarginLimit() {
-	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.IsolatedMarginClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	resp, err := client.GetMarginLimit("")
 	if err != nil {
 		applogger.Error("getMarginLimit error: %s", err)

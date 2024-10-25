@@ -18,7 +18,7 @@ func RunAllExamples() {
 }
 
 func placeOrder() {
-	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := algoorder.PlaceOrderRequest{
 		AccountId:     11136102,
 		Symbol:        "htusdt",
@@ -43,7 +43,7 @@ func placeOrder() {
 }
 
 func cancelOder() {
-	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := algoorder.CancelOrdersRequest{
 		ClientOrderIds: []string{"huobi1901"},
 	}
@@ -69,7 +69,7 @@ func cancelOder() {
 }
 
 func getOpenOrders() {
-	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("accountId", config.AccountId)
 
@@ -91,7 +91,7 @@ func getOpenOrders() {
 }
 
 func getHistoryOrders() {
-	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("symbol", "htusdt")
 	request.AddParam("orderStatus", "canceled")
@@ -114,7 +114,7 @@ func getHistoryOrders() {
 }
 
 func getSpecificOrder() {
-	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := new(model.GetRequest).Init()
 	request.AddParam("clientOrderId", "huobi1901")
 
@@ -134,7 +134,7 @@ func getSpecificOrder() {
 }
 
 func cancelAllAfter() {
-	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host)
+	client := new(client.AlgoOrderClient).Init(config.AccessKey, config.SecretKey, config.Host, config.Sign)
 	request := algoorder.CancelAllAfterRequest{Timeout: 10}
 	resp, err := client.CancelAllAfter(request)
 	if err != nil {

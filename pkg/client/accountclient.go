@@ -3,11 +3,12 @@ package client
 import (
 	"encoding/json"
 	"errors"
+	"strconv"
+
 	"github.com/huobirdcenter/huobi_golang/internal"
 	"github.com/huobirdcenter/huobi_golang/internal/requestbuilder"
 	"github.com/huobirdcenter/huobi_golang/pkg/model"
 	"github.com/huobirdcenter/huobi_golang/pkg/model/account"
-	"strconv"
 )
 
 // Responsible to operate account
@@ -16,8 +17,8 @@ type AccountClient struct {
 }
 
 // Initializer
-func (p *AccountClient) Init(accessKey string, secretKey string, host string) *AccountClient {
-	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host)
+func (p *AccountClient) Init(accessKey string, secretKey string, host string, sign string) *AccountClient {
+	p.privateUrlBuilder = new(requestbuilder.PrivateUrlBuilder).Init(accessKey, secretKey, host, sign)
 	return p
 }
 
