@@ -44,7 +44,7 @@ func subOrderUpdateV2() {
 					if subResponse.Data != nil {
 						o := subResponse.Data
 						applogger.Info("Order update, event: %s, symbol: %s, type: %s, status: %s",
-							o.EventType, o.Symbol, o.Type, o.OrderStatus)
+							o.Event, o.Symbol, o.Type, o.OrderStatus)
 					}
 				}
 			} else {

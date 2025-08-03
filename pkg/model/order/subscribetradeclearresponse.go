@@ -5,7 +5,7 @@ import "github.com/huobirdcenter/huobi_golang/pkg/model/base"
 type SubscribeTradeClearResponse struct {
 	base.WebSocketV2ResponseBase
 	Data *struct {
-		EventType       string `json:"eventType"`
+		Event           string `json:"event"`
 		Symbol          string `json:"symbol"`
 		OrderId         int64  `json:"orderId"`
 		TradePrice      string `json:"tradePrice"`
