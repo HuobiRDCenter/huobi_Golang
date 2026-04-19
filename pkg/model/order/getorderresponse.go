@@ -19,7 +19,7 @@ type GetOrderResponse struct {
 		Source           string `json:"source"`
 		CanceledSource   string `json:"canceled-source"`
 		State            string `json:"state"`
-		FinishedAt       string `json:"finished-at"`
+		FinishedAt       int64  `json:"finished-at"`
 		StopPrice        string `json:"stop-price"`
 		Operator         string `json:"operator"`
 	} `json:"data"`
